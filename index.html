@@ -96,6 +96,28 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .champion-banner{text-align:center;padding:32px;background:linear-gradient(135deg,rgba(241,196,15,.25),rgba(52,152,219,.15));border:2px solid var(--gold);border-radius:16px;margin-top:20px;display:none}
 .champion-banner.show{display:block}
 .champion-banner .trophy{font-size:3rem}
+.teams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.team-card-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;transition:0.2s}
+.team-card-btn:hover{border-color:var(--gold);transform:translateY(-2px)}
+.team-card-btn .flag{width:48px;height:32px}
+.team-card-btn span{font-weight:600;font-size:0.95rem}
+.squad-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.player-row{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:grid;grid-template-columns:1fr 120px 100px;align-items:center;cursor:pointer;transition:0.15s}
+.player-row:hover{background:rgba(255,255,255,0.08);border-color:var(--accent)}
+.player-name{font-weight:600;display:flex;align-items:center;gap:8px}
+.player-pos{font-size:0.85rem;color:var(--muted)}
+.player-status{font-size:0.8rem;text-align:center;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.1)}
+.player-status.captain{background:var(--gold);color:#221;font-weight:700}
+.back-btn{margin-bottom:20px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:0.9rem}
+.back-btn:hover{background:rgba(255,255,255,0.12)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-content{background:var(--bg);border:1px solid var(--gold);border-radius:16px;width:min(500px, 100%);max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.modal-header h3{color:var(--gold);font-size:1.4rem}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px}
+.modal-body{padding:24px}
+.modal-body p{line-height:1.6;font-size:1.05rem}
 #saveStatus{font-size:.85rem;color:var(--muted)}
 #saveStatus.ok{color:var(--accent)}
 @media (max-width: 600px) {
@@ -128,6 +150,18 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 <div class="champion-banner" id="championBanner">
 <div class="trophy"></div>
 <h2 id="championText"></h2>
+</div>
+
+<div id="playerModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalPlayerName"></h3>
+      <button class="modal-close" onclick="closePlayerModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="modalPlayerStory"></p>
+    </div>
+  </div>
 </div>
 <div class="toolbar">
 <button class="btn btn-save" id="btnSave">💾 Сохранить</button>
@@ -456,6 +490,7 @@ let scores={};
 let activeTab=0;
 let saveTimer=null;
 let currentLang='ru';
+let selectedTeamId=null;
 
 const TRANSLATIONS = {
   es: {
@@ -508,7 +543,16 @@ const TRANSLATIONS = {
     pen1: "pen.1",
     pen2: "pen.2",
     json_error: "Error de JSON",
-    reset_done: "Restablecido"
+    reset_done: "Restablecido",
+    teams: "Equipos",
+    squad: "Plantilla",
+    pos: "Posición",
+    forward: "Delantero",
+    midfielder: "Centrocampista",
+    defender: "Defensa",
+    goalkeeper: "Portero",
+    captain: "Capitán",
+    back_to_teams: "← Volver a equipos"
   },
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -560,7 +604,16 @@ const TRANSLATIONS = {
     pen1: "tab1",
     pen2: "tab2",
     json_error: "Erreur JSON",
-    reset_done: "Réinitialisé"
+    reset_done: "Réinitialisé",
+    teams: "Équipes",
+    squad: "Effectif",
+    pos: "Poste",
+    forward: "Attaquant",
+    midfielder: "Milieu",
+    defender: "Défenseur",
+    goalkeeper: "Gardien",
+    captain: "Capitaine",
+    back_to_teams: "← Retour aux équipes"
   },
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -612,7 +665,16 @@ const TRANSLATIONS = {
     pen1: "пен.1",
     pen2: "пен.2",
     json_error: "Ошибка JSON",
-    reset_done: "Сброшено"
+    reset_done: "Сброшено",
+    teams: "Команды",
+    squad: "Состав",
+    pos: "Позиция",
+    forward: "Нападающий",
+    midfielder: "Полузащитник",
+    defender: "Защитник",
+    goalkeeper: "Вратарь",
+    captain: "Капитан",
+    back_to_teams: "← К списку команд"
   },
   en: {
     title: "FIFA World Cup 2026",
@@ -664,7 +726,16 @@ const TRANSLATIONS = {
     pen1: "pen.1",
     pen2: "pen.2",
     json_error: "JSON Error",
-    reset_done: "Reset"
+    reset_done: "Reset",
+    teams: "Teams",
+    squad: "Squad",
+    pos: "Position",
+    forward: "Forward",
+    midfielder: "Midfielder",
+    defender: "Defender",
+    goalkeeper: "Goalkeeper",
+    captain: "Captain",
+    back_to_teams: "← Back to teams"
   },
   zh: {
     title: "2026年国际足联世界杯",
@@ -716,7 +787,16 @@ const TRANSLATIONS = {
     pen1: "点1",
     pen2: "点2",
     json_error: "JSON错误",
-    reset_done: "已重置"
+    reset_done: "已重置",
+    teams: "球队",
+    squad: "阵容",
+    pos: "位置",
+    forward: "前锋",
+    midfielder: "中场",
+    defender: "后卫",
+    goalkeeper: "门将",
+    captain: "队长",
+    back_to_teams: "← 返回球队列表"
   }
 };
 
@@ -980,7 +1060,7 @@ function buildUI(){
   document.getElementById('btnImport').textContent = T.import;
   document.getElementById('btnReset').textContent = T.reset;
 
-  const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.stadiums];
+  const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.teams, T.stadiums];
   const tabEl=document.getElementById('tabs');
   const panels=document.getElementById('panels');
   tabEl.innerHTML='';panels.innerHTML='';
@@ -1112,6 +1192,274 @@ function renderBracket(){
   else banner.classList.remove('show');
 }
 
+const SQUADS = {
+  "MEX": [
+    {"name": {"ru": "Сантьяго Хименес", "en": "Santiago Giménez"}, "pos": "forward", "status": "Regular", "story": {"ru": "Родился в Аргентине, но выбрал сборную Мексики. Сын известного футболиста Кристиана Хименеса. Стал звездой в «Фейеноорде».", "en": "Born in Argentina but chose to represent Mexico. Son of famous footballer Christian Giménez. Became a star at Feyenoord."}},
+    {"name": {"ru": "Эдсон Альварес", "en": "Edson Álvarez"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Универсальный игрок, способный закрыть позиции в защите и центре поля. Лидер команды и один из самых дорогих мексиканских игроков в истории.", "en": "A versatile player capable of playing in defense and midfield. Team leader and one of the most expensive Mexican players in history."}}
+  ],
+  "RSA": [
+    {"name": {"ru": "Перси Тау", "en": "Percy Tau"}, "pos": "forward", "status": "Regular", "story": {"ru": "Прозванный «Львом Иуды», он является одним из немногих игроков ЮАР, добившихся успеха в Европе (Брайтон, Андерлехт).", "en": "Nicknamed 'The Lion of Judah', he is one of the few South African players to have succeeded in Europe (Brighton, Anderlecht)."}},
+    {"name": {"ru": "Ронвен Уильямс", "en": "Ronwen Williams"}, "pos": "goalkeeper", "status": "Captain", "story": {"ru": "Герой серии пенальти на Кубке Африки 2023 года, где он отбил 4 удара в одном матче.", "en": "Hero of the 2023 Africa Cup of Nations penalty shootout, where he saved 4 shots in a single match."}}
+  ],
+  "KOR": [
+    {"name": {"ru": "Сон Хын Мин", "en": "Son Heung-min"}, "pos": "forward", "status": "Captain", "story": {"ru": "Легенда корейского футбола и один из лучших нападающих в истории Азии. Обладатель премии Пушкаша за лучший гол года.", "en": "A Korean football legend and one of the greatest Asian forwards in history. Puskás Award winner for the best goal of the year."}},
+    {"name": {"ru": "Ким Мин Джэ", "en": "Kim Min-jae"}, "pos": "defender", "status": "Regular", "story": {"ru": "Прозванный «Монстром» за свои физические данные. Стал ключевым защитником в «Наполи» и «Баварии».", "en": "Nicknamed 'The Monster' for his physical attributes. Became a key defender at Napoli and Bayern Munich."}}
+  ],
+  "CZE": [
+    {"name": {"ru": "Патрик Шик", "en": "Patrik Schick"}, "pos": "forward", "status": "Regular", "story": {"ru": "Автор одного из самых красивых голов в истории чемпионатов Европы — ударом с центра поля в ворота Шотландии.", "en": "Scorer of one of the most beautiful goals in European Championship history — a strike from the halfway line against Scotland."}},
+    {"name": {"ru": "Томаш Соучек", "en": "Tomáš Souček"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Выносливый полузащитник, известный своей игрой головой и неуступчивостью в единоборствах. Лидер «Вест Хэма».", "en": "A tireless midfielder known for his aerial ability and tenacity in duels. A leader for West Ham."}}
+  ],
+  "CAN": [
+    {"name": {"ru": "Альфонсо Дэвис", "en": "Alphonso Davies"}, "pos": "defender", "status": "Captain", "story": {"ru": "Родился в лагере беженцев в Гане. В 19 лет стал победителем Лиги чемпионов в составе «Баварии».", "en": "Born in a refugee camp in Ghana. At 19, he became a Champions League winner with Bayern Munich."}},
+    {"name": {"ru": "Джонатан Дэвид", "en": "Jonathan David"}, "pos": "forward", "status": "Regular", "story": {"ru": "Один из самых результативных нападающих французской Лиги 1. Родился в США, вырос в Гаити и Канаде.", "en": "One of the most prolific forwards in French Ligue 1. Born in the USA, raised in Haiti and Canada."}}
+  ],
+  "BIH": [
+    {"name": {"ru": "Эдин Джеко", "en": "Edin Džeko"}, "pos": "forward", "status": "Captain", "story": {"ru": "«Боснийский бриллиант». Лучший бомбардир в истории своей сборной, выигрывал титулы в Германии и Англии.", "en": "The 'Bosnian Diamond'. The all-time top scorer for his national team, he has won titles in Germany and England."}},
+    {"name": {"ru": "Амар Дедич", "en": "Amar Dedić"}, "pos": "defender", "status": "Regular", "story": {"ru": "Молодой и талантливый защитник, представляющий новое поколение боснийского футбола. Звезда «Ред Булл Зальцбург».", "en": "A young and talented defender representing the new generation of Bosnian football. A star for Red Bull Salzburg."}}
+  ],
+  "QAT": [
+    {"name": {"ru": "Акрам Афиф", "en": "Akram Afif"}, "pos": "forward", "status": "Regular", "story": {"ru": "Первый катарский игрок, выступавший в испанской Ла Лиге. Главный творец побед Катара на Кубке Азии.", "en": "The first Qatari player to play in Spain's La Liga. The main architect of Qatar's Asian Cup victories."}},
+    {"name": {"ru": "Алмоез Али", "en": "Almoez Ali"}, "pos": "forward", "status": "Captain", "story": {"ru": "Рекордсмен по количеству голов на одном турнире Кубка Азии (9 голов в 2019 году).", "en": "Record holder for the most goals in a single Asian Cup tournament (9 goals in 2019)."}}
+  ],
+  "SUI": [
+    {"name": {"ru": "Гранит Джака", "en": "Granit Xhaka"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Мозг команды. Пережил трудные времена в «Арсенале», чтобы стать ключевым игроком чемпионского «Байера».", "en": "The brain of the team. Overcame tough times at Arsenal to become a key player for championship-winning Bayer Leverkusen."}},
+    {"name": {"ru": "Мануэль Аканджи", "en": "Manuel Akanji"}, "pos": "defender", "status": "Regular", "story": {"ru": "Математический гений на поле. Способен в уме мгновенно умножать сложные числа. Опора обороны «Манчестер Сити».", "en": "A mathematical genius on the pitch. Capable of mentally multiplying complex numbers instantly. A pillar of the Manchester City defense."}}
+  ],
+  "BRA": [
+    {"name": {"ru": "Винисиус Жуниор", "en": "Vinícius Júnior"}, "pos": "forward", "status": "Regular", "story": {"ru": "Один из главных претендентов на «Золотой мяч». Символ современного бразильского дриблинга и скорости.", "en": "One of the main contenders for the Ballon d'Or. A symbol of modern Brazilian dribbling and speed."}},
+    {"name": {"ru": "Неймар", "en": "Neymar Jr"}, "pos": "forward", "status": "Regular", "story": {"ru": "Лучший бомбардир в истории сборной Бразилии, обошедший Пеле. Мастер финтов и нестандартных решений.", "en": "The all-time top scorer for the Brazilian national team, surpassing Pelé. A master of tricks and unconventional plays."}},
+    {"name": {"ru": "Маркиньос", "en": "Marquinhos"}, "pos": "defender", "status": "Captain", "story": {"ru": "Надежный защитник и многолетний лидер ПСЖ. Обладает отличным чтением игры и навыками паса.", "en": "A reliable defender and long-time leader of PSG. Possesses excellent game reading and passing skills."}}
+  ],
+  "MAR": [
+    {"name": {"ru": "Ашраф Хакими", "en": "Achraf Hakimi"}, "pos": "defender", "status": "Captain", "story": {"ru": "Один из лучших правых защитников мира. Близкий друг Килиана Мбаппе и герой ЧМ-2022.", "en": "One of the best right-backs in the world. Close friend of Kylian Mbappé and a hero of the 2022 World Cup."}},
+    {"name": {"ru": "Софьян Амрабат", "en": "Sofyan Amrabat"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "«Двигатель» марокканской сборной. Стал открытием ЧМ-2022 благодаря своей невероятной работоспособности.", "en": "The 'engine' of the Moroccan national team. Became a revelation of the 2022 World Cup thanks to his incredible work rate."}}
+  ],
+  "HAI": [
+    {"name": {"ru": "Дюкенс Назон", "en": "Duckens Nazon"}, "pos": "forward", "status": "Regular", "story": {"ru": "Прозванный «Дюком», он является лучшим бомбардиром Гаити в истории Золотого кубка КОНКАКАФ.", "en": "Nicknamed 'The Duck', he is Haiti's all-time top scorer in the CONCACAF Gold Cup."}},
+    {"name": {"ru": "Франтзди Пьерро", "en": "Frantzdy Pierrot"}, "pos": "forward", "status": "Regular", "story": {"ru": "Мощный форвард, забивавший в квалификации Лиги чемпионов. Один из самых атлетичных игроков региона.", "en": "A powerful forward who has scored in Champions League qualifying. One of the most athletic players in the region."}}
+  ],
+  "SCO": [
+    {"name": {"ru": "Эндрю Робертсон", "en": "Andrew Robertson"}, "pos": "defender", "status": "Captain", "story": {"ru": "Прошел путь от работы в кассах стадиона до победы в Лиге чемпионов с «Ливерпулем».", "en": "Went from working in stadium ticket offices to winning the Champions League with Liverpool."}},
+    {"name": {"ru": "Скотт Мактоминей", "en": "Scott McTominay"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Воспитанник «Манчестер Юнайтед», ставший неожиданным бомбардиром сборной в отборе к Евро-2024.", "en": "A Manchester United academy product who became an unexpected goalscorer for the national team in Euro 2024 qualifying."}}
+  ],
+  "USA": [
+    {"name": {"ru": "Кристиан Пулишич", "en": "Christian Pulisic"}, "pos": "forward", "status": "Captain", "story": {"ru": "«Капитан Америка». Первый американец, сыгравший и победивший в финале Лиги чемпионов.", "en": "Captain America. The first American to play in and win a Champions League final."}},
+    {"name": {"ru": "Уэстон Маккенни", "en": "Weston McKennie"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Энергичный полузащитник, известный своим празднованием голов в стиле Гарри Поттера.", "en": "An energetic midfielder known for his Harry Potter-themed goal celebrations."}}
+  ],
+  "PAR": [
+    {"name": {"ru": "Мигель Альмирон", "en": "Miguel Almirón"}, "pos": "forward", "status": "Regular", "story": {"ru": "Звезда «Ньюкасла», известный своей невероятной скоростью и постоянной улыбкой на лице.", "en": "A Newcastle star known for his incredible speed and the constant smile on his face."}},
+    {"name": {"ru": "Хулио Энсисо", "en": "Julio Enciso"}, "pos": "forward", "status": "Regular", "story": {"ru": "Один из самых перспективных молодых игроков Южной Америки, выступающий за «Брайтон».", "en": "One of South America's most promising young players, currently playing for Brighton."}}
+  ],
+  "AUS": [
+    {"name": {"ru": "Мэтью Райан", "en": "Mathew Ryan"}, "pos": "goalkeeper", "status": "Captain", "story": {"ru": "Опытный вратарь, поигравший во многих европейских лигах. Рекордсмен сборной по матчам на ЧМ.", "en": "An experienced goalkeeper who has played in many European leagues. Holder of the national team record for World Cup appearances."}},
+    {"name": {"ru": "Гарри Суттар", "en": "Harry Souttar"}, "pos": "defender", "status": "Regular", "story": {"ru": "Самый высокий полевой игрок на ЧМ-2022 (198 см). Родился в Шотландии, но выбрал Австралию.", "en": "The tallest outfield player at the 2022 World Cup (198 cm). Born in Scotland but chose to represent Australia."}}
+  ],
+  "TUR": [
+    {"name": {"ru": "Арда Гюлер", "en": "Arda Güler"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "«Турецкий Месси». Юный талант, перешедший в мадридский «Реал» и забивший гол на Евро-2024 в 19 лет.", "en": "The 'Turkish Messi'. A young talent who moved to Real Madrid and scored a goal at Euro 2024 at the age of 19."}},
+    {"name": {"ru": "Хакан Чалханоглу", "en": "Hakan Çalhanoğlu"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Мастер штрафных ударов и один из лучших плеймейкеров итальянской Серии А.", "en": "A free-kick specialist and one of the best playmakers in the Italian Serie A."}}
+  ],
+  "GER": [
+    {"name": {"ru": "Джамал Мусиала", "en": "Jamal Musiala"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Прозванный «Бэмби» за свою грацию. Выбирал между Англией и Германией, став новой звездой Бундестим.", "en": "Nicknamed 'Bambi' for his grace. He chose between England and Germany, becoming the new star of the Nationalmannschaft."}},
+    {"name": {"ru": "Флориан Виртц", "en": "Florian Wirtz"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Творец исторического чемпионства «Байера». Самый молодой игрок, забивший 10 голов в Бундеслиге.", "en": "Architect of Bayer Leverkusen's historic championship. The youngest player to score 10 goals in the Bundesliga."}}
+  ],
+  "CUW": [
+    {"name": {"ru": "Леандро Бакуна", "en": "Leandro Bacuna"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Многолетний капитан сборной, поигравший в английской Премьер-лиге.", "en": "Long-time national team captain with experience in the English Premier League."}},
+    {"name": {"ru": "Джуниньо Бакуна", "en": "Juninho Bacuna"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Младший брат Леандро, также обладающий отличным ударом и техникой.", "en": "Leandro's younger brother, also possessing an excellent strike and technique."}}
+  ],
+  "CIV": [
+    {"name": {"ru": "Себастьен Алле", "en": "Sébastien Haller"}, "pos": "forward", "status": "Regular", "story": {"ru": "Победил рак яичек и вернулся в футбол, чтобы забить победный гол в финале Кубка Африки 2023.", "en": "Overcame testicular cancer and returned to football to score the winning goal in the 2023 Africa Cup of Nations final."}},
+    {"name": {"ru": "Франк Кессье", "en": "Franck Kessié"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "«Президент» полузащиты. Хладнокровный исполнитель пенальти и лидер ивуарийцев.", "en": "The 'President' of the midfield. A cool-headed penalty taker and leader of the Ivorians."}}
+  ],
+  "ECU": [
+    {"name": {"ru": "Эннер Валенсия", "en": "Enner Valencia"}, "pos": "forward", "status": "Captain", "story": {"ru": "Лучший бомбардир в истории сборной Эквадора. Забивал на всех чемпионатах мира, в которых участвовал.", "en": "The all-time top scorer for the Ecuadorian national team. He has scored in every World Cup he has participated in."}},
+    {"name": {"ru": "Мойсес Кайседо", "en": "Moisés Caicedo"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Самый дорогой игрок в истории английской Премьер-лиги на момент перехода в «Челси».", "en": "The most expensive player in English Premier League history at the time of his move to Chelsea."}}
+  ],
+  "NED": [
+    {"name": {"ru": "Вирджил ван Дейк", "en": "Virgil van Dijk"}, "pos": "defender", "status": "Captain", "story": {"ru": "Считается одним из лучших защитников своего поколения. Первый защитник, ставший лучшим игроком года по версии УЕФА.", "en": "Considered one of the best defenders of his generation. The first defender to be named UEFA Men's Player of the Year."}},
+    {"name": {"ru": "Коди Гакпо", "en": "Cody Gakpo"}, "pos": "forward", "status": "Regular", "story": {"ru": "Стал главной звездой сборной на ЧМ-2022, забив в каждом матче группового этапа.", "en": "Became the national team's main star at the 2022 World Cup, scoring in every group stage match."}}
+  ],
+  "JPN": [
+    {"name": {"ru": "Ватару Эндо", "en": "Wataru Endo"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Настоящий воин в центре поля. Его трудолюбие и дисциплина помогли ему стать капитаном в Германии и Англии.", "en": "A true warrior in midfield. His hard work and discipline helped him become a captain in Germany and England."}},
+    {"name": {"ru": "Каору Митома", "en": "Kaoru Mitoma"}, "pos": "forward", "status": "Regular", "story": {"ru": "Написал университетскую диссертацию о дриблинге, а затем применил свои знания на практике в АПЛ.", "en": "Wrote a university thesis on dribbling and then applied his knowledge in practice in the Premier League."}}
+  ],
+  "SWE": [
+    {"name": {"ru": "Александр Исак", "en": "Alexander Isak"}, "pos": "forward", "status": "Regular", "story": {"ru": "Техничный и результативный форвард, которого часто сравнивают со Златаном Ибрагимовичем.", "en": "A technical and prolific forward often compared to Zlatan Ibrahimović."}},
+    {"name": {"ru": "Виктор Линделёф", "en": "Victor Lindelöf"}, "pos": "defender", "status": "Captain", "story": {"ru": "Хладнокровный защитник «Манчестер Юнайтед», прозванный «Айсменом» за свое спокойствие.", "en": "A composed Manchester United defender, nicknamed 'The Iceman' for his calmness."}}
+  ],
+  "TUN": [
+    {"name": {"ru": "Юссеф Мсакни", "en": "Youssef Msakni"}, "pos": "forward", "status": "Captain", "story": {"ru": "Многолетний лидер и самый талантливый игрок своего поколения в Тунисе.", "en": "A long-time leader and the most talented player of his generation in Tunisia."}},
+    {"name": {"ru": "Элье Схири", "en": "Ellyes Skhiri"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Работоспособный полузащитник, родившийся во Франции. Ключевой игрок в центре поля тунисцев.", "en": "A hardworking midfielder born in France. A key player in the Tunisian midfield."}}
+  ],
+  "BEL": [
+    {"name": {"ru": "Кевин Де Брёйне", "en": "Kevin De Bruyne"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Один из лучших ассистентов в истории футбола. Обладает уникальным видением поля и пасом.", "en": "One of the greatest playmakers in football history. Possesses unique vision and passing ability."}},
+    {"name": {"ru": "Ромелу Лукаку", "en": "Romelu Lukaku"}, "pos": "forward", "status": "Regular", "story": {"ru": "Лучший бомбардир в истории сборной Бельгии. Известен своей мощью и голевым чутьем.", "en": "The all-time top scorer for the Belgian national team. Known for his power and goal-scoring instinct."}}
+  ],
+  "EGY": [
+    {"name": {"ru": "Мохамед Салах", "en": "Mohamed Salah"}, "pos": "forward", "status": "Captain", "story": {"ru": "«Египетский король». Икона мирового футбола и один из лучших африканских игроков всех времен.", "en": "The Egyptian King. A global football icon and one of the greatest African players of all time."}},
+    {"name": {"ru": "Омар Мармуш", "en": "Omar Marmoush"}, "pos": "forward", "status": "Regular", "story": {"ru": "Стремительно развивающийся нападающий, ставший звездой в немецкой Бундеслиге.", "en": "A rapidly developing forward who has become a star in the German Bundesliga."}}
+  ],
+  "IRN": [
+    {"name": {"ru": "Мехди Тареми", "en": "Mehdi Taremi"}, "pos": "forward", "status": "Regular", "story": {"ru": "Главная атакующая сила Ирана. Прославился своими голами в «Порту» и переходом в миланский «Интер».", "en": "Iran's main attacking force. Famous for his goals at Porto and his move to Inter Milan."}},
+    {"name": {"ru": "Сардар Азмун", "en": "Sardar Azmoun"}, "pos": "forward", "status": "Regular", "story": {"ru": "«Иранский Месси». Хорошо известен российским болельщикам по выступлениям за «Зенит» и «Рубин».", "en": "The 'Iranian Messi'. Well-known to Russian fans for his performances at Zenit and Rubin Kazan."}}
+  ],
+  "NZL": [
+    {"name": {"ru": "Крис Вуд", "en": "Chris Wood"}, "pos": "forward", "status": "Captain", "story": {"ru": "Лучший бомбардир в истории Новой Зеландии. Первый игрок из Океании, забивший более 50 голов в АПЛ.", "en": "New Zealand's all-time top scorer. The first player from Oceania to score over 50 goals in the Premier League."}},
+    {"name": {"ru": "Либерато Какаче", "en": "Liberato Cacace"}, "pos": "defender", "status": "Regular", "story": {"ru": "Талантливый левый защитник, представляющий новое поколение новозеландцев в Европе.", "en": "A talented left-back representing the new generation of New Zealanders in Europe."}}
+  ],
+  "ESP": [
+    {"name": {"ru": "Родри", "en": "Rodri"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Обладатель «Золотого мяча» 2024. Мозг «Манчестер Сити» и сборной Испании, определяющий ритм игры.", "en": "2024 Ballon d'Or winner. The brain of Manchester City and the Spanish national team, defining the game's rhythm."}},
+    {"name": {"ru": "Ламин Ямаль", "en": "Lamine Yamal"}, "pos": "forward", "status": "Regular", "story": {"ru": "Самый молодой игрок и автор гола в истории чемпионатов Европы. Новая суперзвезда мирового футбола.", "en": "The youngest player and goalscorer in European Championship history. A new global football superstar."}}
+  ],
+  "CPV": [
+    {"name": {"ru": "Райан Мендеш", "en": "Ryan Mendes"}, "pos": "forward", "status": "Captain", "story": {"ru": "Рекордсмен сборной по количеству матчей и голов. Легенда футбола Кабо-Верде.", "en": "National team record holder for appearances and goals. A legend of Cape Verdean football."}},
+    {"name": {"ru": "Логан Кошта", "en": "Logan Costa"}, "pos": "defender", "status": "Regular", "story": {"ru": "Надежный защитник, успешно выступающий в европейских чемпионатах. Опора обороны «синих акул».", "en": "A reliable defender performing successfully in European championships. A pillar of the Blue Sharks' defense."}}
+  ],
+  "KSA": [
+    {"name": {"ru": "Салем Аль-Давсари", "en": "Salem Al-Dawsari"}, "pos": "forward", "status": "Captain", "story": {"ru": "Автор исторического победного гола в ворота Аргентины на ЧМ-2022. Лучший игрок Азии 2022 года.", "en": "Scorer of the historic winning goal against Argentina at the 2022 World Cup. 2022 Asian Footballer of the Year."}},
+    {"name": {"ru": "Фирас Аль-Бурайкан", "en": "Firas Al-Buraikan"}, "pos": "forward", "status": "Regular", "story": {"ru": "Молодой форвард, ставший одним из лучших бомбардиров чемпионата Саудовской Аравии.", "en": "A young forward who has become one of the top scorers in the Saudi Pro League."}}
+  ],
+  "URU": [
+    {"name": {"ru": "Федерико Вальверде", "en": "Federico Valverde"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Универсальный полузащитник мадридского «Реала», обладающий сумасшедшим ударом и выносливостью.", "en": "A versatile Real Madrid midfielder with a powerful strike and incredible endurance."}},
+    {"name": {"ru": "Дарвин Нуньес", "en": "Darwin Núñez"}, "pos": "forward", "status": "Regular", "story": {"ru": "Форвард «Ливерпуля», известный своей скоростью и умением находить голевые моменты.", "en": "A Liverpool forward known for his speed and ability to create goal-scoring opportunities."}}
+  ],
+  "FRA": [
+    {"name": {"ru": "Килиан Мбаппе", "en": "Kylian Mbappé"}, "pos": "forward", "status": "Captain", "story": {"ru": "Один из лучших игроков мира. Автор хет-трика в финале ЧМ-2022 и лидер нового поколения французов.", "en": "One of the world's best players. Scorer of a hat-trick in the 2022 World Cup final and leader of France's new generation."}},
+    {"name": {"ru": "Антуан Гризманн", "en": "Antoine Griezmann"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Уникальный игрок, сочетающий в себе функции плеймейкера и защитника. Рекордсмен по числу матчей подряд за сборную.", "en": "A unique player combining playmaker and defensive roles. Record holder for the most consecutive appearances for the national team."}}
+  ],
+  "SEN": [
+    {"name": {"ru": "Садио Мане", "en": "Sadio Mané"}, "pos": "forward", "status": "Regular", "story": {"ru": "Национальный герой Сенегала, приведший команду к победе на Кубке Африки. Известен своей скромностью и благотворительностью.", "en": "A Senegalese national hero who led the team to Africa Cup of Nations victory. Known for his humility and charity work."}},
+    {"name": {"ru": "Калиду Кулибали", "en": "Kalidou Koulibaly"}, "pos": "defender", "status": "Captain", "story": {"ru": "Скала в обороне сенегальцев. Один из самых уважаемых защитников в мировом футболе.", "en": "The rock in the Senegalese defense. One of the most respected defenders in world football."}}
+  ],
+  "IRQ": [
+    {"name": {"ru": "Аймен Хусейн", "en": "Aymen Hussein"}, "pos": "forward", "status": "Regular", "story": {"ru": "Главный бомбардир сборной Ирака, отличающийся отличной игрой на втором этаже.", "en": "Iraq's primary goalscorer, distinguished by his excellent aerial ability."}},
+    {"name": {"ru": "Зидан Икбал", "en": "Zidane Iqbal"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Первый иракец в истории «Манчестер Юнайтед». Техничный полузащитник и надежда нации.", "en": "The first Iraqi in Manchester United history. A technical midfielder and a hope of the nation."}}
+  ],
+  "NOR": [
+    {"name": {"ru": "Эрлинг Холанд", "en": "Erling Haaland"}, "pos": "forward", "status": "Regular", "story": {"ru": "Машина по забиванию голов. Бьет рекорды результативности в Англии и жаждет успеха со своей сборной.", "en": "A goal-scoring machine. Breaking scoring records in England and hungry for success with his national team."}},
+    {"name": {"ru": "Мартин Эдегор", "en": "Martin Ødegaard"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Вундеркинд, ставший лидером. Капитан «Арсенала» и дирижер атак сборной Норвегии.", "en": "A child prodigy turned leader. Arsenal captain and the conductor of Norway's attacks."}}
+  ],
+  "ARG": [
+    {"name": {"ru": "Лионель Месси", "en": "Lionel Messi"}, "pos": "forward", "status": "Captain", "story": {"ru": "Величайший игрок всех времен. Привел Аргентину к долгожданному титулу чемпионов мира в 2022 году.", "en": "The greatest player of all time. Led Argentina to their long-awaited World Cup title in 2022."}},
+    {"name": {"ru": "Хулиан Альварес", "en": "Julián Álvarez"}, "pos": "forward", "status": "Regular", "story": {"ru": "«Паук». Стал ключевым помощником Месси на ЧМ-2022. Выиграл почти все возможные трофеи к 24 годам.", "en": "The 'Spider'. Became Messi's key assistant at the 2022 World Cup. Won almost every possible trophy by age 24."}}
+  ],
+  "ALG": [
+    {"name": {"ru": "Рияд Марез", "en": "Riyad Mahrez"}, "pos": "forward", "status": "Captain", "story": {"ru": "Мастер дриблинга и один из главных героев чемпионства «Лестера». Лидер и кумир миллионов алжирцев.", "en": "A master of dribbling and one of Leicester's championship heroes. A leader and idol for millions of Algerians."}},
+    {"name": {"ru": "Исмаэль Беннасер", "en": "Ismaël Bennacer"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Умный и техничный полузащитник, ставший мотором «Милана» и сборной Алжира.", "en": "A clever and technical midfielder who became the engine for AC Milan and Algeria."}}
+  ],
+  "AUT": [
+    {"name": {"ru": "Давид Алаба", "en": "David Alaba"}, "pos": "defender", "status": "Captain", "story": {"ru": "Самый титулованный австрийский футболист. Универсал, способный сыграть на любой позиции в защите и полузащите.", "en": "Austria's most decorated footballer. A versatile player capable of playing any position in defense and midfield."}},
+    {"name": {"ru": "Марсель Забитцер", "en": "Marcel Sabitzer"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Энергичный полузащитник с отличным дальним ударом. Один из лидеров дортмундской «Боруссии».", "en": "An energetic midfielder with a great long-range shot. One of the leaders at Borussia Dortmund."}}
+  ],
+  "JOR": [
+    {"name": {"ru": "Муса Аль-Тамари", "en": "Mousa Al-Tamari"}, "pos": "forward", "status": "Regular", "story": {"ru": "Первый иорданец во французской Лиге 1. Главная звезда сборной, обладающая феноменальным дриблингом.", "en": "The first Jordanian in French Ligue 1. The national team's main star, possessing phenomenal dribbling skills."}},
+    {"name": {"ru": "Язан Аль-Наймат", "en": "Yazan Al-Naimat"}, "pos": "forward", "status": "Regular", "story": {"ru": "Результативный форвард, ставший одним из героев сенсационного выхода Иордании в финал Кубка Азии 2023.", "en": "A prolific forward who became one of the heroes of Jordan's sensational run to the 2023 Asian Cup final."}}
+  ],
+  "POR": [
+    {"name": {"ru": "Криштиану Роналду", "en": "Cristiano Ronaldo"}, "pos": "forward", "status": "Captain", "story": {"ru": "Живая легенда футбола. Обладатель бесчисленных рекордов и первый игрок, забивший на пяти чемпионатах мира.", "en": "A living football legend. Holder of countless records and the first player to score in five World Cups."}},
+    {"name": {"ru": "Бруну Фернандеш", "en": "Bruno Fernandes"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Креативный центр команды. Известен своей работоспособностью и умением отдавать идеальные пасы.", "en": "The creative heart of the team. Known for his work rate and ability to deliver perfect passes."}}
+  ],
+  "COD": [
+    {"name": {"ru": "Шансель Мбемба", "en": "Chancel Mbemba"}, "pos": "defender", "status": "Captain", "story": {"ru": "Надежный защитник и лидер сборной, успешно выступающий в топовых европейских чемпионатах.", "en": "A reliable defender and national team leader, performing successfully in top European leagues."}},
+    {"name": {"ru": "Йоан Висса", "en": "Yoane Wissa"}, "pos": "forward", "status": "Regular", "story": {"ru": "Быстрый и техничный форвард «Брентфорда», ставший ключевой фигурой в атаке конголезцев.", "en": "A fast and technical Brentford forward who has become a key figure in the Congolese attack."}}
+  ],
+  "UZB": [
+    {"name": {"ru": "Эльдор Шомуродов", "en": "Eldor Shomuroodov"}, "pos": "forward", "status": "Captain", "story": {"ru": "Лучший бомбардир в истории сборной Узбекистана. Первый узбекский футболист в итальянской Серии А.", "en": "Uzbekistan's all-time top scorer. The first Uzbek footballer in the Italian Serie A."}},
+    {"name": {"ru": "Аббосбек Файзуллаев", "en": "Abbosbek Fayzullaev"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Юный талант, ставший открытием чемпионата России и Кубка Азии. Надежда узбекского футбола.", "en": "A young talent who became a revelation in the Russian league and the Asian Cup. The hope of Uzbek football."}}
+  ],
+  "COL": [
+    {"name": {"ru": "Хамес Родригес", "en": "James Rodríguez"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Золотая бутса ЧМ-2014. Пережил ренессанс карьеры, став лучшим игроком Кубка Америки 2024.", "en": "2014 World Cup Golden Boot winner. Experienced a career renaissance, becoming the best player of Copa América 2024."}},
+    {"name": {"ru": "Луис Диас", "en": "Luis Díaz"}, "pos": "forward", "status": "Regular", "story": {"ru": "Взрывной вингер «Ливерпуля». Известен своим дриблингом и способностью в одиночку решать исходы матчей.", "en": "An explosive Liverpool winger. Known for his dribbling and ability to decide matches single-handedly."}}
+  ],
+  "ENG": [
+    {"name": {"ru": "Гарри Кейн", "en": "Harry Kane"}, "pos": "forward", "status": "Captain", "story": {"ru": "Лучший бомбардир в истории сборной Англии. Мастер завершения атак и эталон профессионализма.", "en": "England's all-time top scorer. A master finisher and a model of professionalism."}},
+    {"name": {"ru": "Джуд Беллингем", "en": "Jude Bellingham"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Один из самых совершенных полузащитников мира в юном возрасте. Лидер мадридского «Реала».", "en": "One of the most complete midfielders in the world at a young age. A leader for Real Madrid."}}
+  ],
+  "CRO": [
+    {"name": {"ru": "Лука Модрич", "en": "Luka Modrić"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Живая легенда и обладатель «Золотого мяча». Даже в солидном возрасте остается сердцем и мозгом хорватской сборной.", "en": "A living legend and Ballon d'Or winner. Even at a senior age, he remains the heart and brain of the Croatian team."}},
+    {"name": {"ru": "Йошко Гвардиол", "en": "Joško Gvardiol"}, "pos": "defender", "status": "Regular", "story": {"ru": "Один из самых дорогих и талантливых защитников мира. Сочетает в себе мощь и отличную технику.", "en": "One of the most expensive and talented defenders in the world. Combines power with excellent technique."}}
+  ],
+  "GHA": [
+    {"name": {"ru": "Мохаммед Кудус", "en": "Mohammed Kudus"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Взрывной талант «Вест Хэма», способный обыграть нескольких соперников на одном квадратном метре.", "en": "An explosive West Ham talent capable of dribbling past several opponents in a small space."}},
+    {"name": {"ru": "Джордан Айю", "en": "Jordan Ayew"}, "pos": "forward", "status": "Captain", "story": {"ru": "Опытный нападающий, представитель известной футбольной династии Айю.", "en": "An experienced forward, representing the famous Ayew football dynasty."}}
+  ],
+  "PAN": [
+    {"name": {"ru": "Адальберто Карраскилья", "en": "Adalberto Carrasquilla"}, "pos": "midfielder", "status": "Regular", "story": {"ru": "Лучший игрок Золотого кубка КОНКАКАФ 2023 года. Двигатель атак сборной Панамы.", "en": "Best player of the 2023 CONCACAF Gold Cup. The engine of Panama's attacks."}},
+    {"name": {"ru": "Анибаль Годой", "en": "Aníbal Godoy"}, "pos": "midfielder", "status": "Captain", "story": {"ru": "Опытный лидер и капитан, обеспечивающий баланс в центре поля.", "en": "An experienced leader and captain, providing balance in the midfield."}}
+  ]
+};
+
+function renderTeams(){
+  if(selectedTeamId) {
+    showSquad(selectedTeamId);
+  } else {
+    renderTeamsGrid();
+  }
+}
+
+function renderTeamsGrid(){
+  selectedTeamId = null;
+  const T = TRANSLATIONS[currentLang];
+  let h = '<div class="teams-grid">';
+  Object.keys(TEAMS).sort((a,b) => {
+    const nameA = TEAMS[a].n[currentLang] || TEAMS[a].n.en;
+    const nameB = TEAMS[b].n[currentLang] || TEAMS[b].n.en;
+    return nameA.localeCompare(nameB);
+  }).forEach(id => {
+    const t = TEAMS[id];
+    const name = t.n[currentLang] || t.n.en;
+    h += `<button class="team-card-btn" onclick="showSquad('${id}')">
+      ${flagImg(id)}
+      <span>${name}</span>
+    </button>`;
+  });
+  h += '</div>';
+  document.getElementById('panel6').innerHTML = h;
+}
+
+function showSquad(teamId){
+  selectedTeamId = teamId;
+  const T = TRANSLATIONS[currentLang];
+  const t = TEAMS[teamId];
+  const name = t.n[currentLang] || t.n.en;
+  const players = SQUADS[teamId] || [];
+
+  let h = `<button class="back-btn" onclick="renderTeamsGrid()"><span>${T.back_to_teams}</span></button>`;
+  h += `<div class="card"><h3>${flagImg(teamId)} ${name} — ${T.squad}</h3>`;
+
+  if(players.length === 0){
+    h += `<p class="muted">Data coming soon...</p>`;
+  } else {
+    h += `<div class="squad-list">`;
+    players.forEach((p, idx) => {
+      const pName = p.name[currentLang] || p.name.en;
+      const pPos = T[p.pos] || p.pos;
+      const isCaptain = p.status === 'Captain';
+      h += `<div class="player-row" onclick="showPlayerStory('${teamId}', ${idx})">
+        <div class="player-name">👤 ${pName}</div>
+        <div class="player-pos">${pPos}</div>
+        <div class="player-status ${isCaptain ? 'captain' : ''}">${isCaptain ? T.captain : ''}</div>
+      </div>`;
+    });
+    h += `</div>`;
+  }
+  h += `</div>`;
+  document.getElementById('panel6').innerHTML = h;
+}
+
+function showPlayerStory(teamId, idx){
+  const p = SQUADS[teamId][idx];
+  const pName = p.name[currentLang] || p.name.en;
+  const pStory = p.story[currentLang] || p.story.en;
+
+  document.getElementById('modalPlayerName').textContent = pName;
+  document.getElementById('modalPlayerStory').textContent = pStory;
+  document.getElementById('playerModal').classList.add('show');
+}
+
+function closePlayerModal(){
+  document.getElementById('playerModal').classList.remove('show');
+}
+
 function renderStadiums(){
   let h='<div class="stadium-grid">';
   STADIUMS_DATA.forEach(s=>{
@@ -1129,7 +1477,7 @@ function renderStadiums(){
       </div>
     </div>`;
   });
-  const panel = document.getElementById('panel6');
+  const panel = document.getElementById('panel7');
   if(panel) panel.innerHTML = h + '</div>';
 }
 
@@ -1138,7 +1486,7 @@ function renderAll(){
   const fid=ae&&ae.dataset?ae.dataset.id:null;
   const fside=ae&&ae.dataset?ae.dataset.side:null;
   const selStart=ae&&ae.selectionStart!=null?ae.selectionStart:null;
-  renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderStadiums();
+  renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderTeams();renderStadiums();
   bindInputs();
   if(fid){
     const inp=document.querySelector('input.score-inp[data-id="'+fid+'"][data-side="'+fside+'"]');
