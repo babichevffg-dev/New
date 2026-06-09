@@ -144,7 +144,11 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .squad-container { display: grid; grid-template-columns: 1fr 300px; gap: 24px; margin-top: 20px; }
 @media (max-width: 900px) { .squad-container { grid-template-columns: 1fr; } }
 .team-header { text-align: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-.team-header .big-flag { width: 120px; height: 80px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 16px; }
+.team-header-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; margin-bottom: 16px; }
+.header-side { display: flex; justify-content: center; align-items: center; min-width: 0; }
+.team-photo-placeholder { width: 150px; height: 100px; border: 2px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--muted); text-align: center; padding: 4px; }
+@media (max-width: 600px) { .team-header-top { grid-template-columns: 1fr; gap: 12px; } .team-photo-placeholder { width: 120px; height: 80px; margin: 0 auto; } }
+.team-header .big-flag { width: 120px; height: 80px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 .team-header h2 { font-size: 2.2rem; color: var(--gold); margin-bottom: 12px; text-shadow: -2px -2px 0 var(--pitch), 2px -2px 0 var(--pitch), -2px 2px 0 var(--pitch), 2px 2px 0 var(--pitch); }
 .team-desc { font-size: 1.05rem; line-height: 1.6; color: var(--text); max-width: 800px; margin: 0 auto; }
 .section-title { font-size: 1.2rem; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
@@ -2639,7 +2643,13 @@ function showSquad(teamId){
 
   h += `<div class="card">
     <div class="team-header">
-      <img src="${t.f}" class="big-flag" alt="">
+      <div class="team-header-top">
+        <div class="header-side"></div>
+        <img src="${t.f}" class="big-flag" alt="">
+        <div class="header-side">
+          <div class="team-photo-placeholder">PHOTO</div>
+        </div>
+      </div>
       <h2>${name}</h2>
       <p class="team-desc">${desc}</p>
     </div>
