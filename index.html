@@ -30,6 +30,9 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
 .lang-switcher{position:fixed;top:10px;left:10px;display:flex;gap:8px;z-index:1000}
 .lang-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-weight:400;font-size:0.75rem;padding:2px 4px;transition:0.2s}
 .lang-btn.active{color:var(--gold)}
+.mute-btn{position:fixed;top:10px;right:10px;display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:rgba(255,255,255,0.1);border:1px solid var(--border);border-radius:50%;color:var(--muted);cursor:pointer;z-index:1001;transition:0.2s;backdrop-filter:blur(4px)}
+.mute-btn:hover{background:rgba(255,255,255,0.2);color:var(--gold);border-color:var(--gold);transform:scale(1.1)}
+.mute-btn svg{width:20px;height:20px;fill:currentColor}
 .bg-trophy{position:fixed;inset:0;z-index:0;pointer-events:none;
   background: url("https://api.tvrgomel.by/upload/iblock/776/aaoipplamffc4dt1o9rq49ve47z9jl02.jpg") no-repeat center;
   background-size: cover;
@@ -162,6 +165,10 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 <body>
 <div class="bg-trophy" aria-hidden="true"></div>
 <div id="teamPopover" class="team-popover" role="tooltip" aria-hidden="true"></div>
+
+<button id="toggleMute" class="mute-btn" title="Mute/Unmute">
+  <svg id="muteIcon" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zM3 9v6h4l5 5V4L7 9H3z"/></svg>
+</button>
 
 <div class="lang-switcher">
   <button class="lang-btn" data-lang="en">EN</button>
@@ -4181,7 +4188,6 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 
 
 initTeamPopover();load();buildUI();renderAll();
-
 </script>
 
 <audio id="bgMusic" loop>
@@ -4189,22 +4195,41 @@ initTeamPopover();load();buildUI();renderAll();
 </audio>
 
 <script>
-document.addEventListener('click', function playOnFirstClick() {
-    var audio = document.getElementById('bgMusic');
-    audio.play();
-    document.removeEventListener('click', playOnFirstClick);
-}, { once: true });
-</script>
+const bgMusic = document.getElementById('bgMusic');
+const toggleMuteBtn = document.getElementById('toggleMute');
+const muteIcon = document.getElementById('muteIcon');
 
-<audio id="bgMusic" autoplay loop muted>
-    <source src="1.mp3" type="audio/mpeg">
-</audio>
+const icons = {
+  up: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>',
+  off: '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
+};
 
-<script>
-document.addEventListener('click', function() {
-    var audio = document.getElementById('bgMusic');
-    audio.muted = false;
+function toggleMute() {
+  bgMusic.muted = !bgMusic.muted;
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
+  }
+  muteIcon.innerHTML = bgMusic.muted ? icons.off : icons.up;
+}
+
+toggleMuteBtn.onclick = (e) => {
+  e.stopPropagation();
+  toggleMute();
+};
+
+document.addEventListener('click', function firstClick() {
+  if (bgMusic.paused) {
+    bgMusic.play().then(() => {
+      bgMusic.muted = false;
+      muteIcon.innerHTML = icons.up;
+    }).catch(() => {});
+  } else if (bgMusic.muted) {
+    bgMusic.muted = false;
+    muteIcon.innerHTML = icons.up;
+  }
+  document.removeEventListener('click', firstClick);
 }, { once: true });
+
 </script>
 
 </body>
