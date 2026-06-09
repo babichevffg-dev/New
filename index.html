@@ -227,10 +227,10 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
     </div>
 
     <div class="modal-body">
-      <a id="modalPlayerSocial" href="#" target="_blank" class="modal-photo-link">
+      <div id="modalPlayerSocial" class="modal-photo-link" onclick="playBioVideo(event)">
         <img id="modalPlayerPhoto" src="" alt="" class="modal-photo">
-        <video id="modalPlayerVideo" src="image/video.mp4" class="modal-photo" style="display:none" loop playsinline></video>
-      </a>
+        <video id="modalPlayerVideo" src="image/video.mp4" class="modal-photo" style="display:none" loop playsinline preload="auto"></video>
+      </div>
       <span class="social-hint">Нажмите на фото, чтобы посмотреть видео</span>
       <p id="modalPlayerStory"></p>
     </div>
@@ -12122,13 +12122,13 @@ function showPersonDetail(teamId, type, idx){
   document.getElementById('modalPlayerName').textContent = pName;
   document.getElementById('modalPlayerStory').textContent = pStory;
   document.getElementById('modalPlayerPhoto').src = pPhoto;
-  document.getElementById('modalPlayerSocial').href = pSocial;
 
   const v = document.getElementById('modalPlayerVideo');
   const img = document.getElementById('modalPlayerPhoto');
   v.style.display = 'none';
   v.pause();
   v.currentTime = 0;
+  v.controls = false;
   img.style.display = 'block';
   const hint = document.querySelector('.social-hint');
   if(hint) hint.textContent = TRANSLATIONS[currentLang].click_to_video || "Click photo to watch video";
@@ -12136,16 +12136,21 @@ function showPersonDetail(teamId, type, idx){
   document.getElementById('playerModal').classList.add('show');
 }
 
-document.getElementById('modalPlayerSocial').onclick = (e) => {
+function playBioVideo(e){
   const v = document.getElementById('modalPlayerVideo');
   const img = document.getElementById('modalPlayerPhoto');
-  if(v.style.display === 'none'){
-    e.preventDefault();
+  if(v && v.style.display === 'none'){
+    if(e) e.preventDefault();
     img.style.display = 'none';
     v.style.display = 'block';
-    v.play().catch(err => console.log("Video play failed:", err));
+    v.play().then(() => {
+      v.muted = false;
+    }).catch(err => {
+      console.log("Video play failed, showing controls:", err);
+      v.controls = true;
+    });
   }
-};
+}
 
 
 function closePlayerModal(){
