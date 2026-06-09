@@ -229,8 +229,9 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
     <div class="modal-body">
       <a id="modalPlayerSocial" href="#" target="_blank" class="modal-photo-link">
         <img id="modalPlayerPhoto" src="" alt="" class="modal-photo">
+        <video id="modalPlayerVideo" src="image/video.mp4" class="modal-photo" style="display:none" loop playsinline></video>
       </a>
-      <span class="social-hint">Click photo for Social Media</span>
+      <span class="social-hint">Нажмите на фото, чтобы посмотреть видео</span>
       <p id="modalPlayerStory"></p>
     </div>
 
@@ -641,7 +642,8 @@ const TRANSLATIONS = {
     defender: "Defensa",
     goalkeeper: "Portero",
     captain: "Capitán",
-    back_to_teams: "← Volver a equipos"
+    back_to_teams: "← Volver a equipos",
+    click_to_video: "Haz clic para ver el video"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -702,7 +704,8 @@ const TRANSLATIONS = {
     defender: "Défenseur",
     goalkeeper: "Gardien",
     captain: "Capitaine",
-    back_to_teams: "← Retour aux équipes"
+    back_to_teams: "← Retour aux équipes",
+    click_to_video: "Cliquez pour voir la vidéo"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -763,7 +766,8 @@ const TRANSLATIONS = {
     defender: "Защитник",
     goalkeeper: "Вратарь",
     captain: "Капитан",
-    back_to_teams: "← К списку команд"
+    back_to_teams: "← К списку команд",
+    click_to_video: "Нажмите для просмотра видео"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     title: "FIFA World Cup 2026",
@@ -824,7 +828,8 @@ const TRANSLATIONS = {
     defender: "Defender",
     goalkeeper: "Goalkeeper",
     captain: "Captain",
-    back_to_teams: "← Back to teams"
+    back_to_teams: "← Back to teams",
+    click_to_video: "Click to watch video"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     title: "2026年国际足联世界杯",
@@ -885,7 +890,8 @@ const TRANSLATIONS = {
     defender: "后卫",
     goalkeeper: "门将",
     captain: "队长",
-    back_to_teams: "← 返回球队列表"
+    back_to_teams: "← 返回球队",
+    click_to_video: "点击观看视频"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -12117,12 +12123,38 @@ function showPersonDetail(teamId, type, idx){
   document.getElementById('modalPlayerStory').textContent = pStory;
   document.getElementById('modalPlayerPhoto').src = pPhoto;
   document.getElementById('modalPlayerSocial').href = pSocial;
+
+  const v = document.getElementById('modalPlayerVideo');
+  const img = document.getElementById('modalPlayerPhoto');
+  v.style.display = 'none';
+  v.pause();
+  v.currentTime = 0;
+  img.style.display = 'block';
+  const hint = document.querySelector('.social-hint');
+  if(hint) hint.textContent = TRANSLATIONS[currentLang].click_to_video || "Click photo to watch video";
+
   document.getElementById('playerModal').classList.add('show');
 }
+
+document.getElementById('modalPlayerSocial').onclick = (e) => {
+  const v = document.getElementById('modalPlayerVideo');
+  const img = document.getElementById('modalPlayerPhoto');
+  if(v.style.display === 'none'){
+    e.preventDefault();
+    img.style.display = 'none';
+    v.style.display = 'block';
+    v.play().catch(err => console.log("Video play failed:", err));
+  }
+};
 
 
 function closePlayerModal(){
   document.getElementById('playerModal').classList.remove('show');
+  const v = document.getElementById('modalPlayerVideo');
+  if(v){
+    v.pause();
+    v.currentTime = 0;
+  }
 }
 
 function renderStadiums(){
