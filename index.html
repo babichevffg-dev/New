@@ -479,6 +479,11 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .pitch-container.tactical-active .pitch-player {
   z-index: 10;
   transition: none; /* Disable animation when dragging */
+  touch-action: none;
+}
+
+.pitch-container.tactical-active {
+  touch-action: none;
 }
 .pitch-container.tactical-active .pitch-player:hover {
   transform: scale(1.1);
@@ -1892,6 +1897,7 @@ function renderTacticalPitch(players, teamId, formationName) {
                data-default-left="${coord.l}"
                style="bottom: ${coord.b}%; left: ${coord.l}%; transform: translate(-50%, 0);"
                onmousedown="handlePlayerMouseDown(event, this)"
+               ontouchstart="handlePlayerMouseDown(event, this)"
                onclick="if(!isTacticalMode) showPersonDetail('${teamId}', 'players', ${playerIdx})">
             ${p.no || ''}
             <span class="p-name">${(p.name[currentLang] || p.name.en).split(' ').pop()}</span>
@@ -2390,12 +2396,22 @@ function initTacticalCanvas() {
 
   const ctx = canvas.getContext('2d');
 
-  canvas.onmousedown = (e) => {
+  const getPos = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    };
+  };
+
+  const startDraw = (e) => {
     if (!isTacticalMode) return;
     isDrawing = true;
-    const rect = canvas.getBoundingClientRect();
-    startX = e.clientX - rect.left;
-    startY = e.clientY - rect.top;
+    const pos = getPos(e);
+    startX = pos.x;
+    startY = pos.y;
 
     if (currentTacticalTool === 'brush' || currentTacticalTool === 'eraser') {
       ctx.beginPath();
@@ -2406,62 +2422,78 @@ function initTacticalCanvas() {
       ctx.lineJoin = 'round';
       ctx.globalCompositeOperation = currentTacticalTool === 'eraser' ? 'destination-out' : 'source-over';
     }
+    if (e.type === 'touchstart') e.preventDefault();
   };
 
-  canvas.onmousemove = (e) => {
+  const moveDraw = (e) => {
     if (!isDrawing || !isTacticalMode) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const pos = getPos(e);
 
     if (currentTacticalTool === 'brush' || currentTacticalTool === 'eraser') {
-      ctx.lineTo(x, y);
+      ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
-    } else if (currentTacticalTool === 'arrow') {
-      // Temporary arrow drawing would require clearing and redrawing everything or a second canvas.
-      // For simplicity in this SPA, we'll draw the arrow on mouseup.
     }
+    if (e.type === 'touchmove') e.preventDefault();
   };
 
-  canvas.onmouseup = (e) => {
+  const endDraw = (e) => {
     if (!isDrawing || !isTacticalMode) return;
     isDrawing = false;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const pos = (e.type === 'touchend') ? {x: lastX, y: lastY} : getPos(e);
 
     if (currentTacticalTool === 'arrow') {
-      drawArrow(ctx, startX, startY, x, y, currentTacticalColor);
+      drawArrow(ctx, startX, startY, pos.x, pos.y, currentTacticalColor);
     }
-    ctx.globalCompositeOperation = 'source-over'; // Reset
+    ctx.globalCompositeOperation = 'source-over';
   };
+
+  let lastX = 0, lastY = 0;
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', (e) => {
+    const pos = getPos(e);
+    lastX = pos.x; lastY = pos.y;
+    moveDraw(e);
+  });
+  canvas.addEventListener('mouseup', endDraw);
+
+  canvas.addEventListener('touchstart', startDraw);
+  canvas.addEventListener('touchmove', (e) => {
+    const pos = getPos(e);
+    lastX = pos.x; lastY = pos.y;
+    moveDraw(e);
+  }, {passive: false});
+  canvas.addEventListener('touchend', endDraw);
 }
 
 function drawArrow(ctx, fromx, fromy, tox, toy, color) {
   const headlen = 18;
+  const headWidth = 12;
   const dx = tox - fromx;
   const dy = toy - fromy;
   const angle = Math.atan2(dy, dx);
 
-  // Draw tapered shaft
+  // Base of the head
+  const basePosX = tox - headlen * Math.cos(angle);
+  const basePosY = toy - headlen * Math.sin(angle);
+
+  // Draw tapered shaft - stop at the base of the head
   const widthStart = 1.5;
   const widthEnd = 4.5;
 
   ctx.beginPath();
   ctx.moveTo(fromx - widthStart * Math.sin(angle), fromy + widthStart * Math.cos(angle));
   ctx.lineTo(fromx + widthStart * Math.sin(angle), fromy - widthStart * Math.cos(angle));
-  ctx.lineTo(tox + widthEnd * Math.sin(angle), toy - widthEnd * Math.cos(angle));
-  ctx.lineTo(tox - widthEnd * Math.sin(angle), toy + widthEnd * Math.cos(angle));
+  ctx.lineTo(basePosX + widthEnd * Math.sin(angle), basePosY - widthEnd * Math.cos(angle));
+  ctx.lineTo(basePosX - widthEnd * Math.sin(angle), basePosY + widthEnd * Math.cos(angle));
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
 
-  // Head
+  // Head - sharp tip at tox, toy
   ctx.beginPath();
   ctx.moveTo(tox, toy);
-  const headWidth = 12;
-  ctx.lineTo(tox - headlen * Math.cos(angle) + headWidth * Math.sin(angle), toy - headlen * Math.sin(angle) - headWidth * Math.cos(angle));
-  ctx.lineTo(tox - headlen * Math.cos(angle) - headWidth * Math.sin(angle), toy - headlen * Math.sin(angle) + headWidth * Math.cos(angle));
+  ctx.lineTo(basePosX + headWidth * Math.sin(angle), basePosY - headWidth * Math.cos(angle));
+  ctx.lineTo(basePosX - headWidth * Math.sin(angle), basePosY + headWidth * Math.cos(angle));
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
@@ -2484,21 +2516,28 @@ function handlePlayerMouseDown(e, el) {
 
   draggedPlayer = el;
   const rect = el.getBoundingClientRect();
-  dragOffsetX = e.clientX - rect.left - rect.width / 2;
-  dragOffsetY = e.clientY - rect.top - rect.height / 2;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  dragOffsetX = clientX - rect.left - rect.width / 2;
+  dragOffsetY = clientY - rect.top - rect.height / 2;
 
   document.addEventListener('mousemove', handlePlayerMouseMove);
   document.addEventListener('mouseup', handlePlayerMouseUp);
+  document.addEventListener('touchmove', handlePlayerMouseMove, {passive: false});
+  document.addEventListener('touchend', handlePlayerMouseUp);
 }
 
 function handlePlayerMouseMove(e) {
   if (!draggedPlayer) return;
+  if (e.type === 'touchmove') e.preventDefault();
 
   const container = document.getElementById('tacticalPitchContainer');
   const rect = container.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-  let x = e.clientX - rect.left - dragOffsetX;
-  let y = e.clientY - rect.top - dragOffsetY;
+  let x = clientX - rect.left - dragOffsetX;
+  let y = clientY - rect.top - dragOffsetY;
 
   // Constrain to container
   x = Math.max(0, Math.min(x, rect.width));
@@ -2516,6 +2555,8 @@ function handlePlayerMouseUp() {
   draggedPlayer = null;
   document.removeEventListener('mousemove', handlePlayerMouseMove);
   document.removeEventListener('mouseup', handlePlayerMouseUp);
+  document.removeEventListener('touchmove', handlePlayerMouseMove);
+  document.removeEventListener('touchend', handlePlayerMouseUp);
 }
 
 function openAddPlayerMenu(type) {
@@ -2605,6 +2646,7 @@ function addTacticalPlayer(teamId, type, idx, isOpponent) {
   el.innerHTML = `${p.no || ''} <span class="p-name">${(p.name[currentLang] || p.name.en).split(' ').pop()}</span>`;
 
   el.onmousedown = (e) => handlePlayerMouseDown(e, el);
+  el.ontouchstart = (e) => handlePlayerMouseDown(e, el);
 
   container.appendChild(el);
 }
@@ -2637,6 +2679,7 @@ function addTacticalTeam(teamId) {
         el.style.transform = 'translate(-50%, 0)';
         el.innerHTML = `${p.no || ''} <span class="p-name">${(p.name[currentLang] || p.name.en).split(' ').pop()}</span>`;
         el.onmousedown = (e) => handlePlayerMouseDown(e, el);
+        el.ontouchstart = (e) => handlePlayerMouseDown(e, el);
         document.getElementById('tacticalPitchContainer').appendChild(el);
       }
     });
