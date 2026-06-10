@@ -223,6 +223,17 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
 .modal-content{background:var(--bg);border:1px solid var(--gold);border-radius:16px;width:min(500px, 100%);max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+.event-row{display:grid;grid-template-columns:1fr 60px 40px;gap:10px;align-items:center;padding:10px;border-bottom:1px solid var(--border)}
+.event-row select{background:rgba(0,0,0,0.3);color:#fff;border:1px solid var(--border);padding:5px;border-radius:4px;width:100%}
+.event-row input{background:rgba(0,0,0,0.3);color:#fff;border:1px solid var(--border);padding:5px;border-radius:4px;text-align:center;width:100%}
+.match-scorers{font-size:0.75rem;color:var(--muted);margin-top:4px;line-height:1.2}
+.scorer-tag{display:inline-block;margin-right:8px}
+.btn-event{background:none;border:1px solid var(--border);color:var(--muted);border-radius:4px;padding:2px 6px;font-size:0.7rem;cursor:pointer;transition:0.2s}
+.btn-event:hover{color:var(--gold);border-color:var(--gold)}
+.gb-table{width:100%;border-collapse:collapse;margin-top:20px}
+.gb-table th, .gb-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border)}
+.gb-table th{color:var(--gold);font-weight:700;text-transform:uppercase;font-size:0.8rem}
+.gb-row:hover{background:rgba(255,255,255,0.05)}
 .modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
 .modal-header h3{color:var(--gold);font-size:1.4rem}
 .modal-close{background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px}
@@ -611,6 +622,20 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
   <div class="tactical-select-content" onclick="event.stopPropagation()">
     <h3 id="tacticalSelectTitle"></h3>
     <div id="tacticalSelectGrid" class="tactical-select-grid"></div>
+  </div>
+</div>
+
+<div id="eventsModal" class="modal-overlay" onclick="closeEventsModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="eventsModalTitle"></h3>
+      <button class="modal-close" onclick="closeEventsModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="eventsList"></div>
+      <button class="btn btn-save" style="width:100%; margin-top:20px;" onclick="addEventRow()">+</button>
+      <button class="btn btn-save" style="width:100%; margin-top:10px;" onclick="saveEvents()">OK</button>
+    </div>
   </div>
 </div>
 
@@ -1075,7 +1100,16 @@ const TRANSLATIONS = {
     add_opponent: "Añadir oponente",
     add_opponent_team: "Añadir equipo oponente",
     select_team: "Seleccionar equipo",
-    select_player: "Seleccionar jugador"
+    select_player: "Seleccionar jugador",
+    golden_boot: "Bota de Oro",
+    scorers: "Goleadores",
+    minute: "Minuto",
+    add_goal: "Añadir gol",
+    events: "Eventos",
+    no_scorers: "No hay goleadores",
+    rank: "Pos",
+    goals: "Goles",
+    player: "Jugador"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -1158,7 +1192,16 @@ const TRANSLATIONS = {
     add_opponent: "Ajouter un adversaire",
     add_opponent_team: "Ajouter une équipe adverse",
     select_team: "Sélectionner une équipe",
-    select_player: "Sélectionner un joueur"
+    select_player: "Sélectionner un joueur",
+    golden_boot: "Soulier d'Or",
+    scorers: "Buteurs",
+    minute: "Minute",
+    add_goal: "Ajouter un but",
+    events: "Événements",
+    no_scorers: "Aucun buteur",
+    rank: "Rang",
+    goals: "Buts",
+    player: "Joueur"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -1241,7 +1284,16 @@ const TRANSLATIONS = {
     add_opponent: "Добавить игрока соперника",
     add_opponent_team: "Добавить команду противника",
     select_team: "Выбрать сборную",
-    select_player: "Выбрать игрока"
+    select_player: "Выбрать игрока",
+    golden_boot: "Золотая бутса",
+    scorers: "Бомбардиры",
+    minute: "Мин.",
+    add_goal: "Добавить гол",
+    events: "События",
+    no_scorers: "Авторы голов не указаны",
+    rank: "Место",
+    goals: "Голы",
+    player: "Игрок"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     title: "FIFA World Cup 2026",
@@ -1324,7 +1376,16 @@ const TRANSLATIONS = {
     add_opponent: "Add Opponent Player",
     add_opponent_team: "Add Opponent Team",
     select_team: "Select Team",
-    select_player: "Select Player"
+    select_player: "Select Player",
+    golden_boot: "Golden Boot",
+    scorers: "Scorers",
+    minute: "Min.",
+    add_goal: "Add Goal",
+    events: "Events",
+    no_scorers: "No scorers recorded",
+    rank: "Rank",
+    goals: "Goals",
+    player: "Player"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     title: "2026年国际足联世界杯",
@@ -1407,7 +1468,16 @@ const TRANSLATIONS = {
     add_opponent: "添加对手球员",
     add_opponent_team: "添加对手球队",
     select_team: "选择球队",
-    select_player: "选择球员"
+    select_player: "选择球员",
+    golden_boot: "金靴奖",
+    scorers: "射手榜",
+    minute: "分钟",
+    add_goal: "添加进球",
+    events: "事件",
+    no_scorers: "未记录射手",
+    rank: "排名",
+    goals: "进球",
+    player: "球员"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -1427,7 +1497,7 @@ function persist(){
 function showStatus(msg,ok){const el=document.getElementById('saveStatus');el.textContent=msg;el.className=ok?'ok':'';}
 function debounceSave(){clearTimeout(saveTimer);saveTimer=setTimeout(persist,400);}
 
-function getScore(id){return scores[id]||{h:null,a:null,pen:null}}
+function getScore(id){return scores[id]||{h:null,a:null,pen:null,scorers:[]}}
 function isPlayed(sc){return sc.h!==null&&sc.h!==''&&sc.a!==null&&sc.a!==''}
 function isGroupFinished(g){
   const ms = GROUP_MATCHES.filter(m => m.g === g);
@@ -1656,7 +1726,16 @@ function renderMatchBlock(m,isKo){
   h+='<input class="score-inp'+filled+'" type="number" min="0" max="20" value="'+(sc.a??'')+'" data-id="'+m.id+'" data-side="a" inputmode="numeric">';
   h+='<span class="team-cell away">'+aName+'</span>';
   if(isKo)h+='<select class="pen-sel" data-id="'+m.id+'" title="' + T.penalty + '"><option value="">—</option><option value="h"'+(pen==='h'?' selected':'')+'>' + T.pen1 + '</option><option value="a"'+(pen==='a'?' selected':'')+'>' + T.pen2 + '</option></select>';
-  h+='</div></div>';
+  h+='<button class="btn-event" onclick="openEventsModal(\''+m.id+'\')" title="'+T.add_goal+'">⚽</button>';
+  h+='</div>';
+  if(sc.scorers && sc.scorers.length > 0) {
+    h += '<div class="match-scorers">';
+    sc.scorers.sort((a,b)=>a.m-b.m).forEach(s => {
+      h += `<span class="scorer-tag">${s.p} ${s.m}'</span>`;
+    });
+    h += '</div>';
+  }
+  h+='</div>';
   return h;
 }
 
@@ -1671,7 +1750,7 @@ function buildUI(){
   document.getElementById('btnImport').textContent = T.import;
   document.getElementById('btnReset').textContent = T.reset;
 
-  const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.teams, T.stadiums];
+  const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.golden_boot, T.teams, T.stadiums];
   const tabEl=document.getElementById('tabs');
   const panels=document.getElementById('panels');
   tabEl.innerHTML='';panels.innerHTML='';
@@ -1842,7 +1921,8 @@ function renderTeamsGrid(){
     </button>`;
   });
   h += '</div>';
-  document.getElementById('panel6').innerHTML = h;
+  const panel = document.getElementById('panel7');
+  if(panel) panel.innerHTML = h;
 }
 
 function setTeamFilter(f) {
@@ -1910,23 +1990,23 @@ function renderTacticalPitch(players, teamId, formationName) {
 
 
 function goToTeam(id){
-  activeTab = 6;
+  activeTab = 7;
   showSquad(id);
   const tabs = document.querySelectorAll('.tab');
-  tabs.forEach((t, i) => t.classList.toggle('active', i === 6));
+  tabs.forEach((t, i) => t.classList.toggle('active', i === 7));
   const panels = document.querySelectorAll('.panel');
-  panels.forEach((p, i) => p.classList.toggle('active', i === 6));
+  panels.forEach((p, i) => p.classList.toggle('active', i === 7));
   window.scrollTo({top: 0, behavior: 'smooth'});
   hideTeamPopover(0);
 }
 
 function goToStadium(nameEn){
-  activeTab = 7;
+  activeTab = 8;
   renderStadiums();
   const tabs = document.querySelectorAll('.tab');
-  tabs.forEach((t, i) => t.classList.toggle('active', i === 7));
+  tabs.forEach((t, i) => t.classList.toggle('active', i === 8));
   const panels = document.querySelectorAll('.panel');
-  panels.forEach((p, i) => p.classList.toggle('active', i === 7));
+  panels.forEach((p, i) => p.classList.toggle('active', i === 8));
 
   setTimeout(() => {
     const el = document.getElementById('stadium-' + nameEn.replace(/[^a-zA-Z0-9]/g, '-'));
@@ -2092,7 +2172,8 @@ function showSquad(teamId){
 
 
   h += `</div></div></div></div>`;
-  document.getElementById('panel6').innerHTML = h;
+  const panel = document.getElementById('panel7');
+  if(panel) panel.innerHTML = h;
 
   if (isTacticalMode) {
     setTimeout(initTacticalCanvas, 0);
@@ -2219,6 +2300,120 @@ function closePlayerModal(){
   document.getElementById('playerModal').classList.remove('show');
 }
 
+let currentMatchIdForEvents = null;
+function openEventsModal(matchId) {
+  currentMatchIdForEvents = matchId;
+  const T = TRANSLATIONS[currentLang];
+  const m = GROUP_MATCHES.find(x => x.id === matchId) || knockoutMatches().find(x => x.id === matchId);
+  if (!m) return;
+
+  const sc = getScore(matchId);
+  document.getElementById('eventsModalTitle').textContent = T.events;
+  const list = document.getElementById('eventsList');
+  list.innerHTML = '';
+
+  const scorers = sc.scorers || [];
+  scorers.forEach(s => addEventRow(s));
+  if (scorers.length === 0) addEventRow();
+
+  document.getElementById('eventsModal').classList.add('show');
+}
+
+function addEventRow(data = null) {
+  const m = GROUP_MATCHES.find(x => x.id === currentMatchIdForEvents) || knockoutMatches().find(x => x.id === currentMatchIdForEvents);
+  if (!m) return;
+  const hId = m.g ? m.h : resolveSlot(m.h);
+  const aId = m.g ? m.a : resolveSlot(m.a);
+
+  const row = document.createElement('div');
+  row.className = 'event-row';
+
+  let playerOptions = '<option value="">—</option>';
+  [hId, aId].forEach((tid, sideIdx) => {
+    if (!tid) return;
+    const squad = SQUADS[tid];
+    if (!squad) return;
+    const side = sideIdx === 0 ? 'h' : 'a';
+    const teamName = TEAMS[tid].n[currentLang] || TEAMS[tid].n.en;
+    squad.players.forEach(p => {
+      const pName = p.name[currentLang] || p.name.en;
+      const selected = data && data.p === pName && data.side === side ? ' selected' : '';
+      playerOptions += `<option value="${side}|${pName}"${selected}>${teamName}: ${pName}</option>`;
+    });
+  });
+
+  row.innerHTML = `
+    <select class="event-player">${playerOptions}</select>
+    <input type="number" class="event-min" placeholder="Min" value="${data ? data.m : ''}">
+    <button class="btn btn-danger" onclick="this.parentElement.remove()">✕</button>
+  `;
+  document.getElementById('eventsList').appendChild(row);
+}
+
+function saveEvents() {
+  const rows = document.querySelectorAll('.event-row');
+  const scorers = [];
+  rows.forEach(r => {
+    const val = r.querySelector('.event-player').value;
+    const min = r.querySelector('.event-min').value;
+    if (val && min) {
+      const [side, name] = val.split('|');
+      scorers.push({ side, p: name, m: min });
+    }
+  });
+  scores[currentMatchIdForEvents] = { ...getScore(currentMatchIdForEvents), scorers };
+  closeEventsModal();
+  renderAll();
+  debounceSave();
+}
+
+function closeEventsModal() {
+  document.getElementById('eventsModal').classList.remove('show');
+}
+
+function renderGoldenBoot() {
+  const T = TRANSLATIONS[currentLang];
+  const scorerMap = {};
+
+  Object.keys(scores).forEach(mid => {
+    const sc = scores[mid];
+    if (sc.scorers) {
+      sc.scorers.forEach(s => {
+        if (!scorerMap[s.p]) scorerMap[s.p] = { goals: 0, player: s.p };
+        scorerMap[s.p].goals++;
+      });
+    }
+  });
+
+  const sortedScorers = Object.values(scorerMap).sort((a, b) => b.goals - a.goals || a.player.localeCompare(b.player));
+
+  let h = `<div class="card"><h3>🏆 ${T.golden_boot}</h3>`;
+  if (sortedScorers.length === 0) {
+    h += `<p class="muted" style="padding:20px;text-align:center;">${T.no_scorers}</p>`;
+  } else {
+    h += `<table class="gb-table">
+      <thead>
+        <tr>
+          <th>${T.rank}</th>
+          <th>${T.player}</th>
+          <th style="text-align:center">${T.goals}</th>
+        </tr>
+      </thead>
+      <tbody>`;
+    sortedScorers.forEach((s, i) => {
+      h += `<tr class="gb-row">
+        <td>${i + 1}</td>
+        <td><b>${s.player}</b></td>
+        <td style="text-align:center; color:var(--gold); font-weight:800;">${s.goals}</td>
+      </tr>`;
+    });
+    h += `</tbody></table>`;
+  }
+  h += `</div>`;
+  const panel = document.getElementById('panel6');
+  if (panel) panel.innerHTML = h;
+}
+
 function renderStadiums(){
   let h='<div class="stadium-grid">';
   STADIUMS_DATA.forEach(s=>{
@@ -2241,7 +2436,7 @@ function renderStadiums(){
   </div>
 </div>`;
   });
-  const panel = document.getElementById('panel7');
+  const panel = document.getElementById('panel8');
   if(panel) panel.innerHTML = h + '</div>';
 }
 
@@ -2250,7 +2445,7 @@ function renderAll(){
   const fid=ae&&ae.dataset?ae.dataset.id:null;
   const fside=ae&&ae.dataset?ae.dataset.side:null;
   const selStart=ae&&ae.selectionStart!=null?ae.selectionStart:null;
-  renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderTeams();renderStadiums();
+  renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderGoldenBoot();renderTeams();renderStadiums();
   bindInputs();
   if(fid){
     const inp=document.querySelector('input.score-inp[data-id="'+fid+'"][data-side="'+fside+'"]');
