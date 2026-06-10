@@ -435,16 +435,14 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 
 /* Tactical Mode Styles */
 .tactical-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  justify-content: center;
+  position: relative;
+  width: 100%;
   margin: 20px 0;
 }
-@media (max-width: 768px) {
-  .tactical-layout { flex-direction: column; align-items: center; }
-}
 .tactical-sidebar {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -452,7 +450,13 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
   padding: 15px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  min-width: 150px;
+  width: 240px;
+  z-index: 100;
+  max-height: 100%;
+  overflow-y: auto;
+}
+@media (max-width: 1024px) {
+  .tactical-sidebar { position: static; width: 100%; margin-bottom: 20px; }
 }
 .tactical-tool-group {
   display: flex;
@@ -479,6 +483,56 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .pitch-container.tactical-active .pitch-player:hover {
   transform: scale(1.1);
 }
+.pitch-player.opponent {
+  width: 24px;
+  height: 24px;
+  background: #e74c3c;
+  font-size: 0.6rem;
+  border-width: 1px;
+}
+.pitch-player.opponent .p-name {
+  font-size: 0.55rem;
+}
+.tactical-select-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 100001;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.tactical-select-overlay.show { display: flex; }
+.tactical-select-content {
+  background: var(--bg);
+  border: 1px solid var(--gold);
+  border-radius: 16px;
+  width: min(500px, 100%);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 20px;
+}
+.tactical-select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+.tactical-select-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.tactical-select-item:hover { border-color: var(--gold); background: rgba(255,255,255,0.1); }
 .tool-btn {
   display: flex;
   align-items: center;
@@ -497,6 +551,11 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
+}
+#toggleTacticalMode.active {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--border);
+  color: var(--text);
 }
 .color-picker-wrap {
   display: flex;
@@ -541,6 +600,13 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 <div class="champion-banner" id="championBanner">
 <div class="trophy"></div>
 <h2 id="championText"></h2>
+</div>
+
+<div id="tacticalSelectModal" class="tactical-select-overlay" onclick="closeTacticalSelect()">
+  <div class="tactical-select-content" onclick="event.stopPropagation()">
+    <h3 id="tacticalSelectTitle"></h3>
+    <div id="tacticalSelectGrid" class="tactical-select-grid"></div>
+  </div>
 </div>
 
 <div id="playerModal" class="modal-overlay">
@@ -994,9 +1060,17 @@ const TRANSLATIONS = {
     back_to_teams: "← Volver a equipos",
     tactical_mode: "Modo táctico",
     save_tactic: "Guardar táctica",
+    move: "Mover",
     brush: "Pincel",
     arrow: "Flecha",
-    color: "Color"
+    color: "Color",
+    eraser: "Borrador",
+    add_player: "Añadir jugador",
+    delete_player: "Eliminar jugador",
+    add_opponent: "Añadir oponente",
+    add_opponent_team: "Añadir equipo oponente",
+    select_team: "Seleccionar equipo",
+    select_player: "Seleccionar jugador"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -1069,9 +1143,17 @@ const TRANSLATIONS = {
     back_to_teams: "← Retour aux équipes",
     tactical_mode: "Mode tactique",
     save_tactic: "Enregistrer la tactique",
+    move: "Déplacer",
     brush: "Pinceau",
     arrow: "Flèche",
-    color: "Couleur"
+    color: "Couleur",
+    eraser: "Gomme",
+    add_player: "Ajouter un joueur",
+    delete_player: "Supprimer le joueur",
+    add_opponent: "Ajouter un adversaire",
+    add_opponent_team: "Ajouter une équipe adverse",
+    select_team: "Sélectionner une équipe",
+    select_player: "Sélectionner un joueur"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -1144,9 +1226,17 @@ const TRANSLATIONS = {
     back_to_teams: "← К списку команд",
     tactical_mode: "Тактический режим",
     save_tactic: "Сохранить тактику",
+    move: "Переместить",
     brush: "Кисть",
     arrow: "Стрелка",
-    color: "Цвет"
+    color: "Цвет",
+    eraser: "Ластик",
+    add_player: "Добавить игрока",
+    delete_player: "Удалить игрока",
+    add_opponent: "Добавить игрока соперника",
+    add_opponent_team: "Добавить команду противника",
+    select_team: "Выбрать сборную",
+    select_player: "Выбрать игрока"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     title: "FIFA World Cup 2026",
@@ -1219,9 +1309,17 @@ const TRANSLATIONS = {
     back_to_teams: "← Back to teams",
     tactical_mode: "Tactical Mode",
     save_tactic: "Save Tactics",
+    move: "Move",
     brush: "Brush",
     arrow: "Arrow",
-    color: "Color"
+    color: "Color",
+    eraser: "Eraser",
+    add_player: "Add Player",
+    delete_player: "Delete Player",
+    add_opponent: "Add Opponent Player",
+    add_opponent_team: "Add Opponent Team",
+    select_team: "Select Team",
+    select_player: "Select Player"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     title: "2026年国际足联世界杯",
@@ -1294,9 +1392,17 @@ const TRANSLATIONS = {
     back_to_teams: "← 返回球队列表",
     tactical_mode: "战术模式",
     save_tactic: "保存战术",
+    move: "移动",
     brush: "画笔",
     arrow: "箭头",
-    color: "颜色"
+    color: "颜色",
+    eraser: "橡皮擦",
+    add_player: "添加球员",
+    delete_player: "删除球员",
+    add_opponent: "添加对手球员",
+    add_opponent_team: "添加对手球队",
+    select_team: "选择球队",
+    select_player: "选择球员"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -1883,12 +1989,18 @@ function showSquad(teamId){
     <div class="tactical-layout">
       <aside class="tactical-sidebar">
         <button class="tool-btn ${isTacticalMode ? 'active' : ''}" id="toggleTacticalMode" onclick="toggleTacticalMode()">
-          <span>🎨 ${T.tactical_mode}</span>
+          <span>${T.tactical_mode}</span>
         </button>
 
         <div id="tacticalTools" style="display:${isTacticalMode ? 'flex' : 'none'};" class="tactical-tool-group">
+          <button class="tool-btn ${currentTacticalTool === 'move' ? 'active' : ''}" id="toolMove" onclick="setTacticalTool('move')">
+            <span>🖐️ ${T.move}</span>
+          </button>
           <button class="tool-btn ${currentTacticalTool === 'brush' ? 'active' : ''}" id="toolBrush" onclick="setTacticalTool('brush')">
             <span>🖌️ ${T.brush}</span>
+          </button>
+          <button class="tool-btn ${currentTacticalTool === 'eraser' ? 'active' : ''}" id="toolEraser" onclick="setTacticalTool('eraser')">
+            <span>🧽 ${T.eraser}</span>
           </button>
           <button class="tool-btn ${currentTacticalTool === 'arrow' ? 'active' : ''}" id="toolArrow" onclick="setTacticalTool('arrow')">
             <span>🏹 ${T.arrow}</span>
@@ -1897,6 +2009,21 @@ function showSquad(teamId){
           <div class="color-picker-wrap">
             <label>${T.color}:</label>
             <input type="color" id="tacticalColor" class="color-picker" value="${currentTacticalColor}" onchange="setTacticalColor(this.value)">
+          </div>
+
+          <div class="tactical-tool-group">
+            <button class="tool-btn" onclick="openAddPlayerMenu('own')">
+              <span>👤 ${T.add_player}</span>
+            </button>
+            <button class="tool-btn" onclick="openAddPlayerMenu('opponent')">
+              <span>👤 ${T.add_opponent}</span>
+            </button>
+            <button class="tool-btn" onclick="openAddTeamMenu('opponent')">
+              <span>👥 ${T.add_opponent_team}</span>
+            </button>
+            <button class="tool-btn ${currentTacticalTool === 'delete' ? 'active' : ''}" id="toolDelete" onclick="setTacticalTool('delete')">
+              <span>🗑️ ${T.delete_player}</span>
+            </button>
           </div>
 
           <button class="tool-btn btn-save" onclick="saveTacticScreenshot()">
@@ -2198,27 +2325,36 @@ function initTeamPopover(){
 
 function toggleTacticalMode() {
   isTacticalMode = !isTacticalMode;
+  if (!isTacticalMode) {
+    showSquad(selectedTeamId);
+    return;
+  }
+
   const pitch = document.getElementById('tacticalPitchContainer');
   const tools = document.getElementById('tacticalTools');
   const btn = document.getElementById('toggleTacticalMode');
 
-  if (isTacticalMode) {
-    pitch.classList.add('tactical-active');
-    tools.style.display = 'flex';
-    btn.classList.add('active');
-    initTacticalCanvas();
-  } else {
-    pitch.classList.remove('tactical-active');
-    tools.style.display = 'none';
-    btn.classList.remove('active');
-    resetTacticalMode();
-  }
+  pitch.classList.add('tactical-active');
+  tools.style.display = 'flex';
+  btn.classList.add('active');
+  initTacticalCanvas();
+  setTacticalTool('move');
 }
 
 function setTacticalTool(tool) {
   currentTacticalTool = tool;
-  document.getElementById('toolBrush').classList.toggle('active', tool === 'brush');
-  document.getElementById('toolArrow').classList.toggle('active', tool === 'arrow');
+  const tools = ['move', 'brush', 'arrow', 'eraser', 'delete'];
+  tools.forEach(t => {
+    const el = document.getElementById('tool' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (el) el.classList.toggle('active', tool === t);
+  });
+
+  const players = document.querySelectorAll('.pitch-player');
+  if (tool === 'move' || tool === 'delete') {
+    players.forEach(p => p.style.pointerEvents = 'auto');
+  } else {
+    players.forEach(p => p.style.pointerEvents = 'none');
+  }
 }
 
 function setTacticalColor(color) {
@@ -2261,13 +2397,14 @@ function initTacticalCanvas() {
     startX = e.clientX - rect.left;
     startY = e.clientY - rect.top;
 
-    if (currentTacticalTool === 'brush') {
+    if (currentTacticalTool === 'brush' || currentTacticalTool === 'eraser') {
       ctx.beginPath();
       ctx.moveTo(startX, startY);
       ctx.strokeStyle = currentTacticalColor;
-      ctx.lineWidth = 3;
+      ctx.lineWidth = currentTacticalTool === 'eraser' ? 20 : 3;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
+      ctx.globalCompositeOperation = currentTacticalTool === 'eraser' ? 'destination-out' : 'source-over';
     }
   };
 
@@ -2277,7 +2414,7 @@ function initTacticalCanvas() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    if (currentTacticalTool === 'brush') {
+    if (currentTacticalTool === 'brush' || currentTacticalTool === 'eraser') {
       ctx.lineTo(x, y);
       ctx.stroke();
     } else if (currentTacticalTool === 'arrow') {
@@ -2296,31 +2433,35 @@ function initTacticalCanvas() {
     if (currentTacticalTool === 'arrow') {
       drawArrow(ctx, startX, startY, x, y, currentTacticalColor);
     }
+    ctx.globalCompositeOperation = 'source-over'; // Reset
   };
 }
 
 function drawArrow(ctx, fromx, fromy, tox, toy, color) {
-  const headlen = 15;
+  const headlen = 18;
   const dx = tox - fromx;
   const dy = toy - fromy;
   const angle = Math.atan2(dy, dx);
 
-  // Tactical arrow: slightly tapering line or just a solid one.
-  // We'll draw a line and a larger head.
-  ctx.beginPath();
-  ctx.moveTo(fromx, fromy);
-  ctx.lineTo(tox, toy);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 4;
-  ctx.lineCap = 'round';
-  ctx.stroke();
+  // Draw tapered shaft
+  const widthStart = 1.5;
+  const widthEnd = 4.5;
 
-  // Arrow head
+  ctx.beginPath();
+  ctx.moveTo(fromx - widthStart * Math.sin(angle), fromy + widthStart * Math.cos(angle));
+  ctx.lineTo(fromx + widthStart * Math.sin(angle), fromy - widthStart * Math.cos(angle));
+  ctx.lineTo(tox + widthEnd * Math.sin(angle), toy - widthEnd * Math.cos(angle));
+  ctx.lineTo(tox - widthEnd * Math.sin(angle), toy + widthEnd * Math.cos(angle));
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  // Head
   ctx.beginPath();
   ctx.moveTo(tox, toy);
-  ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 5), toy - headlen * Math.sin(angle - Math.PI / 5));
-  ctx.lineTo(tox - headlen * 0.8 * Math.cos(angle), toy - headlen * 0.8 * Math.sin(angle)); // inner point for nicer head
-  ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 5), toy - headlen * Math.sin(angle + Math.PI / 5));
+  const headWidth = 12;
+  ctx.lineTo(tox - headlen * Math.cos(angle) + headWidth * Math.sin(angle), toy - headlen * Math.sin(angle) - headWidth * Math.cos(angle));
+  ctx.lineTo(tox - headlen * Math.cos(angle) - headWidth * Math.sin(angle), toy - headlen * Math.sin(angle) + headWidth * Math.cos(angle));
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
@@ -2332,6 +2473,12 @@ let dragOffsetX = 0;
 
 function handlePlayerMouseDown(e, el) {
   if (!isTacticalMode) return;
+
+  if (currentTacticalTool === 'delete') {
+    el.remove();
+    return;
+  }
+
   e.preventDefault();
   e.stopPropagation();
 
@@ -2369,6 +2516,135 @@ function handlePlayerMouseUp() {
   draggedPlayer = null;
   document.removeEventListener('mousemove', handlePlayerMouseMove);
   document.removeEventListener('mouseup', handlePlayerMouseUp);
+}
+
+function openAddPlayerMenu(type) {
+  const T = TRANSLATIONS[currentLang];
+  document.getElementById('tacticalSelectTitle').textContent = T.select_player;
+  const grid = document.getElementById('tacticalSelectGrid');
+  grid.innerHTML = '';
+
+  const teamId = (type === 'own') ? selectedTeamId : null;
+
+  if (type === 'own') {
+    const squad = SQUADS[selectedTeamId];
+    squad.players.forEach((p, idx) => {
+      const item = document.createElement('div');
+      item.className = 'tactical-select-item';
+      item.innerHTML = `<span>#${p.no || ''}</span> <span>${p.name[currentLang] || p.name.en}</span>`;
+      item.onclick = () => {
+        addTacticalPlayer(selectedTeamId, 'players', idx, false);
+        closeTacticalSelect();
+      };
+      grid.appendChild(item);
+    });
+  } else {
+    // Select team first
+    openAddTeamMenu('opponent_player');
+    return;
+  }
+
+  document.getElementById('tacticalSelectModal').classList.add('show');
+}
+
+function openAddTeamMenu(purpose) {
+  const T = TRANSLATIONS[currentLang];
+  document.getElementById('tacticalSelectTitle').textContent = T.select_team;
+  const grid = document.getElementById('tacticalSelectGrid');
+  grid.innerHTML = '';
+
+  Object.keys(TEAMS).sort().forEach(id => {
+    const t = TEAMS[id];
+    const item = document.createElement('div');
+    item.className = 'tactical-select-item';
+    item.innerHTML = `${flagImg(id)} <span>${t.n[currentLang] || t.n.en}</span>`;
+    item.onclick = () => {
+      if (purpose === 'opponent') {
+        addTacticalTeam(id);
+        closeTacticalSelect();
+      } else {
+        showPlayerSelectionForTeam(id);
+      }
+    };
+    grid.appendChild(item);
+  });
+
+  document.getElementById('tacticalSelectModal').classList.add('show');
+}
+
+function showPlayerSelectionForTeam(teamId) {
+  const T = TRANSLATIONS[currentLang];
+  document.getElementById('tacticalSelectTitle').textContent = T.select_player;
+  const grid = document.getElementById('tacticalSelectGrid');
+  grid.innerHTML = '';
+
+  const squad = SQUADS[teamId];
+  if (!squad) return;
+
+  squad.players.forEach((p, idx) => {
+    const item = document.createElement('div');
+    item.className = 'tactical-select-item';
+    item.innerHTML = `<span>#${p.no || ''}</span> <span>${p.name[currentLang] || p.name.en}</span>`;
+    item.onclick = () => {
+      addTacticalPlayer(teamId, 'players', idx, true);
+      closeTacticalSelect();
+    };
+    grid.appendChild(item);
+  });
+}
+
+function addTacticalPlayer(teamId, type, idx, isOpponent) {
+  const p = SQUADS[teamId][type][idx];
+  const container = document.getElementById('tacticalPitchContainer');
+
+  const el = document.createElement('div');
+  el.className = 'pitch-player' + (isOpponent ? ' opponent' : '');
+  el.style.bottom = '50%';
+  el.style.left = '50%';
+  el.style.transform = 'translate(-50%, 0)';
+  el.innerHTML = `${p.no || ''} <span class="p-name">${(p.name[currentLang] || p.name.en).split(' ').pop()}</span>`;
+
+  el.onmousedown = (e) => handlePlayerMouseDown(e, el);
+
+  container.appendChild(el);
+}
+
+function addTacticalTeam(teamId) {
+  // Clear existing opponents first
+  document.querySelectorAll('.pitch-player.opponent').forEach(p => p.remove());
+
+  const squad = SQUADS[teamId];
+  if (!squad) return;
+
+  const formationName = squad.formation || "4-3-3";
+  const fmt = FORMATIONS[formationName] || FORMATIONS["4-3-3"];
+
+  ["goalkeeper", "defender", "midfielder", "forward"].forEach(pos => {
+    const posPlayers = squad.players.filter(p => p.pos === pos);
+    const coords = fmt[pos] || [];
+    coords.forEach((coord, i) => {
+      const p = posPlayers[i];
+      if (p) {
+        const playerIdx = squad.players.indexOf(p);
+        const el = document.createElement('div');
+        el.className = 'pitch-player opponent';
+        // Position them mirroring or just same but smaller.
+        // Let's put them on top half (since own are bottom half by default in our render)
+        // Actually coords for formation are b (bottom) and l (left).
+        // For opponent, we might want to invert bottom: 100 - b.
+        el.style.bottom = (100 - coord.b) + '%';
+        el.style.left = coord.l + '%';
+        el.style.transform = 'translate(-50%, 0)';
+        el.innerHTML = `${p.no || ''} <span class="p-name">${(p.name[currentLang] || p.name.en).split(' ').pop()}</span>`;
+        el.onmousedown = (e) => handlePlayerMouseDown(e, el);
+        document.getElementById('tacticalPitchContainer').appendChild(el);
+      }
+    });
+  });
+}
+
+function closeTacticalSelect() {
+  document.getElementById('tacticalSelectModal').classList.remove('show');
 }
 
 function saveTacticScreenshot() {
