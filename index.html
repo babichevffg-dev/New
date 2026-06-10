@@ -173,7 +173,7 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
   .team-card-btn { padding: 10px; border-radius: 8px; gap: 6px; }
   .team-card-btn .flag { width: 36px; height: 24px; }
   .team-card-btn span { font-size: 0.85rem; }
-  .pitch-container { height: 350px; }
+  .pitch-container { height: 500px; }
   .pitch-player { width: 35px; height: 35px; font-size: 0.75rem; }
 }
 
@@ -181,12 +181,12 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 
 /* Tactical Pitch */
 .pitch-container {
-  width: 100%;
-  height: 500px;
+  width: min(100%, 450px);
+  height: 600px;
   background: linear-gradient(180deg, #1e4d2b 0%, #2c5e31 100%);
   border-radius: 16px;
   position: relative;
-  margin: 20px 0;
+  margin: 20px auto;
   overflow: hidden;
   border: 2px solid rgba(255,255,255,0.1);
   box-shadow: inset 0 0 80px rgba(0,0,0,0.4);
@@ -200,7 +200,7 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .pitch-center-circle {
   position: absolute;
   top: 50%; left: 50%;
-  width: 120px; height: 120px;
+  width: 100px; height: 100px;
   border: 2px solid rgba(255,255,255,0.2);
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -210,6 +210,28 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
   top: 50%; left: 15px; right: 15px;
   height: 2px; background: rgba(255,255,255,0.2);
 }
+.pitch-penalty-area {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 18%;
+  border: 2px solid rgba(255,255,255,0.2);
+  pointer-events: none;
+}
+.pitch-penalty-area.top { top: 15px; border-top: 0; }
+.pitch-penalty-area.bottom { bottom: 15px; border-bottom: 0; }
+.pitch-goal-area {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 6%;
+  border: 2px solid rgba(255,255,255,0.2);
+  pointer-events: none;
+}
+.pitch-goal-area.top { top: 15px; border-top: 0; }
+.pitch-goal-area.bottom { bottom: 15px; border-bottom: 0; }
 .pitch-zone {
   position: absolute;
   left: 0; right: 0;
@@ -1513,7 +1535,9 @@ function renderTeamsGrid(){
   }).forEach(id => {
     const t = TEAMS[id];
     const name = t.n[currentLang] || t.n.en;
+    const stars = t.stars > 0 ? `<div class="wc-stars" style="font-size:0.8rem;margin:0;">${"★".repeat(t.stars)}</div>` : '';
     h += `<button class="team-card-btn" onclick="goToTeam('${id}')">
+      ${stars}
       ${flagImg(id)}
       <span>${name}</span>
     </button>`;
@@ -1643,8 +1667,8 @@ function showSquad(teamId){
 
   h += `<div class="card">
     <div class="team-header">
-      <img src="${t.f}" class="big-flag" alt="">
       ${starsH}
+      <img src="${t.f}" class="big-flag" alt="">
       <h2>${name}</h2>
       ${heritageH}
       <p class="team-desc">${desc}</p>
@@ -1665,8 +1689,12 @@ function showSquad(teamId){
     <!-- Tactical Pitch -->
     <div class="pitch-container">
       <div class="pitch-lines"></div>
+      <div class="pitch-penalty-area top"></div>
+      <div class="pitch-goal-area top"></div>
       <div class="pitch-center-line"></div>
       <div class="pitch-center-circle"></div>
+      <div class="pitch-penalty-area bottom"></div>
+      <div class="pitch-goal-area bottom"></div>
       ${renderTacticalPitch(players, teamId, data.formation || "4-3-3")}
     </div>
 
@@ -1710,7 +1738,7 @@ function showSquad(teamId){
   });
 
 
-  h += `</div></div></div>` + renderRoadMap(teamId) + `</div>`;
+  h += `</div></div></div></div>`;
   document.getElementById('panel6').innerHTML = h;
 }
 
@@ -1727,8 +1755,12 @@ function showPersonDetail(teamId, type, idx){
   document.getElementById('modalPlayerSocial').href = pSocial;
   document.getElementById('playerModal').classList.add('show');
 
-  if (person.stats) {
+  const radarContainer = document.querySelector('.radar-container');
+  if (type === 'players' && person.stats) {
+    radarContainer.style.display = 'flex';
     setTimeout(() => drawRadarChart(person.stats), 100);
+  } else {
+    radarContainer.style.display = 'none';
   }
 }
 
@@ -1800,30 +1832,6 @@ function toggleKit(teamId) {
   const nextColor = currentAccent === t.colors[0] ? t.colors[1] : t.colors[0];
   document.documentElement.style.setProperty('--team-accent', nextColor);
 }
-
-function renderRoadMap(teamId) {
-  const venues = GROUP_MATCHES
-    .filter(m => m.h === teamId || m.a === teamId)
-    .map(m => m.v);
-
-  const uniqueVenues = [...new Set(venues)];
-  const T = TRANSLATIONS[currentLang];
-
-  let h = `<div class="road-map">
-    <h4>📍 ${T.roadmap}</h4>
-    <div class="road-list">`;
-
-  uniqueVenues.forEach(v => {
-    const cityName = v.split(',').pop().trim();
-    h += `<a class="road-item" onclick="goToStadiumByVenue('${v}')">
-      <i>🏟️</i> ${cityName}
-    </a>`;
-  });
-
-  h += `</div></div>`;
-  return h;
-}
-
 
 function closePlayerModal(){
   document.getElementById('playerModal').classList.remove('show');
