@@ -245,6 +245,35 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .team-card-btn span { font-weight: 700; font-size: 1.1rem; color: #fff; text-shadow: -1px -1px 0 var(--pitch), 1px -1px 0 var(--pitch), -1px 1px 0 var(--pitch), 1px 1px 0 var(--pitch), 0 2px 4px rgba(0,0,0,0.4); }
 
 /* Tactical Pitch */
+.pitch-section {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: start;
+  margin: 20px 0;
+}
+@media (max-width: 1100px) {
+  .pitch-section {
+    grid-template-columns: 1fr;
+  }
+  .pitch-empty { display: none; }
+}
+.team-matches-aside {
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
+}
+.team-matches-aside h3 {
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
 .pitch-container {
   width: min(100%, 450px);
   height: 600px;
@@ -905,7 +934,8 @@ const TRANSLATIONS = {
     defender: "Defensa",
     goalkeeper: "Portero",
     captain: "Capitán",
-    back_to_teams: "← Volver a equipos"
+    back_to_teams: "← Volver a equipos",
+    team_matches: "Partidos de grupo"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -975,7 +1005,8 @@ const TRANSLATIONS = {
     defender: "Défenseur",
     goalkeeper: "Gardien",
     captain: "Capitaine",
-    back_to_teams: "← Retour aux équipes"
+    back_to_teams: "← Retour aux équipes",
+    team_matches: "Matchs de groupe"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -1045,7 +1076,8 @@ const TRANSLATIONS = {
     defender: "Защитник",
     goalkeeper: "Вратарь",
     captain: "Капитан",
-    back_to_teams: "← К списку команд"
+    back_to_teams: "← К списку команд",
+    team_matches: "Групповые матчи"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     title: "FIFA World Cup 2026",
@@ -1115,7 +1147,8 @@ const TRANSLATIONS = {
     defender: "Defender",
     goalkeeper: "Goalkeeper",
     captain: "Captain",
-    back_to_teams: "← Back to teams"
+    back_to_teams: "← Back to teams",
+    team_matches: "Group Matches"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     title: "2026年国际足联世界杯",
@@ -1185,7 +1218,8 @@ const TRANSLATIONS = {
     defender: "后卫",
     goalkeeper: "门将",
     captain: "队长",
-    back_to_teams: "← 返回球队列表"
+    back_to_teams: "← 返回球队列表",
+    team_matches: "小组赛"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -1762,16 +1796,23 @@ function showSquad(teamId){
       `).join('')}
     </div>
 
-    <!-- Tactical Pitch -->
-    <div class="pitch-container">
-      <div class="pitch-lines"></div>
-      <div class="pitch-penalty-area top"></div>
-      <div class="pitch-goal-area top"></div>
-      <div class="pitch-center-line"></div>
-      <div class="pitch-center-circle"></div>
-      <div class="pitch-penalty-area bottom"></div>
-      <div class="pitch-goal-area bottom"></div>
-      ${renderTacticalPitch(players, teamId, data.formation || "4-3-3")}
+    <!-- Tactical Pitch & Matches -->
+    <div class="pitch-section">
+      <div class="pitch-empty"></div>
+      <div class="pitch-container">
+        <div class="pitch-lines"></div>
+        <div class="pitch-penalty-area top"></div>
+        <div class="pitch-goal-area top"></div>
+        <div class="pitch-center-line"></div>
+        <div class="pitch-center-circle"></div>
+        <div class="pitch-penalty-area bottom"></div>
+        <div class="pitch-goal-area bottom"></div>
+        ${renderTacticalPitch(players, teamId, data.formation || "4-3-3")}
+      </div>
+      <div class="team-matches-aside">
+        <h3>${T.team_matches}</h3>
+        ${GROUP_MATCHES.filter(m => m.h === teamId || m.a === teamId).map(m => renderMatchBlock(m, false)).join('')}
+      </div>
     </div>
 
     <div class="squad-container">
