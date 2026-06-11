@@ -10,7 +10,47 @@
 <meta property="og:url" content="http://babichevfootball.ru">
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
+/* === ПРАЗДНИЧНОЕ МОДАЛЬНОЕ ОКНО === */
+#celebrationModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 20000;
+  text-align: center;
+  padding: 20px;
+}
+#celebrationModal.show {
+  display: flex;
+}
+.celebration-content {
+  color: #fff;
+}
+.celebration-text {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  background: linear-gradient(45deg, #FFD700, #FFA500, #FF4500, #FFD700);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s linear infinite;
+  text-shadow: 0 10px 30px rgba(255,215,0,0.3);
+}
+@keyframes shine {
+  to { background-position: 200% center; }
+}
+@media (max-width: 600px) {
+  .celebration-text { font-size: 2rem; }
+}
+
 /* === ВИДЕО МОДАЛЬНОЕ ОКНО === */
 #videoModal {
     display: none; /* Скрыто по умолчанию */
@@ -1096,7 +1136,9 @@ const TRANSLATIONS = {
     add_opponent: "Añadir oponente",
     add_opponent_team: "Añadir equipo oponente",
     select_team: "Seleccionar equipo",
-    select_player: "Seleccionar jugador"
+    select_player: "Seleccionar jugador",
+    start_greeting: "¡Con el inicio de la Copa Mundial de la Fútbol!",
+    final_greeting: "¡Final de la Copa Mundial de la Fútbol!"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -1181,7 +1223,9 @@ const TRANSLATIONS = {
     add_opponent: "Ajouter un adversaire",
     add_opponent_team: "Ajouter une équipe adverse",
     select_team: "Sélectionner une équipe",
-    select_player: "Sélectionner un joueur"
+    select_player: "Sélectionner un joueur",
+    start_greeting: "Avec le début de la Coupe du Monde de la FIFA !",
+    final_greeting: "Finale de la Coupe du Monde de la FIFA !"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -1266,7 +1310,9 @@ const TRANSLATIONS = {
     add_opponent: "Добавить игрока соперника",
     add_opponent_team: "Добавить команду противника",
     select_team: "Выбрать сборную",
-    select_player: "Выбрать игрока"
+    select_player: "Выбрать игрока",
+    start_greeting: "С началом Чемпионата мира по Футболу!",
+    final_greeting: "Финал Чемпионата мира по футболу!"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     title: "FIFA World Cup 2026",
@@ -1351,7 +1397,9 @@ const TRANSLATIONS = {
     add_opponent: "Add Opponent Player",
     add_opponent_team: "Add Opponent Team",
     select_team: "Select Team",
-    select_player: "Select Player"
+    select_player: "Select Player",
+    start_greeting: "With the start of the FIFA World Cup!",
+    final_greeting: "FIFA World Cup Final!"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     title: "2026年国际足联世界杯",
@@ -1436,7 +1484,9 @@ const TRANSLATIONS = {
     add_opponent: "添加对手球员",
     add_opponent_team: "添加对手球队",
     select_team: "选择球队",
-    select_player: "选择球员"
+    select_player: "选择球员",
+    start_greeting: "随着世界杯的开始！",
+    final_greeting: "世界杯决赛！"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -37964,6 +38014,84 @@ document.addEventListener('click', function firstClick() {
   document.removeEventListener('click', firstClick);
 }, { once: true });
 
+// === ФУНКЦИИ ПРАЗДНОВАНИЯ ===
+function launchConfetti() {
+  const duration = 7 * 1000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 100, zIndex: 20001 };
+
+  const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+  const interval = setInterval(function() {
+    const timeLeft = animationEnd - Date.now();
+    if (timeLeft <= 0) return clearInterval(interval);
+
+    const particleCount = 80 * (timeLeft / duration);
+
+    // Side bursts
+    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+
+    // Center big burst periodically
+    if (Math.random() > 0.7) {
+      confetti({
+        ...defaults,
+        particleCount: 150,
+        scalar: 1.2,
+        origin: { x: 0.5, y: 0.5 }
+      });
+    }
+
+    // Extra fireworks
+    if (Math.random() > 0.5) {
+      confetti({
+        ...defaults,
+        particleCount: 40,
+        angle: randomInRange(55, 125),
+        spread: randomInRange(50, 70),
+        origin: { y: 0.6 }
+      });
+    }
+  }, 200);
+
+  // Initial grand burst
+  confetti({
+    particleCount: 400,
+    spread: 160,
+    origin: { y: 0.6 },
+    zIndex: 20001
+  });
+}
+
+function showCelebration(text) {
+  document.getElementById('celebrationText').innerText = text;
+  document.getElementById('celebrationModal').classList.add('show');
+  launchConfetti();
+}
+
+function closeCelebration() {
+  document.getElementById('celebrationModal').classList.remove('show');
+}
+
+function checkCelebration() {
+  const today = new Date().toISOString().split('T')[0];
+  const hash = window.location.hash;
+
+  if (hash === '#test-salute') {
+    showCelebration(TRANSLATIONS[currentLang].start_greeting);
+    return;
+  }
+
+  const startDay = '2026-06-11';
+  const finalDay = '2026-07-19';
+
+  if (today === startDay) {
+    showCelebration(TRANSLATIONS[currentLang].start_greeting);
+  } else if (today === finalDay) {
+    showCelebration(TRANSLATIONS[currentLang].final_greeting);
+  }
+}
+
 // === ФУНКЦИИ ДЛЯ ВОСПРОИЗВЕДЕНИЯ ВИДЕО ===
 function playPlayerVideo() {
     const videoModal = document.getElementById('videoModal');
@@ -38008,16 +38136,24 @@ function checkAdmin() {
     </div>
 </div>
 
+<!-- Праздничное модальное окно -->
+<div id="celebrationModal" onclick="closeCelebration()">
+  <div class="celebration-content" onclick="event.stopPropagation()">
+    <div id="celebrationText" class="celebration-text"></div>
+    <button class="btn" onclick="closeCelebration()">OK</button>
+  </div>
+</div>
+
 <span class="admin-trigger" id="adminTrigger" onclick="checkAdmin()"></span>
 
 <script>
 // Final initialization to ensure all DOM elements are present
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        initTeamPopover(); load(); buildUI(); renderAll();
+        initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
     });
 } else {
-    initTeamPopover(); load(); buildUI(); renderAll();
+    initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
 }
 </script>
 
