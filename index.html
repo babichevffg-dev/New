@@ -38083,13 +38083,26 @@ class FWParticle {
     }
     draw() {
         const opacity = this.life / this.maxLife;
-        if (this.type === 'crack' && Math.random() > 0.5) return;
+        if ((this.type === 'crack' || this.type === 'willow') && Math.random() > 0.6) return;
+
         fwCtx.globalAlpha = opacity;
         fwCtx.fillStyle = this.color;
-        const size = this.type === 'willow' ? 1.1 : (this.type === 'crack' ? 1 : 1.8);
+
+        const size = this.type === 'willow' ? 1.3 : (this.type === 'crack' ? 0.8 : 2.2);
+
         fwCtx.beginPath();
         fwCtx.arc(this.x, this.y, size, 0, Math.PI * 2);
         fwCtx.fill();
+
+        // Premium touch: subtle sparkle/glow on large particles
+        if (this.type === 'normal' && opacity > 0.7) {
+            fwCtx.save();
+            fwCtx.globalAlpha = opacity * 0.3;
+            fwCtx.beginPath();
+            fwCtx.arc(this.x, this.y, size * 2.5, 0, Math.PI * 2);
+            fwCtx.fill();
+            fwCtx.restore();
+        }
     }
     update() {
         this.velocity.x *= this.friction;
@@ -38138,32 +38151,43 @@ class FWRocket {
 }
 
 function explodeFW(x, y, type, color) {
-    let count = 400, speedRange = 14, friction = 0.94, gravity = 0.2, life = 60;
-
-    if (type === 'super') { count = 1200; speedRange = 25; friction = 0.92; life = 80; }
-    if (type === 'willow') { count = 300; speedRange = 10; friction = 0.975; gravity = 0.08; life = 180; }
-    if (type === 'strobe') { count = 500; speedRange = 16; life = 70; }
-
-    for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * speedRange;
-        const pLife = life + Math.random() * (life/2);
-        particles.push(new FWParticle(x, y, color, speed, angle, friction, gravity, pLife, type === 'strobe' ? 'crack' : type));
-    }
-
-    if (type === 'ring') {
-        for (let i = 0; i < 360; i += 5) {
-            const rad = i * Math.PI / 180;
-            particles.push(new FWParticle(x, y, color, 8, rad, 0.97, 0.08, 150));
+    // Helper to create a shell layer
+    const createShell = (pCount, pSpeed, pFriction, pGravity, pLife, pType, pColor) => {
+        for (let i = 0; i < pCount; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = (0.5 + Math.random() * 0.5) * pSpeed;
+            const life = pLife * (0.8 + Math.random() * 0.4);
+            particles.push(new FWParticle(x, y, pColor || color, speed, angle, pFriction, pGravity, life, pType));
         }
-    }
+    };
 
-    if (type === 'super') {
+    if (type === 'willow') {
+        createShell(600, 12, 0.98, 0.06, 220, 'willow'); // Large outer
+        createShell(200, 6, 0.97, 0.04, 150, 'willow', '#fff'); // Shimmering core
+    } else if (type === 'super') {
+        createShell(1500, 28, 0.93, 0.15, 100, 'normal'); // Massive outer
+        createShell(800, 18, 0.94, 0.12, 80, 'normal', '#FFD700'); // Gold middle
+        createShell(400, 10, 0.95, 0.1, 60, 'crack', '#fff'); // White flash core
         setTimeout(() => {
-             for(let i=0; i<400; i++) {
-                 particles.push(new FWParticle(x, y, '#fff', Math.random()*30, Math.random()*Math.PI*2, 0.94, 0.1, 50, 'crack'));
-             }
-        }, 250);
+            for(let i=0; i<10; i++) {
+                const ox = x + (Math.random()-0.5)*100, oy = y + (Math.random()-0.5)*100;
+                createShell(100, 15, 0.92, 0.2, 40, 'crack', '#fff');
+            }
+        }, 300);
+    } else if (type === 'strobe') {
+        createShell(600, 18, 0.94, 0.18, 80, 'crack');
+        createShell(300, 10, 0.95, 0.15, 60, 'normal', '#fff');
+    } else if (type === 'ring') {
+        for (let i = 0; i < 360; i += 2) {
+            const rad = i * Math.PI / 180;
+            particles.push(new FWParticle(x, y, color, 12, rad, 0.96, 0.1, 140));
+        }
+        createShell(300, 8, 0.95, 0.15, 70, 'normal'); // Filling
+    } else {
+        // Normal / Peony: Massive 3-layer professional burst
+        createShell(800, 22, 0.94, 0.22, 80, 'normal'); // Large outer shell
+        createShell(400, 14, 0.95, 0.18, 60, 'normal', '#fff'); // Bright middle layer
+        createShell(200, 8, 0.96, 0.12, 40, 'crack', '#FFD700'); // Sparkling core
     }
 }
 
@@ -38231,17 +38255,23 @@ function launchFireworks() {
     add('normal', red, 0.5, 0.35, 9300);
     add('normal', gold, 0.8, 0.4, 9600);
 
-    // Intense Phase (High Tempo)
-    for(let i=0; i<15; i++) {
-        add(Math.random() > 0.5 ? 'strobe' : 'normal', [red, blue, gold, pink, white][i%5], 0.1 + Math.random()*0.8, 0.1 + Math.random()*0.4, 11000 + i*400);
+    // Intense Phase (High Tempo + Layered shells)
+    for(let i=0; i<18; i++) {
+        add(Math.random() > 0.6 ? 'strobe' : 'normal', [red, blue, gold, pink, white][i%5], 0.1 + Math.random()*0.8, 0.1 + Math.random()*0.45, 10000 + i*350);
     }
 
     // GRAND FINALE
-    add('super', white, 0.5, 0.3, 18000);
+    add('super', white, 0.5, 0.3, 17500);
     setTimeout(() => {
-        for(let i=0; i<12; i++) {
-            add('willow', gold, 0.05 + i*0.08, 0.1+Math.random()*0.25, 18500 + i*100);
+        for(let i=0; i<15; i++) {
+            add('willow', gold, Math.random(), 0.1+Math.random()*0.25, 18000 + i*150);
         }
+        // Final synchronized triple blast
+        setTimeout(() => {
+            add('super', red, 0.2, 0.4, 0);
+            add('super', gold, 0.5, 0.3, 200);
+            add('super', blue, 0.8, 0.4, 400);
+        }, 1500);
     }, 0);
 }
 
