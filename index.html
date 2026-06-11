@@ -603,12 +603,27 @@ body.admin-active .toolbar { display: flex; }
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: transparent;
     z-index: 300000;
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.5s ease;
+    overflow: hidden;
+    pointer-events: none;
+}
+#celebrationModal.show {
+    display: flex !important;
+    opacity: 1 !important;
+    pointer-events: auto;
+}
+#fireworksCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 #celebrationModal.show {
     display: flex !important;
@@ -626,20 +641,28 @@ body.admin-active .toolbar { display: flex; }
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     max-width: 85%;
 }
-@keyframes titleGlow {
-    0% { text-shadow: 0 0 10px rgba(255,215,0,0.5), 0 0 20px rgba(255,215,0,0.3); transform: scale(1); }
-    50% { text-shadow: 0 0 25px rgba(255,215,0,0.8), 0 0 50px rgba(255,215,0,0.5); transform: scale(1.02); }
-    100% { text-shadow: 0 0 10px rgba(255,215,0,0.5), 0 0 20px rgba(255,215,0,0.3); transform: scale(1); }
-}
 .celebration-content h2 {
     color: #FFD700;
-    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-size: clamp(1.5rem, 5vw, 3rem);
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    letter-spacing: 2px;
-    animation: titleGlow 3s infinite ease-in-out;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    line-height: 1.3;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.celebration-content {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 50px 80px;
+    text-align: center;
+    max-width: 85%;
+    z-index: 2;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .modal-close {
     position: absolute;
@@ -663,7 +686,6 @@ body.admin-active .toolbar { display: flex; }
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 <div class="bg-trophy" aria-hidden="true"></div>
@@ -38049,101 +38071,184 @@ function checkAdmin() {
   }
 }
 
-// === CELEBRATION LOGIC ===
-function launchConfetti() {
-    const duration = 25 * 1000;
-    const animationEnd = Date.now() + duration;
-    const defaults = { spread: 360, ticks: 300, zIndex: 300000, gravity: 0.7, drift: 0, scalar: 1 };
-    const randomInRange = (min, max) => Math.random() * (max - min) + min;
+// === GRAND REALISTIC FIREWORKS ENGINE ===
+let fwCanvas, fwCtx, particles = [], rockets = [], fwActive = false;
 
-    const interval = setInterval(function() {
-        const timeLeft = animationEnd - Date.now();
-        if (timeLeft <= 0) return clearInterval(interval);
-        confetti({ ...defaults, particleCount: 2, origin: { x: 0, y: 0.8 }, angle: 60, spread: 40, startVelocity: 45, colors: ['#fff', '#FFD700'] });
-        confetti({ ...defaults, particleCount: 2, origin: { x: 1, y: 0.8 }, angle: 120, spread: 40, startVelocity: 45, colors: ['#fff', '#FFD700'] });
-    }, 300);
+class FWParticle {
+    constructor(x, y, color, speed, angle, friction, gravity, life, type = 'normal') {
+        this.x = x; this.y = y; this.color = color;
+        this.velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+        this.friction = friction; this.gravity = gravity;
+        this.life = life; this.maxLife = life; this.type = type;
+    }
+    draw() {
+        const opacity = this.life / this.maxLife;
+        // Flickering effect for strobe/crack types
+        if (this.type === 'crack' && Math.random() > 0.5) return;
 
-    const boom = (x, y, options) => {
-        const count = options.count || 400;
-        const speed = options.speed || 45;
-        const colors = options.colors || ['#ff0000', '#00ff00', '#0000ff'];
+        fwCtx.globalAlpha = opacity;
+        fwCtx.fillStyle = this.color;
 
-        // Primary burst
-        confetti({ ...defaults, particleCount: count, origin: { x, y }, colors: colors, startVelocity: speed, scalar: 1.2, ticks: 300 });
+        // Dynamic size
+        const size = this.type === 'willow' ? 1.2 : (this.type === 'crack' ? 1 : 2);
 
-        // Sparkle / Crackle layer
-        setTimeout(() => {
-            confetti({ ...defaults, particleCount: count / 2, origin: { x, y }, colors: ['#ffffff'], startVelocity: speed * 0.6, scalar: 0.4, ticks: 150, shapes: ['star'], gravity: 1.2 });
-        }, 150);
-    };
+        fwCtx.beginPath();
+        fwCtx.arc(this.x, this.y, size, 0, Math.PI * 2);
+        fwCtx.fill();
 
-    const willow = (x, y, color = '#FFD700') => {
-        confetti({ ...defaults, particleCount: 300, origin: { x, y }, colors: [color], startVelocity: 25, gravity: 0.3, scalar: 0.8, ticks: 600, drift: randomInRange(-0.2, 0.2) });
-    };
-
-    const ring = (x, y, colors) => {
-        for (let i = 0; i < 360; i += 12) {
-            const angle = i;
-            const velocity = 35;
-            confetti({ ...defaults, particleCount: 2, origin: { x, y }, angle, spread: 1, startVelocity: velocity, colors: colors, ticks: 400, scalar: 0.9 });
+        // Add glow for larger particles
+        if (this.type !== 'crack' && opacity > 0.5) {
+            fwCtx.shadowBlur = 10;
+            fwCtx.shadowColor = this.color;
+        } else {
+            fwCtx.shadowBlur = 0;
         }
-    };
+    }
+    update() {
+        this.velocity.x *= this.friction;
+        this.velocity.y *= this.friction;
+        this.velocity.y += this.gravity;
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.life--;
+    }
+}
 
-    const flash = (x, y) => {
-        confetti({ ...defaults, particleCount: 800, origin: { x, y }, colors: ['#FFFFFF'], startVelocity: 80, scalar: 2, ticks: 10, gravity: 0 });
-    };
+class FWRocket {
+    constructor(tx, ty, type, color) {
+        this.x = Math.random() * fwCanvas.width;
+        this.y = fwCanvas.height;
+        this.tx = tx; this.ty = ty;
+        this.type = type; this.color = color;
+        const angle = Math.atan2(ty - this.y, tx - this.x);
+        const dist = Math.sqrt((tx - this.x) ** 2 + (ty - this.y) ** 2);
+        const speed = dist / 45;
+        this.velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+    }
+    update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        if (Math.abs(this.y - this.ty) < 8) {
+            explodeFW(this.x, this.y, this.type, this.color);
+            return false;
+        }
+        return true;
+    }
+    draw() {
+        fwCtx.globalAlpha = 1;
+        fwCtx.fillStyle = '#fff';
+        fwCtx.beginPath();
+        fwCtx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+        fwCtx.fill();
+        // Rocket trail
+        for(let i=0; i<5; i++) {
+            fwCtx.globalAlpha = 1 - (i/5);
+            fwCtx.beginPath();
+            fwCtx.arc(this.x - this.velocity.x*i, this.y - this.velocity.y*i, 1.5, 0, Math.PI * 2);
+            fwCtx.fill();
+        }
+    }
+}
 
-    const launch = (type, x, y, delay, colorSet) => {
+function explodeFW(x, y, type, color) {
+    let count = 500, speedRange = 10, friction = 0.96, gravity = 0.12, life = 100;
+
+    if (type === 'super') { count = 1500; speedRange = 20; life = 150; }
+    if (type === 'willow') { count = 400; speedRange = 7; friction = 0.985; gravity = 0.04; life = 250; }
+    if (type === 'strobe') { count = 600; speedRange = 12; life = 120; }
+
+    for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * speedRange;
+        const pLife = life + Math.random() * (life/2);
+        particles.push(new FWParticle(x, y, color, speed, angle, friction, gravity, pLife, type === 'strobe' ? 'crack' : type));
+    }
+
+    if (type === 'ring') {
+        for (let i = 0; i < 360; i += 5) {
+            const rad = i * Math.PI / 180;
+            particles.push(new FWParticle(x, y, color, 8, rad, 0.97, 0.08, 150));
+        }
+    }
+
+    if (type === 'super') {
         setTimeout(() => {
-            let count = 0;
-            const steps = 30;
-            const trail = setInterval(() => {
-                confetti({ ...defaults, particleCount: 6, spread: 10, startVelocity: 4, origin: { x, y: 1 - (count * (1 - y) / steps) }, colors: ['#FFD700'], scalar: 0.3, ticks: 20 });
-                count++;
-                if (count >= steps) {
-                    clearInterval(trail);
-                    if (type === 'peony') boom(x, y, { colors: colorSet });
-                    if (type === 'willow') willow(x, y);
-                    if (type === 'ring') ring(x, y, colorSet);
-                    if (type === 'super') { boom(x, y, { count: 800, speed: 60, colors: ['#FF0000', '#FFFFFF', '#0000FF'] }); flash(x, y); }
-                }
-            }, 30);
-        }, delay);
+             for(let i=0; i<400; i++) {
+                 particles.push(new FWParticle(x, y, '#fff', Math.random()*30, Math.random()*Math.PI*2, 0.94, 0.1, 50, 'crack'));
+             }
+        }, 250);
+    }
+}
+
+function animateFW() {
+    if (!fwActive) return;
+    fwCtx.globalCompositeOperation = 'destination-out';
+    fwCtx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+    fwCtx.globalCompositeOperation = 'lighter';
+
+    rockets = rockets.filter(r => {
+        const active = r.update();
+        if (active) r.draw();
+        return active;
+    });
+
+    particles = particles.filter(p => {
+        p.update();
+        p.draw();
+        return p.life > 0;
+    });
+
+    requestAnimationFrame(animateFW);
+}
+
+function launchFireworks() {
+    fwCanvas = document.getElementById('fireworksCanvas');
+    fwCtx = fwCanvas.getContext('2d');
+    const resize = () => { fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; };
+    window.addEventListener('resize', resize);
+    resize();
+
+    fwActive = true;
+    particles = []; rockets = [];
+    animateFW();
+
+    const add = (t, c, x, y, d) => {
+        setTimeout(() => {
+            rockets.push(new FWRocket(x * fwCanvas.width, y * fwCanvas.height, t, c));
+        }, d);
     };
 
-    const c1 = ['#FF004D', '#00FFF5', '#FFFB7D'];
-    const c2 = ['#85FFBD', '#FF67E7', '#5D5DFF'];
-    const c3 = ['#FFD700', '#C0C0C0', '#CD7F32'];
+    const gold = '#FFD700', red = '#FF3131', blue = '#00D2FF', white = '#FFFFFF', pink = '#FF69B4';
 
-    launch('peony', 0.2, 0.3, 0, c1);
-    launch('peony', 0.8, 0.4, 1500, c2);
-    launch('willow', 0.5, 0.2, 3500, c3);
-    launch('ring', 0.3, 0.45, 6000, ['#FF1493', '#FFFFFF']);
-    launch('ring', 0.7, 0.45, 7500, ['#00BFFF', '#FFFFFF']);
-    launch('peony', 0.4, 0.25, 10000, c1);
-    launch('peony', 0.6, 0.25, 11500, c2);
-    launch('willow', 0.2, 0.35, 14000, c3);
-    launch('willow', 0.8, 0.35, 14500, c3);
+    // Choreographed Symphony
+    add('normal', red, 0.2, 0.35, 0);
+    add('normal', blue, 0.8, 0.35, 1200);
+    add('willow', gold, 0.5, 0.25, 3000);
+    add('ring', pink, 0.3, 0.4, 5500);
+    add('strobe', white, 0.7, 0.4, 7000);
 
-    // Intense buildup
-    setTimeout(() => {
-        const interval = setInterval(() => {
-            if (Date.now() > animationEnd - 4000) return clearInterval(interval);
-            confetti({ ...defaults, particleCount: 40, startVelocity: randomInRange(30, 70), origin: { x: Math.random(), y: Math.random() * 0.5 } });
-        }, 200);
-    }, 16000);
+    // Pair launch
+    add('willow', gold, 0.25, 0.3, 10000);
+    add('willow', gold, 0.75, 0.3, 10500);
+
+    // Triple Peony
+    add('normal', blue, 0.2, 0.4, 13000);
+    add('normal', red, 0.5, 0.35, 13500);
+    add('normal', gold, 0.8, 0.4, 14000);
+
+    // Intense Phase
+    for(let i=0; i<12; i++) {
+        add(Math.random() > 0.5 ? 'strobe' : 'normal', [red, blue, gold, pink, white][i%5], 0.1 + Math.random()*0.8, 0.1 + Math.random()*0.4, 16000 + i*700);
+    }
 
     // GRAND FINALE
+    add('super', white, 0.5, 0.3, 26000);
     setTimeout(() => {
-        launch('super', 0.5, 0.3, 0);
-        setTimeout(() => {
-            boom(0.3, 0.4, { count: 500, colors: c1 });
-            boom(0.7, 0.4, { count: 500, colors: c2 });
-        }, 500);
-        setTimeout(() => {
-            confetti({ ...defaults, particleCount: 2500, spread: 360, startVelocity: 100, origin: { x: 0.5, y: 0.4 }, scalar: 5, shapes: ['star'], colors: ['#FFD700', '#FFFFFF'] });
-        }, 1500);
-    }, 21000);
+        for(let i=0; i<10; i++) {
+            add('willow', gold, 0.05 + i*0.1, 0.2+Math.random()*0.2, 27000 + i*150);
+        }
+    }, 0);
 }
 
 function checkCelebration() {
@@ -38160,11 +38265,12 @@ function checkCelebration() {
     const btn = document.getElementById('celebrationButton');
     if (btn) btn.textContent = T.continue || 'OK';
     document.getElementById('celebrationModal').classList.add('show');
-    launchConfetti();
+    launchFireworks();
   }
 }
 
 function closeCelebration() {
+  fwActive = false;
   document.getElementById('celebrationModal').classList.remove('show');
 }
 // =========================================
@@ -38183,6 +38289,7 @@ function closeCelebration() {
 
 <!-- Celebration Modal -->
 <div id="celebrationModal">
+    <canvas id="fireworksCanvas"></canvas>
     <div class="celebration-content">
         <h2 id="celebrationTitle"></h2>
         <button id="celebrationButton" class="btn btn-save" style="margin-top: 30px; font-size: 1.2rem; padding: 12px 30px;" onclick="closeCelebration()"></button>
