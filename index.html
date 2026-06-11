@@ -629,6 +629,14 @@ body.admin-active .toolbar { display: flex; }
   </div>
 </div>
 
+<div id="celebrationModal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 500px; text-align: center; padding: 40px 20px;">
+    <div style="font-size: 64px; margin-bottom: 20px;">⚽ 🏆 🥳</div>
+    <h2 id="celebrationText" style="color: var(--gold); font-size: 24px; margin-bottom: 30px; line-height: 1.4;"></h2>
+    <button class="btn btn-save" onclick="closeCelebrationModal()" style="min-width: 120px; font-size: 18px;">OK</button>
+  </div>
+</div>
+
 <div id="playerModal" class="modal-overlay">
 
 
@@ -1093,7 +1101,9 @@ const TRANSLATIONS = {
     add_opponent: "Añadir oponente",
     add_opponent_team: "Añadir equipo oponente",
     select_team: "Seleccionar equipo",
-    select_player: "Seleccionar jugador"
+    select_player: "Seleccionar jugador",
+    start_greeting: "¡Ha comenzado la Copa del Mundo!",
+    final_greeting: "¡Final de la Copa del Mundo!"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -1178,7 +1188,9 @@ const TRANSLATIONS = {
     add_opponent: "Ajouter un adversaire",
     add_opponent_team: "Ajouter une équipe adverse",
     select_team: "Sélectionner une équipe",
-    select_player: "Sélectionner un joueur"
+    select_player: "Sélectionner un joueur",
+    start_greeting: "La Coupe du Monde a commencé !",
+    final_greeting: "Finale de la Coupe du Monde !"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -1263,7 +1275,9 @@ const TRANSLATIONS = {
     add_opponent: "Добавить игрока соперника",
     add_opponent_team: "Добавить команду противника",
     select_team: "Выбрать сборную",
-    select_player: "Выбрать игрока"
+    select_player: "Выбрать игрока",
+    start_greeting: "С началом Чемпионата мира по Футболу!",
+    final_greeting: "Финал Чемпионата мира по футболу!"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     title: "FIFA World Cup 2026",
@@ -1348,7 +1362,9 @@ const TRANSLATIONS = {
     add_opponent: "Add Opponent Player",
     add_opponent_team: "Add Opponent Team",
     select_team: "Select Team",
-    select_player: "Select Player"
+    select_player: "Select Player",
+    start_greeting: "The World Cup has begun!",
+    final_greeting: "World Cup Final!"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     title: "2026年国际足联世界杯",
@@ -1433,9 +1449,59 @@ const TRANSLATIONS = {
     add_opponent: "添加对手球员",
     add_opponent_team: "添加对手球队",
     select_team: "选择球队",
-    select_player: "选择球员"
+    select_player: "选择球员",
+    start_greeting: "世界杯开始了！",
+    final_greeting: "世界杯决赛！"
   , coaches: "教练组", description: "球队简介"}
 };
+
+function checkCelebration() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const today = `${year}-${month}-${day}`;
+
+  const dates = {
+    '2026-06-11': 'start_greeting',
+    '2026-07-19': 'final_greeting'
+  };
+
+  if (dates[today]) {
+    const key = `celebration_shown_${today}`;
+    if (!localStorage.getItem(key)) {
+      const textKey = dates[today];
+      document.getElementById('celebrationText').innerText = TRANSLATIONS[currentLang][textKey];
+      document.getElementById('celebrationModal').classList.add('show');
+      launchSalute();
+      localStorage.setItem(key, 'true');
+    }
+  }
+}
+
+function launchSalute() {
+  const duration = 5 * 1000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100000 };
+
+  const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+  const interval = setInterval(function() {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+
+    const particleCount = 50 * (timeLeft / duration);
+    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+  }, 250);
+}
+
+function closeCelebrationModal() {
+  document.getElementById('celebrationModal').classList.remove('show');
+}
 
 function load(){
   try{
@@ -2788,6 +2854,7 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 <audio id="bgMusic" loop>
   <source src="1.mp3" type="audio/mpeg">
 </audio>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
 const bgMusic = document.getElementById('bgMusic');
 const toggleMuteBtn = document.getElementById('toggleMute');
@@ -2874,10 +2941,10 @@ function checkAdmin() {
 // Final initialization to ensure all DOM elements are present
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        initTeamPopover(); load(); buildUI(); renderAll();
+        initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
     });
 } else {
-    initTeamPopover(); load(); buildUI(); renderAll();
+    initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
 }
 </script>
 
