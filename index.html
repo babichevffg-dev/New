@@ -38083,26 +38083,13 @@ class FWParticle {
     }
     draw() {
         const opacity = this.life / this.maxLife;
-        // Flickering effect for strobe/crack types
         if (this.type === 'crack' && Math.random() > 0.5) return;
-
         fwCtx.globalAlpha = opacity;
         fwCtx.fillStyle = this.color;
-
-        // Dynamic size
-        const size = this.type === 'willow' ? 1.2 : (this.type === 'crack' ? 1 : 2);
-
+        const size = this.type === 'willow' ? 1.1 : (this.type === 'crack' ? 1 : 1.8);
         fwCtx.beginPath();
         fwCtx.arc(this.x, this.y, size, 0, Math.PI * 2);
         fwCtx.fill();
-
-        // Add glow for larger particles
-        if (this.type !== 'crack' && opacity > 0.5) {
-            fwCtx.shadowBlur = 10;
-            fwCtx.shadowColor = this.color;
-        } else {
-            fwCtx.shadowBlur = 0;
-        }
     }
     update() {
         this.velocity.x *= this.friction;
@@ -38122,13 +38109,13 @@ class FWRocket {
         this.type = type; this.color = color;
         const angle = Math.atan2(ty - this.y, tx - this.x);
         const dist = Math.sqrt((tx - this.x) ** 2 + (ty - this.y) ** 2);
-        const speed = dist / 45;
+        const speed = dist / 22; // Faster launch
         this.velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
     }
     update() {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        if (Math.abs(this.y - this.ty) < 8) {
+        if (Math.abs(this.y - this.ty) < 15) { // Larger threshold for faster movement
             explodeFW(this.x, this.y, this.type, this.color);
             return false;
         }
@@ -38151,11 +38138,11 @@ class FWRocket {
 }
 
 function explodeFW(x, y, type, color) {
-    let count = 500, speedRange = 10, friction = 0.96, gravity = 0.12, life = 100;
+    let count = 400, speedRange = 14, friction = 0.94, gravity = 0.2, life = 60;
 
-    if (type === 'super') { count = 1500; speedRange = 20; life = 150; }
-    if (type === 'willow') { count = 400; speedRange = 7; friction = 0.985; gravity = 0.04; life = 250; }
-    if (type === 'strobe') { count = 600; speedRange = 12; life = 120; }
+    if (type === 'super') { count = 1200; speedRange = 25; friction = 0.92; life = 80; }
+    if (type === 'willow') { count = 300; speedRange = 10; friction = 0.975; gravity = 0.08; life = 180; }
+    if (type === 'strobe') { count = 500; speedRange = 16; life = 70; }
 
     for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
@@ -38187,17 +38174,24 @@ function animateFW() {
     fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
     fwCtx.globalCompositeOperation = 'lighter';
 
-    rockets = rockets.filter(r => {
-        const active = r.update();
-        if (active) r.draw();
-        return active;
-    });
+    let i = rockets.length;
+    while(i--) {
+        if(!rockets[i].update()) {
+            rockets.splice(i, 1);
+        } else {
+            rockets[i].draw();
+        }
+    }
 
-    particles = particles.filter(p => {
-        p.update();
-        p.draw();
-        return p.life > 0;
-    });
+    let j = particles.length;
+    while(j--) {
+        particles[j].update();
+        if(particles[j].life <= 0) {
+            particles.splice(j, 1);
+        } else {
+            particles[j].draw();
+        }
+    }
 
     requestAnimationFrame(animateFW);
 }
@@ -38221,32 +38215,32 @@ function launchFireworks() {
 
     const gold = '#FFD700', red = '#FF3131', blue = '#00D2FF', white = '#FFFFFF', pink = '#FF69B4';
 
-    // Choreographed Symphony
+    // Choreographed Symphony (Faster)
     add('normal', red, 0.2, 0.35, 0);
-    add('normal', blue, 0.8, 0.35, 1200);
-    add('willow', gold, 0.5, 0.25, 3000);
-    add('ring', pink, 0.3, 0.4, 5500);
-    add('strobe', white, 0.7, 0.4, 7000);
+    add('normal', blue, 0.8, 0.35, 600);
+    add('willow', gold, 0.5, 0.25, 1800);
+    add('ring', pink, 0.3, 0.4, 3500);
+    add('strobe', white, 0.7, 0.4, 4500);
 
     // Pair launch
-    add('willow', gold, 0.25, 0.3, 10000);
-    add('willow', gold, 0.75, 0.3, 10500);
+    add('willow', gold, 0.25, 0.3, 7000);
+    add('willow', gold, 0.75, 0.3, 7300);
 
     // Triple Peony
-    add('normal', blue, 0.2, 0.4, 13000);
-    add('normal', red, 0.5, 0.35, 13500);
-    add('normal', gold, 0.8, 0.4, 14000);
+    add('normal', blue, 0.2, 0.4, 9000);
+    add('normal', red, 0.5, 0.35, 9300);
+    add('normal', gold, 0.8, 0.4, 9600);
 
-    // Intense Phase
-    for(let i=0; i<12; i++) {
-        add(Math.random() > 0.5 ? 'strobe' : 'normal', [red, blue, gold, pink, white][i%5], 0.1 + Math.random()*0.8, 0.1 + Math.random()*0.4, 16000 + i*700);
+    // Intense Phase (High Tempo)
+    for(let i=0; i<15; i++) {
+        add(Math.random() > 0.5 ? 'strobe' : 'normal', [red, blue, gold, pink, white][i%5], 0.1 + Math.random()*0.8, 0.1 + Math.random()*0.4, 11000 + i*400);
     }
 
     // GRAND FINALE
-    add('super', white, 0.5, 0.3, 26000);
+    add('super', white, 0.5, 0.3, 18000);
     setTimeout(() => {
-        for(let i=0; i<10; i++) {
-            add('willow', gold, 0.05 + i*0.1, 0.2+Math.random()*0.2, 27000 + i*150);
+        for(let i=0; i<12; i++) {
+            add('willow', gold, 0.05 + i*0.08, 0.1+Math.random()*0.25, 18500 + i*100);
         }
     }, 0);
 }
