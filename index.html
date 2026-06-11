@@ -76,6 +76,59 @@
     border-radius: 8px;
     display: block;
 }
+
+/* === САЛЮТ И ПРАЗДНИЧНОЕ ОКНО === */
+#celebrationModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 20000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+#celebrationModal.active {
+  display: flex;
+  pointer-events: auto;
+}
+#fireworksCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.celebration-content {
+  position: relative;
+  z-index: 20001;
+  text-align: center;
+  padding: 40px;
+  pointer-events: none;
+}
+.celebration-text {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255,215,0,0.8), 0 0 40px rgba(255,215,0,0.4);
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#celebrationModal.active .celebration-text {
+  opacity: 1;
+  transform: scale(1);
+}
+@media (max-width: 768px) {
+  .celebration-text {
+    font-size: 2rem;
+  }
+}
   .mute-btn {
   position: fixed;
   top: 10px;
@@ -1096,7 +1149,9 @@ const TRANSLATIONS = {
     add_opponent: "Añadir oponente",
     add_opponent_team: "Añadir equipo oponente",
     select_team: "Seleccionar equipo",
-    select_player: "Seleccionar jugador"
+    select_player: "Seleccionar jugador",
+    start_greeting: "¡Bienvenidos a la Copa Mundial de la FIFA!",
+    final_greeting: "¡Gran Final de la Copa Mundial!"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -1181,7 +1236,9 @@ const TRANSLATIONS = {
     add_opponent: "Ajouter un adversaire",
     add_opponent_team: "Ajouter une équipe adverse",
     select_team: "Sélectionner une équipe",
-    select_player: "Sélectionner un joueur"
+    select_player: "Sélectionner un joueur",
+    start_greeting: "Bienvenue à la Coupe du Monde de la FIFA!",
+    final_greeting: "Finale de la Coupe du Monde de la FIFA!"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -1266,7 +1323,9 @@ const TRANSLATIONS = {
     add_opponent: "Добавить игрока соперника",
     add_opponent_team: "Добавить команду противника",
     select_team: "Выбрать сборную",
-    select_player: "Выбрать игрока"
+    select_player: "Выбрать игрока",
+    start_greeting: "С началом Чемпионата мира по Футболу!",
+    final_greeting: "Финал Чемпионата мира по футболу!"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     title: "FIFA World Cup 2026",
@@ -1351,7 +1410,9 @@ const TRANSLATIONS = {
     add_opponent: "Add Opponent Player",
     add_opponent_team: "Add Opponent Team",
     select_team: "Select Team",
-    select_player: "Select Player"
+    select_player: "Select Player",
+    start_greeting: "Welcome to the FIFA World Cup!",
+    final_greeting: "FIFA World Cup Final!"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     title: "2026年国际足联世界杯",
@@ -1436,7 +1497,9 @@ const TRANSLATIONS = {
     add_opponent: "添加对手球员",
     add_opponent_team: "添加对手球队",
     select_team: "选择球队",
-    select_player: "选择球员"
+    select_player: "选择球员",
+    start_greeting: "欢迎来到国际足联世界杯！",
+    final_greeting: "国际足联世界杯决赛！"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -37935,6 +37998,155 @@ document.addEventListener('click', function firstClick() {
   document.removeEventListener('click', firstClick);
 }, { once: true });
 
+// === САЛЮТ И ПРАЗДНИЧНАЯ ЛОГИКА ===
+class Particle {
+  constructor(x, y, color, velocityX, velocityY) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.velocityX = velocityX;
+    this.velocityY = velocityY;
+    this.alpha = 1;
+    this.friction = 0.98;
+    this.gravity = 0.05;
+  }
+  draw(ctx) {
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    // Add glow to particles
+    ctx.shadowBlur = 5;
+    ctx.shadowColor = this.color;
+    ctx.fill();
+    ctx.restore();
+  }
+  update() {
+    this.velocityX *= this.friction;
+    this.velocityY *= this.friction;
+    this.velocityY += this.gravity;
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+    this.alpha -= 0.005 + Math.random() * 0.01;
+  }
+}
+
+class Firework {
+  constructor(canvasWidth, canvasHeight) {
+    this.x = Math.random() * canvasWidth;
+    this.y = canvasHeight;
+    this.targetY = Math.random() * (canvasHeight * 0.4) + canvasHeight * 0.1;
+    this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+    this.velocityX = (Math.random() - 0.5) * 4;
+    this.velocityY = -Math.random() * 6 - 10;
+    this.particles = [];
+    this.dead = false;
+  }
+  update() {
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+    this.velocityY += 0.15; // Gravity on the rocket
+    if (this.velocityY >= 0 || this.y <= this.targetY) {
+      this.explode();
+      this.dead = true;
+    }
+  }
+  draw(ctx) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = this.color;
+    ctx.fill();
+    ctx.restore();
+  }
+  explode() {
+    const particleCount = 150 + Math.floor(Math.random() * 150);
+    const type = Math.random();
+    for (let i = 0; i < particleCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      let speed;
+      if (type > 0.5) {
+        // Spherical explosion
+        speed = Math.random() * 10 + 2;
+      } else {
+        // Heart or Ring-like (actually just varied speeds)
+        speed = (Math.random() * Math.random()) * 15 + 2;
+      }
+      this.particles.push(new Particle(
+        this.x, this.y, this.color,
+        Math.cos(angle) * speed, Math.sin(angle) * speed
+      ));
+    }
+    // Occasionally add some white sparkles
+    if (Math.random() > 0.7) {
+        for (let i = 0; i < 50; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 12 + 1;
+            this.particles.push(new Particle(this.x, this.y, "#ffffff", Math.cos(angle) * speed, Math.sin(angle) * speed));
+        }
+    }
+  }
+}
+
+let fireworks = [];
+let particles = [];
+let celebrationAnimationId = null;
+
+function animateFireworks() {
+  const canvas = document.getElementById('fireworksCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (Math.random() < 0.08) {
+    fireworks.push(new Firework(canvas.width, canvas.height));
+  }
+
+  fireworks.forEach((fw, i) => {
+    fw.update();
+    fw.draw(ctx);
+    if (fw.dead) {
+      particles.push(...fw.particles);
+      fireworks.splice(i, 1);
+    }
+  });
+
+  particles.forEach((p, i) => {
+    p.update();
+    p.draw(ctx);
+    if (p.alpha <= 0) {
+      particles.splice(i, 1);
+    }
+  });
+
+  celebrationAnimationId = requestAnimationFrame(animateFireworks);
+}
+
+function startCelebration(text) {
+  const modal = document.getElementById('celebrationModal');
+  const canvas = document.getElementById('fireworksCanvas');
+  const textEl = document.getElementById('celebrationText');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  textEl.innerText = text;
+  modal.classList.add('active');
+
+  animateFireworks();
+
+  modal.onclick = () => {
+    modal.classList.remove('active');
+    cancelAnimationFrame(celebrationAnimationId);
+    // Очищаем массивы для следующего раза
+    fireworks = [];
+    particles = [];
+  };
+}
+
 // === ФУНКЦИИ ДЛЯ ВОСПРОИЗВЕДЕНИЯ ВИДЕО ===
 function playPlayerVideo() {
     const videoModal = document.getElementById('videoModal');
@@ -37953,6 +38165,27 @@ function closeVideoModal() {
         video.pause();
         video.currentTime = 0; // Сброс видео на начало
     }
+}
+
+function checkCelebration() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+
+  const T = TRANSLATIONS[currentLang];
+
+  if (location.hash === '#test-salute') {
+    startCelebration(T.start_greeting);
+    return;
+  }
+
+  if (todayStr === '2026-06-11') {
+    startCelebration(T.start_greeting);
+  } else if (todayStr === '2026-07-19') {
+    startCelebration(T.final_greeting);
+  }
 }
 
 function checkAdmin() {
@@ -37979,16 +38212,23 @@ function checkAdmin() {
     </div>
 </div>
 
+<div id="celebrationModal">
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="celebration-content">
+    <div id="celebrationText" class="celebration-text"></div>
+  </div>
+</div>
+
 <span class="admin-trigger" id="adminTrigger" onclick="checkAdmin()"></span>
 
 <script>
 // Final initialization to ensure all DOM elements are present
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        initTeamPopover(); load(); buildUI(); renderAll();
+        initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
     });
 } else {
-    initTeamPopover(); load(); buildUI(); renderAll();
+    initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
 }
 </script>
 
