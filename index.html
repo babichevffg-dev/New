@@ -10,6 +10,7 @@
 <meta property="og:url" content="http://babichevfootball.ru">
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
 /* === ВИДЕО МОДАЛЬНОЕ ОКНО === */
 #videoModal {
@@ -629,7 +630,7 @@ body.admin-active .toolbar { display: flex; }
   </div>
 </div>
 
-<div id="celebrationModal" class="modal-overlay">
+<div id="celebrationModal" class="modal-overlay" style="z-index: 20000;">
   <div class="modal-content" style="max-width: 500px; text-align: center; padding: 40px 20px;">
     <div style="font-size: 64px; margin-bottom: 20px;">⚽ 🏆 🥳</div>
     <h2 id="celebrationText" style="color: var(--gold); font-size: 24px; margin-bottom: 30px; line-height: 1.4;"></h2>
@@ -1456,6 +1457,14 @@ const TRANSLATIONS = {
 };
 
 function checkCelebration() {
+  // Allow testing via URL hash
+  if (window.location.hash === '#test-salute') {
+    document.getElementById('celebrationText').innerText = TRANSLATIONS[currentLang]['start_greeting'] || "Celebration!";
+    document.getElementById('celebrationModal').classList.add('show');
+    launchSalute();
+    return;
+  }
+
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -1471,7 +1480,10 @@ function checkCelebration() {
     const key = `celebration_shown_${today}`;
     if (!localStorage.getItem(key)) {
       const textKey = dates[today];
-      document.getElementById('celebrationText').innerText = TRANSLATIONS[currentLang][textKey];
+      const lang = typeof currentLang !== 'undefined' ? currentLang : 'ru';
+      const text = (TRANSLATIONS[lang] && TRANSLATIONS[lang][textKey]) ? TRANSLATIONS[lang][textKey] : "World Cup Celebration!";
+
+      document.getElementById('celebrationText').innerText = text;
       document.getElementById('celebrationModal').classList.add('show');
       launchSalute();
       localStorage.setItem(key, 'true');
@@ -1480,7 +1492,9 @@ function checkCelebration() {
 }
 
 function launchSalute() {
-  const duration = 5 * 1000;
+  if (typeof confetti !== 'function') return;
+
+  const duration = 7 * 1000;
   const animationEnd = Date.now() + duration;
   const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100000 };
 
@@ -1494,10 +1508,19 @@ function launchSalute() {
     }
 
     const particleCount = 50 * (timeLeft / duration);
-    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    // side cannons
+    confetti({ ...defaults, particleCount, origin: { x: 0, y: 0.8 } });
+    confetti({ ...defaults, particleCount, origin: { x: 1, y: 0.8 } });
+    // middle bursts
+    confetti({ ...defaults, particleCount: particleCount / 2, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 } });
   }, 250);
 }
+
+window.addEventListener('hashchange', () => {
+  if (window.location.hash === '#test-salute') {
+    checkCelebration();
+  }
+});
 
 function closeCelebrationModal() {
   document.getElementById('celebrationModal').classList.remove('show');
@@ -2854,7 +2877,6 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 <audio id="bgMusic" loop>
   <source src="1.mp3" type="audio/mpeg">
 </audio>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
 const bgMusic = document.getElementById('bgMusic');
 const toggleMuteBtn = document.getElementById('toggleMute');
