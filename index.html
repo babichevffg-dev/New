@@ -38016,9 +38016,9 @@ document.addEventListener('click', function firstClick() {
 
 // === ФУНКЦИИ ПРАЗДНОВАНИЯ ===
 function launchConfetti() {
-  const duration = 5 * 1000;
+  const duration = 7 * 1000;
   const animationEnd = Date.now() + duration;
-  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 20001 };
+  const defaults = { startVelocity: 30, spread: 360, ticks: 100, zIndex: 20001 };
 
   const randomInRange = (min, max) => Math.random() * (max - min) + min;
 
@@ -38026,10 +38026,41 @@ function launchConfetti() {
     const timeLeft = animationEnd - Date.now();
     if (timeLeft <= 0) return clearInterval(interval);
 
-    const particleCount = 50 * (timeLeft / duration);
+    const particleCount = 80 * (timeLeft / duration);
+
+    // Side bursts
     confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
     confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-  }, 250);
+
+    // Center big burst periodically
+    if (Math.random() > 0.7) {
+      confetti({
+        ...defaults,
+        particleCount: 150,
+        scalar: 1.2,
+        origin: { x: 0.5, y: 0.5 }
+      });
+    }
+
+    // Extra fireworks
+    if (Math.random() > 0.5) {
+      confetti({
+        ...defaults,
+        particleCount: 40,
+        angle: randomInRange(55, 125),
+        spread: randomInRange(50, 70),
+        origin: { y: 0.6 }
+      });
+    }
+  }, 200);
+
+  // Initial grand burst
+  confetti({
+    particleCount: 400,
+    spread: 160,
+    origin: { y: 0.6 },
+    zIndex: 20001
+  });
 }
 
 function showCelebration(text) {
