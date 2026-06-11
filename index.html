@@ -730,16 +730,6 @@ body.admin-active .toolbar { display: flex; }
 
 
 
-<!-- Видео модальное окно (должно быть в самом низу body) -->
-<div id="videoModal" onclick="closeVideoModal()">
-    <div class="video-modal-content" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeVideoModal()" title="Закрыть">✕</button>
-        <video id="playerVideo" controls autoplay playsinline>
-            <source src="image/Video.mp4" type="video/mp4">
-            Ваш браузер не поддерживает воспроизведение видео.
-        </video>
-    </div>
-</div>
   <div class="modal-content">
     <div class="modal-header">
       <h3 id="modalPlayerName"></h3>
@@ -1552,7 +1542,19 @@ const TRANSLATIONS = {
   , coaches: "教练组", description: "球队简介"}
 };
 
-function load(){
+async function load(){
+  try{
+    const res = await fetch('results.json');
+    if(res.ok) {
+      const d = await res.json();
+      if(d && d.scores) {
+        scores = d.scores;
+        showStatus(TRANSLATIONS[currentLang].loaded + ' (results.json) ' + new Date(d.updatedAt).toLocaleString(currentLang), true);
+        return;
+      }
+    }
+  } catch(e) {}
+
   try{
     const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('wc2026_results_v1');
     if(!raw)return;
@@ -1564,6 +1566,9 @@ function persist(){
   const payload={version:2,updatedAt:new Date().toISOString(),scores};
   localStorage.setItem(STORAGE_KEY,JSON.stringify(payload));
   showStatus(TRANSLATIONS[currentLang].saved+' '+new Date().toLocaleString(currentLang),true);
+
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='results.json';a.click();
 }
 function showStatus(msg,ok){const el=document.getElementById('saveStatus');el.textContent=msg;el.className=ok?'ok':'';}
 function debounceSave(){clearTimeout(saveTimer);saveTimer=setTimeout(persist,400);}
@@ -38110,18 +38115,6 @@ toggleMuteBtn.onclick = (e) => {
   toggleMute();
 };
 
-document.addEventListener('click', function firstClick() {
-  if (bgMusic.paused) {
-    bgMusic.play().then(() => {
-      bgMusic.muted = false;
-      muteIcon.innerHTML = icons.up;
-    }).catch(() => {});
-  } else if (bgMusic.muted) {
-    bgMusic.muted = false;
-    muteIcon.innerHTML = icons.up;
-  }
-  document.removeEventListener('click', firstClick);
-}, { once: true });
 
 // === САЛЮТ И ПРАЗДНИЧНАЯ ЛОГИКА ===
 class Particle {
@@ -38348,7 +38341,7 @@ function checkAdmin() {
 <div id="videoModal" onclick="closeVideoModal()">
     <div class="video-modal-content" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeVideoModal()" title="Закрыть">✕</button>
-        <video id="playerVideo" controls autoplay playsinline>
+        <video id="playerVideo" controls playsinline>
             <source src="image/Video.mp4" type="video/mp4">
             Ваш браузер не поддерживает воспроизведение видео.
         </video>
@@ -38368,11 +38361,13 @@ function checkAdmin() {
 <script>
 // Final initialization to ensure all DOM elements are present
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
+    document.addEventListener('DOMContentLoaded', async () => {
+        initTeamPopover(); await load(); buildUI(); renderAll(); checkCelebration();
     });
 } else {
-    initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
+    (async () => {
+        initTeamPopover(); await load(); buildUI(); renderAll(); checkCelebration();
+    })();
 }
 </script>
 
