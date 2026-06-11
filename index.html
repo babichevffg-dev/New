@@ -76,6 +76,103 @@
     border-radius: 8px;
     display: block;
 }
+
+/* === САЛЮТ И ПРАЗДНИЧНОЕ ОКНО === */
+#celebrationModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 300000;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+#celebrationModal.active {
+  display: flex;
+  pointer-events: auto;
+}
+#fireworksCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.celebration-content {
+  position: relative;
+  z-index: 20001;
+  text-align: center;
+  padding: 40px;
+  pointer-events: none;
+}
+.celebration-text {
+  font-size: clamp(2.5rem, 10vw, 5rem);
+  font-weight: 900;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fcf6ba, #bf953f);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));
+  margin-bottom: 40px;
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+  transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+  letter-spacing: 1px;
+  animation: titleGlow 3s ease-in-out infinite alternate, shimmer 4s linear infinite;
+}
+@keyframes shimmer {
+  to { background-position: 200% center; }
+}
+@keyframes titleGlow {
+  from { filter: drop-shadow(0 0 15px rgba(255,215,0,0.5)); }
+  to { filter: drop-shadow(0 0 30px rgba(255,215,0,0.8)) drop-shadow(0 0 50px rgba(255,215,0,0.4)); }
+}
+#celebrationModal.active .celebration-text {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+#celebrationButton {
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid #ffd700;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+#celebrationModal.active #celebrationButton {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.5s;
+}
+#celebrationButton:hover {
+  background: #ffd700;
+  color: #000;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  transform: scale(1.05);
+}
+@media (max-width: 768px) {
+  .celebration-text {
+    font-size: 2rem;
+  }
+}
   .mute-btn {
   position: fixed;
   top: 10px;
@@ -1096,7 +1193,10 @@ const TRANSLATIONS = {
     add_opponent: "Añadir oponente",
     add_opponent_team: "Añadir equipo oponente",
     select_team: "Seleccionar equipo",
-    select_player: "Seleccionar jugador"
+    select_player: "Seleccionar jugador",
+    start_greeting: "¡Bienvenidos a la Copa Mundial de la FIFA!",
+    final_greeting: "¡Gran Final de la Copa Mundial!",
+    continue: "Continuar"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     title: "Coupe du Monde de la FIFA 2026",
@@ -1181,7 +1281,10 @@ const TRANSLATIONS = {
     add_opponent: "Ajouter un adversaire",
     add_opponent_team: "Ajouter une équipe adverse",
     select_team: "Sélectionner une équipe",
-    select_player: "Sélectionner un joueur"
+    select_player: "Sélectionner un joueur",
+    start_greeting: "Bienvenue à la Coupe du Monde de la FIFA!",
+    final_greeting: "Finale de la Coupe du Monde de la FIFA!",
+    continue: "Continuer"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     title: "Чемпионат мира FIFA 2026",
@@ -1266,7 +1369,10 @@ const TRANSLATIONS = {
     add_opponent: "Добавить игрока соперника",
     add_opponent_team: "Добавить команду противника",
     select_team: "Выбрать сборную",
-    select_player: "Выбрать игрока"
+    select_player: "Выбрать игрока",
+    start_greeting: "С началом Чемпионата мира по Футболу!",
+    final_greeting: "Финал Чемпионата мира по футболу!",
+    continue: "Продолжить"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     title: "FIFA World Cup 2026",
@@ -1351,7 +1457,10 @@ const TRANSLATIONS = {
     add_opponent: "Add Opponent Player",
     add_opponent_team: "Add Opponent Team",
     select_team: "Select Team",
-    select_player: "Select Player"
+    select_player: "Select Player",
+    start_greeting: "Welcome to the FIFA World Cup!",
+    final_greeting: "FIFA World Cup Final!",
+    continue: "Continue"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     title: "2026年国际足联世界杯",
@@ -1436,7 +1545,10 @@ const TRANSLATIONS = {
     add_opponent: "添加对手球员",
     add_opponent_team: "添加对手球队",
     select_team: "选择球队",
-    select_player: "选择球员"
+    select_player: "选择球员",
+    start_greeting: "欢迎来到国际足联世界杯！",
+    final_greeting: "国际足联世界杯决赛！",
+    continue: "继续"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -1844,7 +1956,7 @@ const SQUADS = {
       "zh": "墨西哥是北美足球的心脏和灵魂。'El Tri' 不仅仅是北美和中美足球联合会中最具荣誉的球队，它是体现在绿色球衣中的激情。在 2026 年本土世界杯上，墨西哥人决心打破'第五场比赛诅咒'的枷锁，在'阿兹特克'的咆哮声下改写历史。这是老将在经验上的不屈不挠与新一代为每一寸场地而战的能量的融合。"
     },
     "players": [
-      {
+       {
         "name": {
           "ru": "Рауль Ранхель",
           "en": "Raul Rangel",
@@ -1855,11 +1967,11 @@ const SQUADS = {
         "pos": "goalkeeper",
         "status": "",
         "story": {
-          "en": "A key player for Mexico, known for exceptional skill as a goalkeeper.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции вратарь.",
-          "es": "A key player for Mexico, known for exceptional skill as a goalkeeper.",
-          "fr": "A key player for Mexico, known for exceptional skill as a goalkeeper.",
-          "zh": "A key player for Mexico, known for exceptional skill as a goalkeeper."
+          "ru": "Надежный страж ворот с феноменальной реакцией. Его хладнокровие под давлением и безупречная игра на выходах делают его ценнейшим активом команды, всегда готовым с честью защитить ворота сборной.",
+          "en": "A reliable shot-stopper with phenomenal reflexes. His composure under pressure and flawless command of the penalty area make him an invaluable asset, always ready to defend the national team's honor.",
+          "es": "Un portero confiable con reflejos fenomenales. Su compostura bajo presión y su dominio impecable del área lo convierten en un activo invaluable, siempre listo para defender el honor de la selección.",
+          "fr": "Un gardien fiable aux réflexes phénoménaux. Son sang-froid sous pression et sa maîtrise impeccable de la surface en font un atout inestimable, toujours prêt à défendre l'honneur de l'équipe nationale.",
+          "zh": "一位反应敏锐、值得信赖的门将。他在压力下的冷静和对禁区的完美掌控，使他成为球队不可或缺的宝贵财富，随时准备捍卫国家队的荣誉。"
         },
         "image": "image/Kubok.jpg",
         "no": 42,
@@ -1882,11 +1994,11 @@ const SQUADS = {
         "pos": "goalkeeper",
         "status": "",
         "story": {
-          "en": "A key player for Mexico, known for exceptional skill as a goalkeeper.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции вратарь.",
-          "es": "A key player for Mexico, known for exceptional skill as a goalkeeper.",
-          "fr": "A key player for Mexico, known for exceptional skill as a goalkeeper.",
-          "zh": "A key player for Mexico, known for exceptional skill as a goalkeeper."
+          "ru": "Прозванный «Эль Мудо» (Немой), он позволяет своим перчаткам говорить громче слов. Его акробатические сейвы и бесстрашие в единоборствах с глазу на глаз заслужили ему безграничное уважение болельщиков и статус надежного последнего рубежа.",
+          "en": "Nicknamed 'El Mudo' (The Mute), he lets his gloves do the talking. His acrobatic saves and fearlessness in one-on-one duels have earned him the immense respect of the fans and solidified his status as a reliable last line of defense.",
+          "es": "Apodado 'El Mudo', deja que sus guantes hablen por él. Sus paradas acrobáticas y su valentía en los duelos uno a uno le han ganado el inmenso respeto de la afición y consolidado su estatus como una última línea de defensa confiable.",
+          "fr": "Surnommé 'El Mudo', il laisse ses gants parler pour lui. Ses arrêts acrobatiques et son intrépidité dans les duels en un contre un lui ont valu l'immense respect des supporters et ont consolidé son statut de dernier rempart fiable.",
+          "zh": "绰号“沉默者”（El Mudo），他让手套代替自己发声。他杂技般的扑救和在单刀对决中的无畏，为他赢得了球迷的极大尊重，并巩固了他作为可靠最后一道防线的地位。"
         },
         "image": "image/Kubok.jpg",
         "no": 97,
@@ -2044,11 +2156,11 @@ const SQUADS = {
         "pos": "defender",
         "status": "",
         "story": {
-          "en": "A rising star who has become indispensable in the defender position.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции защитник.",
-          "es": "A rising star who has become indispensable in the defender position.",
-          "fr": "A rising star who has become indispensable in the defender position.",
-          "zh": "A rising star who has become indispensable in the defender position."
+          "ru": "Известный как «Эль Потро» (Жеребец), этот физически одаренный защитник привносит европейскую школу в оборону. Его мощные силовые единоборства, чтение игры и доминирование в воздухе вызывают глубокое уважение у партнеров и трепет у нападающих соперника.",
+          "en": "Known as 'El Potro' (The Colt), this physically gifted defender brings European pedigree to the backline. His powerful duels, game intelligence, and aerial dominance command deep respect from teammates and strike fear into opposing strikers.",
+          "es": "Conocido como 'El Potro', este defensa físicamente dotado aporta pedigrí europeo a la zaga. Sus duelos poderosos, inteligencia táctica y dominio aéreo generan un profundo respeto entre sus compañeros y temor en los delanteros rivales.",
+          "fr": "Surnommé 'El Potro' (Le Poulain), ce défenseur au physique généreux apporte un pedigree européen à la défense. Ses duels puissants, son intelligence de jeu et sa domination aérienne commandent un profond respect de ses coéquipiers et inspirent la crainte aux attaquants adverses.",
+          "zh": "被称为“小马驹”（El Potro），这位身体素质出众的后卫为后防线带来了欧洲足球的底蕴。他强悍的对抗、比赛阅读能力和空中优势，赢得了队友的深深敬意，也让对方前锋心生敬畏。"
         },
         "image": "image/Kubok.jpg",
         "no": 63,
@@ -2071,11 +2183,11 @@ const SQUADS = {
         "pos": "defender",
         "status": "",
         "story": {
-          "en": "Known for incredible work rate and dedication to the team's success.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции защитник.",
-          "es": "Known for incredible work rate and dedication to the team's success.",
-          "fr": "Known for incredible work rate and dedication to the team's success.",
-          "zh": "Known for incredible work rate and dedication to the team's success."
+          "ru": "Воплощение несгибаемого характера мексиканского футбола. Его неутомимая работоспособность, самоотверженные подкаты и готовность биться за каждый мяч делают его настоящим героем оборонительных действий и примером для подражания.",
+          "en": "The very embodiment of Mexican football's unyielding character. His tireless work rate, selfless tackles, and willingness to fight for every single ball make him a true defensive hero and a role model on the pitch.",
+          "es": "La encarnación del carácter inquebrantable del fútbol mexicano. Su ritmo de trabajo incansable, sus entradas abnegadas y su disposición a luchar por cada balón lo convierten en un verdadero héroe defensivo y un modelo a seguir.",
+          "fr": "L'incarnation même du caractère inébranlable du football mexicain. Son rythme de travail infatigable, ses tacles désintéressés et sa volonté de se battre pour chaque ballon font de lui un véritable héros défensif et un modèle sur le terrain.",
+          "zh": "墨西哥足球坚韧不拔精神的完美化身。他不知疲倦的奔跑、无私的铲抢以及为每一个球拼搏的意愿，使他成为后防线上真正的英雄和场上的榜样。"
         },
         "image": "image/Kubok.jpg",
         "no": 28,
@@ -2114,7 +2226,7 @@ const SQUADS = {
           "experience": 50
         }
       },
-      {
+       {
         "name": {
           "ru": "Эрик Лира",
           "en": "Erik Lira",
@@ -2125,11 +2237,11 @@ const SQUADS = {
         "pos": "midfielder",
         "status": "",
         "story": {
-          "en": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции полузащитник.",
-          "es": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "fr": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "zh": "Bringing energy and tactical intelligence to the Mexico squad."
+          "ru": "Истинный мотор команды «от штрафной до штрафной». Беспредельная выносливость Лиры, железная дисциплина и умение не только разрушать атаки, но и изящно начинать свои, делают его не просто игроком, а настоящим сердцем полузащиты.",
+          "en": "The true box-to-box engine of the team. Lira's boundless stamina, ironclad discipline, and ability to not only break up play but also elegantly initiate attacks make him not just a player, but the very heartbeat of the midfield.",
+          "es": "El verdadero motor de área a área del equipo. La resistencia ilimitada de Lira, su disciplina de hierro y su capacidad no solo para romper el juego, sino también para iniciar ataques con elegancia, lo convierten en el verdadero corazón del mediocampo.",
+          "fr": "Le véritable moteur de surface à surface de l'équipe. L'endurance illimitée de Lira, sa discipline de fer et sa capacité non seulement à briser le jeu, mais aussi à initier élégamment des attaques, font de lui le véritable cœur du milieu de terrain.",
+          "zh": "球队真正的“B2B”（禁区到禁区）引擎。利拉无限的体能、钢铁般的纪律，以及不仅能破坏对方进攻还能优雅地发起反击的能力，使他不仅仅是球员，更是中场真正的心脏。"
         },
         "image": "image/Kubok.jpg",
         "no": 35,
@@ -2141,7 +2253,7 @@ const SQUADS = {
           "experience": 91
         }
       },
-      {
+       {
         "name": {
           "ru": "Луис Ромо",
           "en": "Luis Romo",
@@ -2152,11 +2264,11 @@ const SQUADS = {
         "pos": "midfielder",
         "status": "",
         "story": {
-          "en": "Known for incredible work rate and dedication to the team's success.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции полузащитник.",
-          "es": "Known for incredible work rate and dedication to the team's success.",
-          "fr": "Known for incredible work rate and dedication to the team's success.",
-          "zh": "Known for incredible work rate and dedication to the team's success."
+          "ru": "Тактический хамелеон высочайшего класса. Будь то роль разрушителя перед обороной или дирижера из глубины, элитный диапазон передач и безупречное позиционирование Ромо обеспечивают команде идеальный баланс и контроль над темпом игры.",
+          "en": "A top-class tactical chameleon. Whether acting as a shield in front of the defense or a deep-lying playmaker, Romo's elite passing range and flawless positioning provide the team with perfect balance and control over the game's tempo.",
+          "es": "Un camaleón táctico de primera clase. Ya sea actuando como escudo frente a la defensa o como mediapunta de creación, el rango de pase de élite y el posicionamiento impecable de Romo brindan al equipo un equilibrio perfecto y control del ritmo del juego.",
+          "fr": "Un caméléon tactique de premier ordre. Qu'il agisse comme un bouclier devant la défense ou comme un meneur de jeu reculé, l'excellente amplitude de passe et le positionnement impeccable de Romo offrent à l'équipe un équilibre parfait et un contrôle du tempo du jeu.",
+          "zh": "顶级的战术变色龙。无论是作为防线前的盾牌，还是深居幕后的组织者，罗莫精英级别的传球范围和完美的跑位，都为球队提供了完美的平衡和对比赛节奏的掌控。"
         },
         "image": "image/Kubok.jpg",
         "no": 85,
@@ -2168,7 +2280,7 @@ const SQUADS = {
           "experience": 94
         }
       },
-      {
+     {
         "name": {
           "ru": "Альваро Фидальго",
           "en": "Alvaro Fidalgo",
@@ -2179,11 +2291,11 @@ const SQUADS = {
         "pos": "midfielder",
         "status": "",
         "story": {
-          "en": "A rising star who has become indispensable in the midfielder position.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции полузащитник.",
-          "es": "A rising star who has become indispensable in the midfielder position.",
-          "fr": "A rising star who has become indispensable in the midfielder position.",
-          "zh": "A rising star who has become indispensable in the midfielder position."
+          "ru": "Виртуоз с мячом и истинный патриот. Этот плеймейкер «Америки» обладает даром предвидения на поле, а его закрученные штрафные удары и филигранные передачи вразрез являются настоящим произведением футбольного искусства.",
+          "en": "A virtuoso on the ball and a true patriot. This América playmaker possesses a gift for foresight on the pitch, and his curling free-kicks and exquisite through-balls are nothing short of a work of footballing art.",
+          "es": "Un virtuoso con el balón y un verdadero patriota. Este mediapunta del América posee un don para la anticipación en el campo, y sus tiros libres con efecto y sus pases al hueco exquisitos son una verdadera obra de arte futbolístico.",
+          "fr": "Un virtuose du ballon et un véritable patriote. Ce meneur de jeu de l'América possède un don pour l'anticipation sur le terrain, et ses coups de pied arrêtés brossés ainsi que ses passes en profondeur exquises sont une véritable œuvre d'art footballistique.",
+          "zh": "控球大师和真正的爱国者。这位美洲队的组织者拥有球场上的预见天赋，他弧线优美的任意球和精致的直塞球，堪称足球艺术的杰作。"
         },
         "image": "image/Kubok.jpg",
         "no": 93,
@@ -2233,11 +2345,11 @@ const SQUADS = {
         "pos": "midfielder",
         "status": "",
         "story": {
-          "en": "Known for incredible work rate and dedication to the team's success.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции полузащитник.",
-          "es": "Known for incredible work rate and dedication to the team's success.",
-          "fr": "Known for incredible work rate and dedication to the team's success.",
-          "zh": "Known for incredible work rate and dedication to the team's success."
+          "ru": "Динамичный и бесстрашный юный талант. Варгас привносит в игру искру молодости, невероятную энергию и дерзкий дриблинг, олицетворяя собой светлое и многообещающее будущее мексиканского футбола.",
+          "en": "A dynamic and fearless young talent. Vargas brings a spark of youth, incredible energy, and daring dribbling to the game, embodying the bright and promising future of Mexican football.",
+          "es": "Un joven talento dinámico e intrépido. Vargas aporta una chispa de juventud, una energía increíble y un regate atrevido al juego, encarnando el futuro brillante y prometedor del fútbol mexicano.",
+          "fr": "Un jeune talent dynamique et intrépide. Vargas apporte une étincelle de jeunesse, une énergie incroyable et un dribble audacieux au jeu, incarnant l'avenir radieux et prometteur du football mexicain.",
+          "zh": "一位充满活力且无畏的年轻天才。巴尔加斯为比赛注入了青春的火花、惊人的能量和大胆的盘带，体现了墨西哥足球光明而充满希望的未来。"
         },
         "image": "image/Kubok.jpg",
         "no": 38,
@@ -2260,11 +2372,11 @@ const SQUADS = {
         "pos": "midfielder",
         "status": "",
         "story": {
-          "en": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции полузащитник.",
-          "es": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "fr": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "zh": "Bringing energy and tactical intelligence to the Mexico squad."
+          "ru": "Шелковистый техник с изящным стилем игры. Исключительный контроль мяча Морой и способность проскальзывать сквозь плотную оборону соперника превращают каждое его появление на поле в эстетическое удовольствие для зрителей.",
+          "en": "A silky-smooth technician with an elegant style of play. Mora's exceptional close control and ability to glide through tight defensive lines turn every one of his appearances on the pitch into an aesthetic delight for the fans.",
+          "es": "Un técnico sedoso con un estilo de juego elegante. El control excepcional de Mora y su capacidad para deslizarse a través de líneas defensivas apretadas convierten cada una de sus apariciones en el campo en un deleite estético para los aficionados.",
+          "fr": "Un technicien soyeux au style de jeu élégant. Le contrôle exceptionnel de Mora et sa capacité à glisser à travers des lignes défensives serrées font de chacune de ses apparitions sur le terrain un délice esthétique pour les supporters.",
+          "zh": "一位球风优雅、技术丝滑的球员。莫拉卓越的控球能力和在密集防线中穿梭的能力，使他每一次登场都成为球迷眼中的视觉享受。"
         },
         "image": "image/Kubok.jpg",
         "no": 14,
@@ -2276,7 +2388,7 @@ const SQUADS = {
           "experience": 92
         }
       },
-      {
+       {
         "name": {
           "ru": "Луис Чавес",
           "en": "Luis Chavez",
@@ -2287,11 +2399,11 @@ const SQUADS = {
         "pos": "midfielder",
         "status": "",
         "story": {
-          "en": "A key player for Mexico, known for exceptional skill as a midfielder.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции полузащитник.",
-          "es": "A key player for Mexico, known for exceptional skill as a midfielder.",
-          "fr": "A key player for Mexico, known for exceptional skill as a midfielder.",
-          "zh": "A key player for Mexico, known for exceptional skill as a midfielder."
+          "ru": "Навеки вписавший свое имя в историю великолепным голом на ЧМ-2022. Мощнейшие удары издали и творческая искра Чавеса делают его уникальным и крайне опасным оружием в арсенале сборной.",
+          "en": "Forever etched his name in history with a magnificent goal at the 2022 World Cup. Chávez's thunderous long-range shooting and creative flair make him a unique and highly dangerous weapon in the national team's arsenal.",
+          "es": "Grabó para siempre su nombre en la historia con un gol magnífico en el Mundial 2022. Los potentes disparos de larga distancia y el estilo creativo de Chávez lo convierten en un arma única y altamente peligrosa en el arsenal de la selección.",
+          "fr": "A gravé son nom dans l'histoire à jamais avec un but magnifique lors de la Coupe du Monde 2022. Les tirs puissants de loin et la créativité de Chávez en font une arme unique et extrêmement dangereuse dans l'arsenal de l'équipe nationale.",
+          "zh": "因在2022年世界杯上的一记精彩进球而永载史册。查韦斯势大力沉的远射和创造力，使他成为国家队武器库中独特且极具威胁的利器。"
         },
         "image": "image/Kubok.jpg",
         "no": 97,
@@ -2303,7 +2415,7 @@ const SQUADS = {
           "experience": 72
         }
       },
-      {
+       {
         "name": {
           "ru": "Брайан Гутьеррес",
           "en": "Brian Gutierrez",
@@ -2314,11 +2426,11 @@ const SQUADS = {
         "pos": "midfielder",
         "status": "",
         "story": {
-          "en": "A rising star who has become indispensable in the midfielder position.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции полузащитник.",
-          "es": "A rising star who has become indispensable in the midfielder position.",
-          "fr": "A rising star who has become indispensable in the midfielder position.",
-          "zh": "A rising star who has become indispensable in the midfielder position."
+          "ru": "Универсальный и высоко ценимый специалистом талант. Адаптивность и поразительно зрелые решения Гутьерреса на поле опережают его годы, предоставляя тренерскому штабу бесценные тактические возможности.",
+          "en": "A versatile and highly regarded talent. Gutiérrez's adaptability and strikingly mature decision-making on the pitch belie his age, providing the coaching staff with invaluable tactical flexibility.",
+          "es": "Un talento versátil y muy valorado. La adaptabilidad y la asombrosa madurez en la toma de decisiones de Gutiérrez en el campo desmienten su edad, brindando al cuerpo técnico una flexibilidad táctica invaluable.",
+          "fr": "Un talent polyvalent et très estimé. L'adaptabilité et la prise de décision étonnamment mature de Gutiérrez sur le terrain contredisent son âge, offrant au staff technique une flexibilité tactique inestimable.",
+          "zh": "一位多才多艺且备受专家赞誉的天才。古铁雷斯在场上展现出的适应能力和令人惊叹的成熟决策力远超他的年龄，为教练组提供了无价的战术灵活性。"
         },
         "image": "image/Kubok.jpg",
         "no": 65,
@@ -2368,11 +2480,11 @@ const SQUADS = {
         "pos": "forward",
         "status": "",
         "story": {
-          "en": "A rising star who has become indispensable in the forward position.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции нападающий.",
-          "es": "A rising star who has become indispensable in the forward position.",
-          "fr": "A rising star who has become indispensable in the forward position.",
-          "zh": "A rising star who has become indispensable in the forward position."
+          "ru": "Взрывной вингер с непревзойденным голевым чутьем. Скорость Веги и филигранная техника при смещении в центр для удара делают его постоянным источником опасности и головной болью для любой обороны.",
+          "en": "An explosive winger with an unparalleled nose for goal. Vega's blistering pace and exquisite technique when cutting inside to shoot make him a constant source of danger and a headache for any defense.",
+          "es": "Un extremo explosivo con un olfato de gol inigualable. La velocidad abrasadora de Vega y su técnica exquisita al recortar hacia adentro para disparar lo convierten en una fuente constante de peligro y un dolor de cabeza para cualquier defensa.",
+          "fr": "Un ailier explosif avec un flair pour le but inégalé. La vitesse fulgurante de Vega et sa technique exquise lorsqu'il rentre dans l'axe pour tirer font de lui une source constante de danger et un casse-tête pour toute défense.",
+          "zh": "一位爆发力极强且拥有无与伦比射门嗅觉的边锋。维加极快的速度以及内切射门时精湛的技术，使他成为持续的威胁，也是任何防线都头疼的问题。"
         },
         "image": "image/Kubok.jpg",
         "no": 31,
@@ -2476,11 +2588,11 @@ const SQUADS = {
         "pos": "forward",
         "status": "",
         "story": {
-          "en": "A key player for Mexico, known for exceptional skill as a forward.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции нападающий.",
-          "es": "A key player for Mexico, known for exceptional skill as a forward.",
-          "fr": "A key player for Mexico, known for exceptional skill as a forward.",
-          "zh": "A key player for Mexico, known for exceptional skill as a forward."
+          "ru": "Истинный художник атаки. Низкий центр тяжести, молниеносные смены направления и врожденная любовь к зрелищности делают Уэрту не просто игроком, а настоящим артистом, способным в одиночку изменить ход матча.",
+          "en": "A true artist of the attack. Huerta's low center of gravity, lightning-fast changes of direction, and innate love for the spectacular make him not just a player, but a true showman capable of single-handedly changing the course of a match.",
+          "es": "Un verdadero artista del ataque. El bajo centro de gravedad de Huerta, sus cambios de dirección relámpago y su amor innato por lo espectacular lo convierten no solo en un jugador, sino en un verdadero showman capaz de cambiar el rumbo de un partido por sí solo.",
+          "fr": "Un véritable artiste de l'attaque. Le centre de gravité bas de Huerta, ses changements de direction fulgurants et son amour inné pour le spectacle font de lui non seulement un joueur, mais un véritable showman capable de changer à lui seul le cours d'un match.",
+          "zh": "进攻线上的真正艺术家。韦尔塔的低重心、闪电般的变向以及与生俱来的表演欲，使他不仅仅是一名球员，更是一位能够凭一己之力改变比赛走向的表演者。"
         },
         "image": "image/Kubok.jpg",
         "no": 89,
@@ -2503,11 +2615,11 @@ const SQUADS = {
         "pos": "forward",
         "status": "",
         "story": {
-          "en": "A key player for Mexico, known for exceptional skill as a forward.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции нападающий.",
-          "es": "A key player for Mexico, known for exceptional skill as a forward.",
-          "fr": "A key player for Mexico, known for exceptional skill as a forward.",
-          "zh": "A key player for Mexico, known for exceptional skill as a forward."
+          "ru": "Классический «девятый номер» с богатырским сложением. Выдающаяся способность Мартинеса удерживать мяч под давлением и грамотно вводить партнеров в игру делают его незаменимым тактическим стержнем атаки сборной.",
+          "en": "A classic number 9 with a robust physique. Martínez's outstanding ability to hold up the ball under pressure and intelligently bring teammates into play makes him an indispensable tactical focal point for the national team's attack.",
+          "es": "Un clásico número 9 con un físico robusto. La destacada capacidad de Martínez para aguantar el balón bajo presión e incorporar inteligentemente a sus compañeros al juego lo convierten en un punto focal táctico indispensable para el ataque de la selección.",
+          "fr": "Un classique numéro 9 au physique robuste. La capacité exceptionnelle de Martínez à conserver le ballon sous pression et à impliquer intelligemment ses coéquipiers fait de lui un point focal tactique indispensable pour l'attaque de l'équipe nationale.",
+          "zh": "一位体格健壮的经典9号球员。马丁内斯在压力下出色的护球能力以及聪明地让队友参与进攻的能力，使他成为国家队进攻不可或缺的战术支点。"
         },
         "image": "image/Kubok.jpg",
         "no": 32,
@@ -2530,11 +2642,11 @@ const SQUADS = {
         "pos": "forward",
         "status": "",
         "story": {
-          "en": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "ru": "Ключевой игрок сборной Mexico, известный своим мастерством на позиции нападающий.",
-          "es": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "fr": "Bringing energy and tactical intelligence to the Mexico squad.",
-          "zh": "Bringing energy and tactical intelligence to the Mexico squad."
+          "ru": "Прозванный «Эль Себольита», этот уважаемый ветеран славится своей самоотдачей и способностью выдавать решающие матчи в самые важные моменты. Его опыт и тактическая мудрость являются бесценным даром для всей команды.",
+          "en": "Nicknamed 'El Cebollita', this respected veteran is renowned for his selfless work rate and ability to deliver clutch performances in the most crucial moments. His experience and tactical wisdom are an invaluable gift to the entire squad.",
+          "es": "Apodado 'El Cebollita', este respetado veterano es reconocido por su abnegado ritmo de trabajo y su capacidad para ofrecer actuaciones decisivas en los momentos más cruciales. Su experiencia y sabiduría táctica son un regalo invaluable para todo el equipo.",
+          "fr": "Surnommé 'El Cebollita', ce vétéran respecté est réputé pour son rythme de travail altruiste et sa capacité à offrir des performances décisives dans les moments les plus cruciaux. Son expérience et sa sagesse tactique sont un don inestimable pour toute l'équipe.",
+          "zh": "绰号“小洋葱”，这位备受尊敬的老将以其无私的奔跑和在最关键时刻挺身而出的能力而闻名。他的经验和战术智慧对整个球队来说是无价的财富。"
         },
         "image": "image/Kubok.jpg",
         "no": 45,
@@ -37935,6 +38047,173 @@ document.addEventListener('click', function firstClick() {
   document.removeEventListener('click', firstClick);
 }, { once: true });
 
+// === САЛЮТ И ПРАЗДНИЧНАЯ ЛОГИКА ===
+class Particle {
+  constructor(x, y, color, velocityX, velocityY) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.velocityX = velocityX;
+    this.velocityY = velocityY;
+    this.alpha = 1;
+    this.friction = 0.98;
+    this.gravity = 0.05;
+  }
+  draw(ctx) {
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    // Add glow to particles
+    ctx.shadowBlur = 5;
+    ctx.shadowColor = this.color;
+    ctx.fill();
+    ctx.restore();
+  }
+  update() {
+    this.velocityX *= this.friction;
+    this.velocityY *= this.friction;
+    this.velocityY += this.gravity;
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+    this.alpha -= 0.005 + Math.random() * 0.01;
+  }
+}
+
+class Firework {
+  constructor(canvasWidth, canvasHeight) {
+    this.x = Math.random() * canvasWidth;
+    this.y = canvasHeight;
+    this.targetY = Math.random() * (canvasHeight * 0.4) + canvasHeight * 0.1;
+    
+    // Strong bias towards gold/yellow (40-60 hue) - 70% chance of gold
+    const hue = Math.random() < 0.9 ? (40 + Math.random() * 20) : Math.random() * 360;
+    this.color = `hsl(${hue}, 100%, 60%)`;
+    
+    this.velocityX = (Math.random() - 0.5) * 4;
+    this.velocityY = -Math.random() * 6 - 10;
+    this.particles = [];
+    this.dead = false;
+  }
+  update() {
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+    this.velocityY += 0.15; // Gravity on the rocket
+    if (this.velocityY >= 0 || this.y <= this.targetY) {
+      this.explode();
+      this.dead = true;
+    }
+  }
+  draw(ctx) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = this.color;
+    ctx.fill();
+    ctx.restore();
+  }
+  explode() {
+    // Increased particle count for "grandiose" effect
+    const particleCount = 200 + Math.floor(Math.random() * 200);
+    const type = Math.random();
+    for (let i = 0; i < particleCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      let speed;
+      if (type > 0.5) {
+        // Spherical explosion
+        speed = Math.random() * 10 + 2;
+      } else {
+        // Heart or Ring-like (actually just varied speeds)
+        speed = (Math.random() * Math.random()) * 15 + 2;
+      }
+      this.particles.push(new Particle(
+        this.x, this.y, this.color,
+        Math.cos(angle) * speed, Math.sin(angle) * speed
+      ));
+    }
+    // Occasionally add some white sparkles
+    if (Math.random() > 0.7) {
+        for (let i = 0; i < 50; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 12 + 1;
+            this.particles.push(new Particle(this.x, this.y, "#ffffff", Math.cos(angle) * speed, Math.sin(angle) * speed));
+        }
+    }
+  }
+}
+
+let fireworks = [];
+let particles = [];
+let celebrationAnimationId = null;
+
+function animateFireworks() {
+  const canvas = document.getElementById('fireworksCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (Math.random() < 0.08) {
+    fireworks.push(new Firework(canvas.width, canvas.height));
+  }
+
+  fireworks.forEach((fw, i) => {
+    fw.update();
+    fw.draw(ctx);
+    if (fw.dead) {
+      particles.push(...fw.particles);
+      fireworks.splice(i, 1);
+    }
+  });
+
+  particles.forEach((p, i) => {
+    p.update();
+    p.draw(ctx);
+    if (p.alpha <= 0) {
+      particles.splice(i, 1);
+    }
+  });
+
+  celebrationAnimationId = requestAnimationFrame(animateFireworks);
+}
+
+function startCelebration(text) {
+  const modal = document.getElementById('celebrationModal');
+  const canvas = document.getElementById('fireworksCanvas');
+  const textEl = document.getElementById('celebrationText');
+  const btnEl = document.getElementById('celebrationButton');
+  
+  const T = TRANSLATIONS[currentLang];
+  
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  textEl.innerText = text;
+  btnEl.innerText = T.continue || 'OK';
+  
+  modal.classList.add('active');
+  
+  animateFireworks();
+  
+  const closeCelebration = () => {
+    modal.classList.remove('active');
+    cancelAnimationFrame(celebrationAnimationId);
+    // Очищаем массивы для следующего раза
+    fireworks = [];
+    particles = [];
+  };
+  
+  btnEl.onclick = (e) => {
+    e.stopPropagation();
+    closeCelebration();
+  };
+  
+  // Also close on background click
+  modal.onclick = closeCelebration;
+}
+
 // === ФУНКЦИИ ДЛЯ ВОСПРОИЗВЕДЕНИЯ ВИДЕО ===
 function playPlayerVideo() {
     const videoModal = document.getElementById('videoModal');
@@ -37953,6 +38232,27 @@ function closeVideoModal() {
         video.pause();
         video.currentTime = 0; // Сброс видео на начало
     }
+}
+
+function checkCelebration() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+
+  const T = TRANSLATIONS[currentLang];
+  
+  if (location.hash === '#test-salute') {
+    startCelebration(T.start_greeting);
+    return;
+  }
+
+  if (todayStr === '2026-06-11') {
+    startCelebration(T.start_greeting);
+  } else if (todayStr === '2026-07-19') {
+    startCelebration(T.final_greeting);
+  }
 }
 
 function checkAdmin() {
@@ -37979,16 +38279,24 @@ function checkAdmin() {
     </div>
 </div>
 
+<div id="celebrationModal">
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="celebration-content">
+    <div id="celebrationText" class="celebration-text"></div>
+    <button id="celebrationButton"></button>
+  </div>
+</div>
+
 <span class="admin-trigger" id="adminTrigger" onclick="checkAdmin()"></span>
 
 <script>
 // Final initialization to ensure all DOM elements are present
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        initTeamPopover(); load(); buildUI(); renderAll();
+        initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
     });
 } else {
-    initTeamPopover(); load(); buildUI(); renderAll();
+    initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
 }
 </script>
 
