@@ -730,16 +730,6 @@ body.admin-active .toolbar { display: flex; }
 
 
 
-<!-- Видео модальное окно (должно быть в самом низу body) -->
-<div id="videoModal" onclick="closeVideoModal()">
-    <div class="video-modal-content" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeVideoModal()" title="Закрыть">✕</button>
-        <video id="playerVideo" controls autoplay playsinline>
-            <source src="image/Video.mp4" type="video/mp4">
-            Ваш браузер не поддерживает воспроизведение видео.
-        </video>
-    </div>
-</div>
   <div class="modal-content">
     <div class="modal-header">
       <h3 id="modalPlayerName"></h3>
@@ -1552,7 +1542,19 @@ const TRANSLATIONS = {
   , coaches: "教练组", description: "球队简介"}
 };
 
-function load(){
+async function load(){
+  try{
+    const res = await fetch('results.json');
+    if(res.ok) {
+      const d = await res.json();
+      if(d && d.scores) {
+        scores = d.scores;
+        showStatus(TRANSLATIONS[currentLang].loaded + ' (results.json) ' + new Date(d.updatedAt).toLocaleString(currentLang), true);
+        return;
+      }
+    }
+  } catch(e) {}
+
   try{
     const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('wc2026_results_v1');
     if(!raw)return;
@@ -1564,6 +1566,9 @@ function persist(){
   const payload={version:2,updatedAt:new Date().toISOString(),scores};
   localStorage.setItem(STORAGE_KEY,JSON.stringify(payload));
   showStatus(TRANSLATIONS[currentLang].saved+' '+new Date().toLocaleString(currentLang),true);
+
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='results.json';a.click();
 }
 function showStatus(msg,ok){const el=document.getElementById('saveStatus');el.textContent=msg;el.className=ok?'ok':'';}
 function debounceSave(){clearTimeout(saveTimer);saveTimer=setTimeout(persist,400);}
@@ -1974,7 +1979,7 @@ const SQUADS = {
           "zh": "防守领袖，禁区的主宰。劳尔·兰赫尔拥有独特的阅读比赛能力，赢得了“扫描仪”的绰号。他在出击时的果敢给整个墨西哥队带来了信心。 他在最近三场比赛中保持零封。"
         },
         "image": "image/Kubok.jpg",
-        "no": 42,
+        "no": 12,
         "stats": {
           "speed": 71,
           "technique": 74,
@@ -2001,7 +2006,7 @@ const SQUADS = {
           "zh": "防守领袖，禁区的主宰。卡洛斯·阿塞韦多拥有独特的阅读比赛能力，赢得了“扫描仪”的绰号。他在出击时的果敢给整个墨西哥队带来了信心。 以从自家球门区直接得分的能力而闻名。"
         },
         "image": "image/Kubok.jpg",
-        "no": 97,
+        "no": 25,
         "stats": {
           "speed": 71,
           "technique": 98,
@@ -2028,7 +2033,7 @@ const SQUADS = {
           "zh": "墨西哥球门的终极守护者。吉列尔莫·奥乔亚因其惊人的反应而闻名，并在2025年创造了点球扑救纪录。球迷们相信他的“钢铁意志”将是本届世界杯的关键。 他在最近三场比赛中保持零封。"
         },
         "image": "image/Kubok.jpg",
-        "no": 1,
+        "no": 13,
         "stats": {
           "speed": 54,
           "technique": 55,
@@ -2055,7 +2060,7 @@ const SQUADS = {
           "zh": "一位坚不可摧的后卫，他的铲球已成为墨西哥的传奇。豪尔赫·桑切斯将力量与战术灵活性完美结合，使他成为本届赛事中最受关注的后卫之一。 职业生涯之初他是名前锋，这解释了他敏锐的进球本能。"
         },
         "image": "image/Kubok.jpg",
-        "no": 14,
+        "no": 2,
         "stats": {
           "speed": 61,
           "technique": 55,
@@ -2082,7 +2087,7 @@ const SQUADS = {
           "zh": "墨西哥的拦截大师和防守支柱。塞萨尔·蒙特斯以在高压下的沉着冷静以及通过精准的第一传发起反击的能力而闻名。他是后防线的核心。 业余时间他喜欢下国际象棋，这有助于他的战术思维。"
         },
         "image": "image/Kubok.jpg",
-        "no": 11,
+        "no": 3,
         "stats": {
           "speed": 77,
           "technique": 78,
@@ -2109,7 +2114,7 @@ const SQUADS = {
           "zh": "一位技术精湛的大师，他在中场的发挥决定了墨西哥的节奏。埃德森·阿尔瓦雷斯以盘带和在极小空间内控球的能力而闻名。他是球场上真正的艺术家。 他因控制比赛节奏的能力而被誉为“节拍器”。"
         },
         "image": "image/Kubok.jpg",
-        "no": 3,
+        "no": 4,
         "stats": {
           "speed": 59,
           "technique": 60,
@@ -2136,7 +2141,7 @@ const SQUADS = {
           "zh": "墨西哥的拦截大师和防守支柱。约翰·巴斯克斯以在高压下的沉着冷静以及通过精准的第一传发起反击的能力而闻名。他是后防线的核心。 业余时间他喜欢下国际象棋，这有助于他的战术思维。"
         },
         "image": "image/Kubok.jpg",
-        "no": 12,
+        "no": 5,
         "stats": {
           "speed": 61,
           "technique": 63,
@@ -2163,7 +2168,7 @@ const SQUADS = {
           "zh": "墨西哥的拦截大师和防守支柱。以色列·雷耶斯以在高压下的沉着冷静以及通过精准的第一传发起反击的能力而闻名。他是后防线的核心。 职业生涯之初他是名前锋，这解释了他敏锐的进球本能。"
         },
         "image": "image/Kubok.jpg",
-        "no": 63,
+        "no": 23,
         "stats": {
           "speed": 75,
           "technique": 83,
@@ -2190,7 +2195,7 @@ const SQUADS = {
           "zh": "墨西哥的拦截大师和防守支柱。马特奥·查韦斯以在高压下的沉着冷静以及通过精准的第一传发起反击的能力而闻名。他是后防线的核心。 他是目前阵中速度最快的球员之一。"
         },
         "image": "image/Kubok.jpg",
-        "no": 28,
+        "no": 26,
         "stats": {
           "speed": 84,
           "technique": 84,
@@ -2217,7 +2222,7 @@ const SQUADS = {
           "zh": "墨西哥的拦截大师和防守支柱。赫苏斯·加利亚多以在高压下的沉着冷静以及通过精准的第一传发起反击的能力而闻名。他是后防线的核心。 职业生涯之初他是名前锋，这解释了他敏锐的进球本能。"
         },
         "image": "image/Kubok.jpg",
-        "no": 13,
+        "no": 17,
         "stats": {
           "speed": 54,
           "technique": 51,
@@ -2244,7 +2249,7 @@ const SQUADS = {
           "zh": "球队的引擎和墨西哥进攻的指挥官。埃里克·利拉拥有不可思议的视野，能够传出其他人察觉不到的球。2025年，他是联赛的助攻王。 他因控制比赛节奏的能力而被誉为“节拍器”。"
         },
         "image": "image/Kubok.jpg",
-        "no": 35,
+        "no": 14,
         "stats": {
           "speed": 95,
           "technique": 92,
@@ -2271,7 +2276,7 @@ const SQUADS = {
           "zh": "球队的引擎和墨西哥进攻的指挥官。路易斯·罗莫拥有不可思议的视野，能够传出其他人察觉不到的球。2025年，他是联赛的助攻王。 他能流利使用四种语言。"
         },
         "image": "image/Kubok.jpg",
-        "no": 85,
+        "no": 16,
         "stats": {
           "speed": 88,
           "technique": 73,
@@ -2298,7 +2303,7 @@ const SQUADS = {
           "zh": "一位技术精湛的大师，他在中场的发挥决定了墨西哥的节奏。阿尔瓦罗·菲达尔戈以盘带和在极小空间内控球的能力而闻名。他是球场上真正的艺术家。 他因控制比赛节奏的能力而被誉为“节拍器”。"
         },
         "image": "image/Kubok.jpg",
-        "no": 93,
+        "no": 8,
         "stats": {
           "speed": 71,
           "technique": 98,
@@ -2325,7 +2330,7 @@ const SQUADS = {
           "zh": "一位技术精湛的大师，他在中场的发挥决定了墨西哥的节奏。奥尔贝林·皮内达以盘带和在极小空间内控球的能力而闻名。他是球场上真正的艺术家。 本赛季他的传球准确率高达94%。"
         },
         "image": "image/Kubok.jpg",
-        "no": 4,
+        "no": 11,
         "stats": {
           "speed": 80,
           "technique": 92,
@@ -2352,7 +2357,7 @@ const SQUADS = {
           "zh": "球队的引擎和墨西哥进攻的指挥官。奥贝德·巴尔加斯拥有不可思议的视野，能够传出其他人察觉不到的球。2025年，他是联赛的助攻王。 他因控制比赛节奏的能力而被誉为“节拍器”。"
         },
         "image": "image/Kubok.jpg",
-        "no": 38,
+        "no": 20,
         "stats": {
           "speed": 80,
           "technique": 70,
@@ -2379,7 +2384,7 @@ const SQUADS = {
           "zh": "一位技术精湛的大师，他在中场的发挥决定了墨西哥的节奏。吉尔伯托·莫拉以盘带和在极小空间内控球的能力而闻名。他是球场上真正的艺术家。 他能流利使用四种语言。"
         },
         "image": "image/Kubok.jpg",
-        "no": 14,
+        "no": 28,
         "stats": {
           "speed": 96,
           "technique": 85,
@@ -2406,7 +2411,7 @@ const SQUADS = {
           "zh": "球队的引擎和墨西哥进攻的指挥官。路易斯·查韦斯拥有不可思议的视野，能够传出其他人察觉不到的球。2025年，他是联赛的助攻王。 他能流利使用四种语言。"
         },
         "image": "image/Kubok.jpg",
-        "no": 97,
+        "no": 18,
         "stats": {
           "speed": 99,
           "technique": 99,
@@ -2433,7 +2438,7 @@ const SQUADS = {
           "zh": "一位技术精湛的大师，他在中场的发挥决定了墨西哥的节奏。布莱恩·古铁雷斯以盘带和在极小空间内控球的能力而闻名。他是球场上真正的艺术家。 他因控制比赛节奏的能力而被誉为“节拍器”。"
         },
         "image": "image/Kubok.jpg",
-        "no": 65,
+        "no": 29,
         "stats": {
           "speed": 90,
           "technique": 89,
@@ -2460,7 +2465,7 @@ const SQUADS = {
           "zh": "禁区内的掠食者，墨西哥对手的主要威胁。劳尔·希门尼斯天生具有进球本能，能够转化极小的机会。他在预选赛中的进球是球队晋级世界杯的关键。 他的进球庆祝动作已经在社交媒体上疯传。"
         },
         "image": "image/Kubok.jpg",
-        "no": 7,
+        "no": 9,
         "stats": {
           "speed": 99,
           "technique": 86,
@@ -38110,18 +38115,6 @@ toggleMuteBtn.onclick = (e) => {
   toggleMute();
 };
 
-document.addEventListener('click', function firstClick() {
-  if (bgMusic.paused) {
-    bgMusic.play().then(() => {
-      bgMusic.muted = false;
-      muteIcon.innerHTML = icons.up;
-    }).catch(() => {});
-  } else if (bgMusic.muted) {
-    bgMusic.muted = false;
-    muteIcon.innerHTML = icons.up;
-  }
-  document.removeEventListener('click', firstClick);
-}, { once: true });
 
 // === САЛЮТ И ПРАЗДНИЧНАЯ ЛОГИКА ===
 class Particle {
@@ -38324,7 +38317,7 @@ function checkCelebration() {
     return;
   }
 
-  if (todayStr === '2026-06-11') {
+  if (todayStr >= '2026-06-11' && todayStr <= '2026-06-15') {
     startCelebration(T.start_greeting);
   } else if (todayStr === '2026-07-19') {
     startCelebration(T.final_greeting);
@@ -38348,7 +38341,7 @@ function checkAdmin() {
 <div id="videoModal" onclick="closeVideoModal()">
     <div class="video-modal-content" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeVideoModal()" title="Закрыть">✕</button>
-        <video id="playerVideo" controls autoplay playsinline>
+        <video id="playerVideo" controls playsinline>
             <source src="image/Video.mp4" type="video/mp4">
             Ваш браузер не поддерживает воспроизведение видео.
         </video>
@@ -38368,12 +38361,26 @@ function checkAdmin() {
 <script>
 // Final initialization to ensure all DOM elements are present
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
+    document.addEventListener('DOMContentLoaded', async () => {
+        initTeamPopover(); await load(); buildUI(); renderAll(); checkCelebration();
     });
 } else {
-    initTeamPopover(); load(); buildUI(); renderAll(); checkCelebration();
+    (async () => {
+        initTeamPopover(); await load(); buildUI(); renderAll(); checkCelebration();
+    })();
 }
+// === НОВОЕ: Запуск музыки по первому клику в любом месте сайта ===
+document.addEventListener('click', function startMusicOnFirstClick() {
+  if (bgMusic.paused) {
+    // Пытаемся воспроизвести и снимаем галочку mute, если она была
+    bgMusic.play().then(() => {
+      bgMusic.muted = false;
+      muteIcon.innerHTML = icons.up; // Ставим иконку "звук включен"
+    }).catch(() => {
+      // Игнорируем ошибки, если браузер всё ещё блокирует (крайне редко при реальном клике)
+    });
+  }
+}, { once: true }); // { once: true } гарантирует, что этот код сработает ТОЛЬКО ОДИН РАЗ
 </script>
 
 </body>
