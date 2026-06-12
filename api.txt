@@ -1,0 +1,3 @@
+API: 59a1f0541dfe4987a82ff2000fc5010e
+
+https://www.football-data.org/client/home?confirmEmail=true&urlToken=b9e377ca5ea6d623f545d9e1339f067b191fd8aa6b74e679ef7f8884a7f46693BCA59a1f0541dfe4987a82ff2000fc5010e
