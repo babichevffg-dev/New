@@ -1,0 +1,4 @@
+	
+Connect: localhost
+Name_db: cc198117_babichevfootball
+Pass: Syf9xnBU  
