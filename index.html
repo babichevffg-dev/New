@@ -258,7 +258,6 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .standings tr.pos1{background:rgba(52,152,219,.35)}
 .standings tr.pos2{background:rgba(52,152,219,.2)}
 .standings tr.pos3{background:rgba(52,152,219,.12)}
-.standings tr.pos3.out3{opacity:.45}
 .match-block{border-bottom:1px solid rgba(255,255,255,.08);padding:10px 0}
 .match-meta{font-size:.78rem;color:var(--muted);margin-bottom:6px;line-height:1.4}
 .match-meta b{color:var(--gold);font-weight:600}
@@ -1976,11 +1975,12 @@ function getWinner(mid){return resolveSlot('W'+mid);}
 function renderStandingsTable(g){
   const T = TRANSLATIONS[currentLang];
   const st=calcGroupStandings(g);
-  const q8=getQualifiedThirds().map(t=>t.group);
   let h='<table class="standings"><tr><th>'+T.st_pos+'</th><th>'+T.st_team+'</th><th>'+T.st_p+'</th><th>'+T.st_w+'</th><th>'+T.st_d+'</th><th>'+T.st_l+'</th><th>'+T.st_gf+'</th><th>'+T.st_ga+'</th><th>'+T.st_gd+'</th><th>'+T.st_pts+'</th></tr>';
   st.forEach((s,i)=>{
-    let cls='pos'+(i+1);
-    if(i===2){cls+=' pos3';if(!q8.includes(g))cls+=' out3'}
+    let cls='';
+    if(i===0)cls='pos1';
+    if(i===1)cls='pos2';
+    if(i===2)cls='pos3';
     h+='<tr class="'+cls+'"><td>'+(i+1)+'</td><td>'+teamLabel(s.id)+'</td><td>'+s.played+'</td><td>'+s.w+'</td><td>'+s.d+'</td><td>'+s.l+'</td><td>'+s.gf+'</td><td>'+s.ga+'</td><td>'+(s.gd>0?'+':'')+s.gd+'</td><td><b>'+s.pts+'</b></td></tr>';
   });
   return h+'</table>';
