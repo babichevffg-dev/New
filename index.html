@@ -534,9 +534,6 @@ body.admin-active .toolbar { display: flex; }
 #playerRadar { background: rgba(0,0,0,0.2); border-radius: 50%; }
 
 /* Kit Toggle */
-.kit-visualizer { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 20px; margin-top: 10px; transition: 0.2s; }
-.kit-visualizer:hover { background: rgba(255,255,255,0.1); border-color: var(--gold); }
-.kit-icon { width: 24px; height: 24px; fill: var(--team-accent, var(--accent)); }
 
 /* Road Map */
 .road-map { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px; border-left: 3px solid var(--team-accent, var(--accent)); }
@@ -30233,7 +30230,7 @@ const SQUADS = {
           "fr": "Maître des interceptions et pilier défensif de Argentine. Leonardo Balerdi est connu pour son calme sous pression et sa capacité à lancer des contre-attaques avec une première passe précise. Il est le cœur de la défense. Il a commencé sa carrière comme attaquant, ce qui explique son instinct de buteur.",
           "zh": "阿根廷的拦截大师和防守支柱。莱昂纳多·巴莱尔迪以在高压下的沉着冷静以及通过精准的第一传发起反击的能力而闻名。他是后防线的核心。 职业生涯之初他是名前锋，这解释了他敏锐的进球本能。"
         },
-        "image": "https://www.sport.fr/wp-content/uploads/2024/11/ICONSPORT_241000_0444-jpg.webp",
+        "image": "https://img.championat.com/s/1200x630/news/big/u/m/agent-zaschitnika-marselya-balerdi-otreagiroval-na-sluhi-ob-interese-spartaka-k-igroku_17541286161998031828.jpg",
         "no": 21,
         "stats": {
           "speed": 56,
@@ -30722,7 +30719,7 @@ const SQUADS = {
           "fr": "Un attaquant rapide dont l'accélération explosive laisse les défenseurs sur place. Lionel Messi est la star la plus brillante de l'attaque de Argentine, connu pour ses tirs de loin et sa capacité à gagner des matchs cruciaux à lui seul. Il a marqué le but le plus rapide de l'histoire du championnat national.",
           "zh": "一位闪电般的飞翼，他爆发性的速度让后卫望尘莫及。莱昂内尔·梅西是阿根廷进攻线上最璀璨的明星，以远射和独自扭转战局的能力而闻名。 他打进了国家联赛历史上最快的进球。"
         },
-        "image": "https://s.yimg.com/ny/api/res/1.2/FlIuhonsTONm0bge5BgALg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04MDA7Y2Y9d2VicA--/https://s.yimg.com/os/creatr-uploaded-images/2023-12/e986aaa0-938e-11ee-8fad-e95628c37ad6",
+        "image": "https://platform.barcablaugranes.com/wp-content/uploads/sites/21/chorus/uploads/chorus_asset/file/24300404/1450101403.jpg?quality=90&amp;strip=all&amp;crop=0%2C5.2542174320525%2C100%2C80.594905715001&amp;w=1200",
         "no": 10,
         "stats": {
           "speed": 65,
@@ -39612,9 +39609,16 @@ function showSquad(teamId){
 
   // Dynamic branding
   if(t.colors && t.colors[0]) {
-    document.documentElement.style.setProperty('--team-accent', t.colors[0]);
+    let bestColor = t.colors[0];
+    const isBad = c => c.toUpperCase() === "#FFFFFF" || c.toUpperCase() === "#000000";
+    if (isBad(t.colors[0]) && t.colors[1] && !isBad(t.colors[1])) {
+      bestColor = t.colors[1];
+    } else if (t.colors[0].toUpperCase() === "#FFFFFF" && t.colors[1]) {
+      bestColor = t.colors[1];
+    }
+    document.documentElement.style.setProperty("--team-accent", bestColor);
   } else {
-    document.documentElement.style.removeProperty('--team-accent');
+    document.documentElement.style.removeProperty("--team-accent");
   }
 
   let h = `<button class="back-btn" onclick="renderTeamsGrid()"><span>${T.back_to_teams}</span></button>`;
@@ -39642,10 +39646,6 @@ function showSquad(teamId){
       ${heritageH}
       <p class="team-desc">${desc}</p>
 
-      <div class="kit-visualizer" onclick="toggleKit('${teamId}')">
-        <svg class="kit-icon" viewBox="0 0 24 24"><path d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/></svg>
-        <span>Kit / Color Toggle</span>
-      </div>
     </div>
 
     <div class="formation-controls">
@@ -39888,15 +39888,6 @@ function drawRadarChart(stats) {
     const y = centerY + Math.sin(angle) * (radius + 15);
     ctx.fillText(label.toUpperCase(), x, y);
   });
-}
-
-function toggleKit(teamId) {
-  const t = TEAMS[teamId];
-  if (!t.colors || t.colors.length < 2) return;
-
-  const currentAccent = getComputedStyle(document.documentElement).getPropertyValue('--team-accent').trim();
-  const nextColor = currentAccent === t.colors[0] ? t.colors[1] : t.colors[0];
-  document.documentElement.style.setProperty('--team-accent', nextColor);
 }
 
 function closePlayerModal(){
