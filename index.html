@@ -526,7 +526,8 @@ body.admin-active .toolbar { display: flex; }
 
 /* Heritage Badges */
 .heritage-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-.heritage-badge { padding: 4px 8px; background: rgba(241,196,15,0.15); border: 1px solid var(--gold); border-radius: 4px; color: var(--gold); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+.heritage-badge { padding: 4px 8px; background: rgba(241,196,15,0.15); border: 1px solid var(--gold); border-radius: 4px; color: var(--gold); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.3s; }
+.heritage-badge:hover { background: rgba(241,196,15,0.3); transform: scale(1.05); }
 
 /* Radar Chart */
 .radar-container { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
@@ -747,9 +748,23 @@ body.admin-active .toolbar { display: flex; }
       <span class="social-hint">Click photo for Social Media</span>
       <div id="modalPlayerExtra" class="modal-extra"></div>
       <p id="modalPlayerStory"></p>
-     
+
     </div>
 
+  </div>
+</div>
+<div id="victoryModal" class="modal-overlay">
+  <div class="modal-content" style="background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%); border-color: #f1c40f; box-shadow: 0 0 30px rgba(241, 196, 15, 0.4);">
+    <div class="modal-header" style="background: linear-gradient(to right, rgba(241, 196, 15, 0.15), transparent); border-bottom: 1px solid rgba(241, 196, 15, 0.2);">
+      <h3 id="modalVictoryTitle" style="color: #f1c40f; text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);"></h3>
+      <button class="modal-close" onclick="closeVictoryModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="image/Kubok.jpg" alt="World Cup" style="width: 150px; height: 150px; object-fit: cover; border-radius: 15px; border: 2px solid #f1c40f; box-shadow: 0 0 25px rgba(241, 196, 15, 0.4); background: #000;">
+      </div>
+      <p id="modalVictoryStory" style="font-style: italic; border-left: 3px solid #f1c40f; padding-left: 15px;"></p>
+    </div>
   </div>
 </div>
 <div class="toolbar">
@@ -1097,6 +1112,135 @@ const STADIUMS_DATA = [
 const STORAGE_KEY='wc2026_results_v2';
 const API_KEY = '59a1f0541dfe4987a82ff2000fc5010e';
 let scores={};
+const VICTORY_STORIES = {
+  "1930": {
+    "ru": "Первый в истории чемпионат мира прошел в Уругвае. Хозяева турнира подтвердили свой статус сильнейшей команды планеты, обыграв в финале Аргентину со счетом 4:2. Этот триумф стал национальным праздником, а на следующий день после финала в стране был объявлен выходной.",
+    "en": "The first-ever World Cup took place in Uruguay. The hosts confirmed their status as the strongest team on the planet by beating Argentina 4-2 in the final. This triumph became a national holiday, and the day after the final was declared a day off in the country.",
+    "es": "La primera Copa del Mundo se celebró en Uruguay. Los anfitriones confirmaron su condición de equipo más fuerte del planeta al vencer a Argentina por 4-2 en la final. Este triunfo se convirtió en fiesta nacional y el día después de la final fue declarado festivo en el país.",
+    "fr": "La toute première Coupe du monde s’est déroulée en Uruguay. Les hôtes ont confirmé leur statut de meilleure équipe de la planète en battant l’Argentine 4-2 en finale. Ce triomphe est devenu une fête nationale et le lendemain de la finale a été déclaré jour férié dans le pays.",
+    "zh": "首届世界杯在乌拉圭举行。东道主在决赛中以4-2击败阿根廷，证实了他们作为地球上最强球队的地位。这次胜利成为了全国性的节日，决赛后的第二天被定为国家的法定假日。"
+  },
+  "1950": {
+    "ru": "Знаменитый «Мараканасо». Уругваю нужна была только победа в последнем матче против Бразилии, и они совершили невозможное, обыграв хозяев со счетом 2:1 на глазах у 200 тысяч зрителей. Эта победа считается одной из величайших сенсаций в истории футбола.",
+    "en": "The famous 'Maracanazo'. Uruguay needed only a win in the last match against Brazil, and they did the impossible, beating the hosts 2-1 in front of 200,000 spectators. This victory is considered one of the greatest upsets in football history.",
+    "es": "El famoso 'Maracanazo'. Uruguay sólo necesitaba ganar el último partido contra Brasil, y lo consiguió venciendo a los anfitriones por 2-1 ante 200.000 espectadores. Esta victoria está considerada una de las mayores sorpresas de la historia del fútbol.",
+    "fr": "Le célèbre 'Maracanazo'. L’Uruguay n’avait besoin que d’une victoire lors du dernier match contre le Brésil, et ils ont réalisé l’impossible en battant les hôtes 2-1 devant 200 000 spectateurs. Cette victoire est considérée comme l’un des plus grands exploits de l’histoire du football.",
+    "zh": "著名的“马拉卡纳之痛”。乌拉圭在对阵巴西的最后一场比赛中只需要一场胜利，他们在20万观众面前以2-1击败东道主，完成了不可能的任务。这次胜利被认为是足球史上最伟大的冷门之一。"
+  },
+  "1954": {
+    "ru": "«Бернское чудо». Сборная ФРГ, будучи аутсайдером, обыграла в финале «непобедимую» сборную Венгрии со счетом 3:2, проигрывая по ходу матча 0:2. Эта победа имела колоссальное значение для восстановления духа нации в послевоенной Германии.",
+    "en": "The 'Miracle of Bern'. West Germany, as underdogs, beat the 'invincible' Hungarian team 3-2 in the final after trailing 0-2. This victory was of colossal importance for restoring the spirit of the nation in post-war Germany.",
+    "es": "El 'Milagro de Berna'. Alemania Occidental, como perdedora, venció a la 'invencible' Hungría por 3-2 en la final tras ir perdiendo 0-2. Esta victoria tuvo una importancia colosal para restaurar el espíritu de la nación en la Alemania de la posguerra.",
+    "fr": "Le 'Miracle de Berne'. L’Allemagne de l’Ouest, outsider, a battu l’équipe de Hongrie 'invincible' 3-2 en finale après avoir été menée 0-2. Cette victoire a eu une importance colossale pour restaurer l’esprit de la nation dans l’Allemagne d’après-guerre.",
+    "zh": "“伯尔尼奇迹”。西德队作为弱者，在决赛中0-2落后的情况下，最终以3-2击败了“不可战胜”的匈牙利队。这次胜利对于恢复战后德国的民族精神具有巨大的意义。"
+  },
+  "1958": {
+    "ru": "Мир узнал о Пеле. 17-летний бразилец стал самым молодым чемпионом мира, забив два гола в финале против Швеции (5:2). Бразилия стала первой командой, выигравшей чемпионат мира на другом континенте.",
+    "en": "The world learned about Pele. The 17-year-old Brazilian became the youngest world champion, scoring two goals in the final against Sweden (5-2). Brazil became the first team to win a World Cup on a different continent.",
+    "es": "El mundo conoció a Pelé. El brasileño de 17 años se convirtió en el campeón del mundo más joven de la historia al marcar dos goles en la final contra Suecia (5-2). Brasil fue el primer equipo que ganó un Mundial en otro continente.",
+    "fr": "Le monde découvre Pelé. Le Brésilien de 17 ans devient le plus jeune champion du monde de l’histoire, marquant deux buts en finale contre la Suède (5-2). Le Brésil est devenu la première équipe à gagner une Coupe du monde sur un autre continent.",
+    "zh": "世界认识了贝利。17岁的巴西人成为最年轻的世界冠军，在对阵瑞典的决赛中打入两球（5-2）。巴西成为第一支在不同大洲赢得世界杯的球队。"
+  },
+  "1962": {
+    "ru": "Бразилия защитила титул, несмотря на травму Пеле на ранней стадии турнира. Гарринча взял на себя роль лидера, приведя команду к победе в финале над Чехословакией (3:1). Это был второй подряд успех «селесао».",
+    "en": "Brazil defended the title despite Pele's injury early in the tournament. Garrincha took on the leadership role, leading the team to a 3-1 victory in the final over Czechoslovakia. This was the second consecutive success for the Seleção.",
+    "es": "Brasil defendió el título a pesar de la lesión de Pelé al principio del torneo. Garrincha asumió el papel de líder y condujo al equipo a la victoria por 3-1 en la final contra Checoslovaquia. Fue el segundo éxito consecutivo de la Canarinha.",
+    "fr": "Le Brésil a défendu son titre malgré la blessure de Pelé au début du tournoi. Garrincha a repris le rôle de leader, menant l’équipe à une victoire 3-1 en finale contre la Tchécoslovaquie. Ce fut le deuxième succès consécutif de la Seleção.",
+    "zh": "尽管贝利在比赛初期受伤，巴西队还是成功卫冕。加林查承担起了领袖责任，带领球队在决赛中以3-1战胜捷克斯洛伐克。这是桑巴军团连续第二次获得成功。"
+  },
+  "1966": {
+    "ru": "Футбол вернулся домой. Англия выиграла свой единственный чемпионат мира на родной земле. Финал против ФРГ стал легендарным благодаря хет-трику Джеффа Херста и спорному голу в дополнительное время. Итог — 4:2.",
+    "en": "Football came home. England won its only World Cup on home soil. The final against West Germany became legendary thanks to Geoff Hurst's hat-trick and a controversial goal in extra time. Final score — 4-2.",
+    "es": "El fútbol volvió a casa. Inglaterra ganó su único Mundial en su propio país. La final contra Alemania Occidental se hizo legendaria gracias al triplete de Geoff Hurst y a un polémico gol en la prórroga. El resultado final fue de 4-2.",
+    "fr": "Le football est revenu à la maison. L’Angleterre a remporté sa seule Coupe du monde sur son sol. La finale contre l’Allemagne de l’Ouest est devenue légendaire grâce au triplé de Geoff Hurst et à un but controversé en prolongation. Score final — 4-2.",
+    "zh": "足球回家了。英格兰在本土赢得了他们唯一的世界杯冠军。对阵西德的决赛因杰夫·赫斯特的帽子戏法和加时赛中的一粒争议进球而成为传奇。最终比分为4-2。"
+  },
+  "1970": {
+    "ru": "Считается, что это была лучшая сборная Бразилии в истории. Пеле, Жаирзиньо, Тостао и Ривелино показали «красивую игру» (Joga Bonito). В финале была разгромлена Италия (4:1), а Бразилия получила трофей Жюля Риме на вечное хранение.",
+    "en": "This is widely considered the best Brazil team in history. Pele, Jairzinho, Tostao, and Rivelino showcased 'Joga Bonito'. Italy was crushed 4-1 in the final, and Brazil received the Jules Rimet trophy for permanent keeping.",
+    "es": "Se considera que fue la mejor selección brasileña de la historia. Pelé, Jairzinho, Tostão y Rivelino mostraron el 'Joga Bonito'. Italia fue aplastada por 4-1 en la final, y Brasil recibió el trofeo Jules Rimet en propiedad.",
+    "fr": "Cette équipe du Brésil est largement considérée comme la meilleure de l’histoire. Pelé, Jairzinho, Tostão et Rivelino ont fait la démonstration du 'Joga Bonito'. L’Italie a été écrasée 4-1 en finale et le Brésil a reçu le trophée Jules Rimet pour le conserver définitivement.",
+    "zh": "这被广泛认为是历史上最强大的巴西队。贝利、雅伊济尼奥、托斯塔奥和里维利诺展示了“美丽足球”。意大利在决赛中以4-1被击溃，巴西队永久保留了雷米特金杯。"
+  },
+  "1974": {
+    "ru": "ФРГ обыграла в финале «тотальный футбол» Нидерландов с Йоханом Кройфом. Несмотря на быстрый пропущенный гол, немцы проявили характер и победили 2:1. Герд Мюллер забил решающий гол, закрепив за собой статус великого бомбардира.",
+    "en": "West Germany beat the 'Total Football' of the Netherlands with Johan Cruyff in the final. Despite conceding an early goal, the Germans showed character and won 2-1. Gerd Muller scored the winning goal, cementing his status as a great scorer.",
+    "es": "Alemania Occidental venció en la final al 'Fútbol Total' de Holanda con Johan Cruyff. A pesar de encajar un gol tempranero, los alemanes mostraron carácter y ganaron 2-1. Gerd Müller marcó el gol de la victoria, consolidando su condición de gran goleador.",
+    "fr": "L’Allemagne de l’Ouest a battu le 'football total' des Pays-Bas de Johan Cruyff en finale. Malgré un but encaissé rapidement, les Allemands ont fait preuve de caractère et se sont imposés 2-1. Gerd Müller a marqué le but de la victoire, cimentant son statut de grand buteur.",
+    "zh": "西德在决赛中击败了拥有约翰·克鲁伊夫的荷兰队“全攻全守”足球。尽管开场就丢了一球，但德国人展现了坚韧的性格并以2-1获胜。盖德·穆勒打入了制胜球，巩固了他作为伟大射手的地位。"
+  },
+  "1978": {
+    "ru": "Аргентина впервые стала чемпионом на домашнем турнире. В напряженном финале против Нидерландов Марио Кемпес забил дважды, принеся победу 3:1 в дополнительное время. Стадион «Монументаль» утонул в облаке конфетти.",
+    "en": "Argentina became champion for the first time at its home tournament. In a tense final against the Netherlands, Mario Kempes scored twice, bringing a 3-1 victory in extra time. The Estadio Monumental drowned in a cloud of confetti.",
+    "es": "Argentina se proclamó campeona por primera vez en su torneo local. En una tensa final contra Holanda, Mario Kempes marcó por partida doble y dio la victoria por 3-1 en la prórroga. El Estadio Monumental se ahogó en una nube de confeti.",
+    "fr": "L’Argentine est devenue championne pour la première fois lors de son tournoi à domicile. Dans une finale tendue contre les Pays-Bas, Mario Kempes a marqué deux fois, apportant une victoire 3-1 en prolongation. L’Estadio Monumental a été noyé sous un nuage de confettis.",
+    "zh": "阿根廷在本土举行的锦标赛中首次夺冠。在对阵荷兰的紧张决赛中，马里奥·肯佩斯梅开二度，在加时赛中以3-1获胜。纪念碑球场淹没在五彩纸屑的云海中。"
+  },
+  "1986": {
+    "ru": "Турнир Диего Марадоны. Его «Рука Бога» и «Гол столетия» в матче против Англии стали частью истории. В финале Аргентина обыграла ФРГ со счетом 3:2, а Марадона поднял кубок над головой на стадионе «Ацтека».",
+    "en": "Diego Maradona's tournament. His 'Hand of God' and 'Goal of the Century' against England became part of history. In the final, Argentina beat West Germany 3-2, and Maradona lifted the cup over his head at the Azteca Stadium.",
+    "es": "El torneo de Diego Maradona. Su 'Mano de Dios' y el 'Gol del Siglo' contra Inglaterra pasaron a la historia. En la final, Argentina venció a Alemania Occidental por 3-2, y Maradona levantó la copa sobre su cabeza en el Estadio Azteca.",
+    "fr": "Le tournoi de Diego Maradona. Sa 'Main de Dieu' et son 'But du siècle' contre l’Angleterre font désormais partie de l’histoire. En finale, l’Argentine a battu l’Allemagne de l’Ouest 3-2 et Maradona a brandi la coupe au-dessus de sa tête au stade Azteca.",
+    "zh": "迭戈·马拉多纳的世界杯。他在对阵英格兰时的“上帝之手”和“世纪之球”成为了历史的一部分。决赛中，阿根廷以3-2击败西德，马拉多纳在阿兹特克体育场高举奖杯。"
+  },
+  "1990": {
+    "ru": "Реванш ФРГ. В повторении финала 1986 года немцы оказались сильнее Аргентины, победив 1:0 благодаря пенальти Андреаса Бреме. Франц Беккенбауэр стал чемпионом и как игрок, и как тренер.",
+    "en": "West Germany's revenge. In a rematch of the 1986 final, the Germans were stronger than Argentina, winning 1-0 thanks to Andreas Brehme's penalty. Franz Beckenbauer became champion as both a player and a coach.",
+    "es": "La revancha de Alemania Occidental. En una repetición de la final de 1986, los alemanes fueron más fuertes que Argentina, ganando 1-0 gracias a un penalti de Andreas Brehme. Franz Beckenbauer se proclamó campeón como jugador y como seleccionador.",
+    "fr": "La revanche de l’Allemagne de l’Ouest. Dans une réédition de la finale de 1986, les Allemands ont été plus forts que l’Argentine, s’imposant 1-0 grâce au penalty d’Andreas Brehme. Franz Beckenbauer est devenu champion en tant que joueur et en tant qu’entraîneur.",
+    "zh": "西德队的复仇。在1986年决赛的重演中，德国队比阿根廷队更强大，凭借安德烈亚斯·布雷默的点球以1-0获胜。弗朗茨·贝肯鲍尔作为球员和教练都成为了冠军。"
+  },
+  "1994": {
+    "ru": "Первый финал, судьба которого решилась в серии пенальти. После 0:0 в основное и дополнительное время против Италии, Бразилия праздновала победу. Промах Роберто Баджо стал трагическим моментом турнира, а Бразилия стала четырехкратным чемпионом.",
+    "en": "The first final decided by a penalty shootout. After 0-0 in regular and extra time against Italy, Brazil celebrated victory. Roberto Baggio's miss was a tragic moment of the tournament, and Brazil became a four-time champion.",
+    "es": "La primera final decidida por tanda de penaltis. Tras el 0-0 en el tiempo reglamentario y la prórroga contra Italia, Brasil celebró la victoria. El fallo de Roberto Baggio fue un momento trágico del torneo, y Brasil se convirtió en tetracampeona.",
+    "fr": "La première finale décidée aux tirs au but. Après un 0-0 dans le temps réglementaire et la prolongation contre l’Italie, le Brésil fête la victoire. Le raté de Roberto Baggio a été un moment tragique du tournoi, et le Brésil est devenu quadruple champion.",
+    "zh": "第一场由点球大战决出胜负的决赛。在对阵意大利的正赛和加时赛战成0-0后，巴西庆祝胜利。罗伯托·巴乔的失误成为锦标赛的悲剧时刻，巴西成为四届冠军。"
+  },
+  "1998": {
+    "ru": "Франция празднует на Елисейских полях. Хозяева турнира разгромили в финале Бразилию со счетом 3:0. Зинедин Зидан забил дважды головой, став национальным героем. Этот триумф объединил всю страну.",
+    "en": "France celebrates on the Champs-Élysées. The tournament hosts crushed Brazil 3-0 in the final. Zinedine Zidane scored twice with headers, becoming a national hero. This triumph united the whole country.",
+    "es": "Francia lo celebra en los Campos Elíseos. Los anfitriones del torneo aplastaron a Brasil por 3-0 en la final. Zinedine Zidane marcó dos goles de cabeza y se convirtió en un héroe nacional. Este triunfo unió a todo el país.",
+    "fr": "La France fait la fête sur les Champs-Élysées. Les hôtes du tournoi ont écrasé le Brésil 3-0 en finale. Zinédine Zidane a marqué deux fois de la tête, devenant un héros national. Ce triomphe a uni tout le pays.",
+    "zh": "法国在香榭丽舍大街庆祝。东道主在决赛中以3-0击溃巴西。齐内丁·齐达内两次头球破门，成为民族英雄。这次胜利团结了整个国家。"
+  },
+  "2002": {
+    "ru": "Возвращение Роналдо. После травм и разочарования 1998 года, «Феномен» забил 8 голов на турнире, включая два в финале против Германии (2:0). Бразилия выиграла все матчи на турнире, став пентакампеонами.",
+    "en": "The return of Ronaldo. After injuries and the disappointment of 1998, 'The Phenomenon' scored 8 goals in the tournament, including two in the final against Germany (2-0). Brazil won every match in the tournament, becoming pentacampeões.",
+    "es": "El regreso de Ronaldo. Tras las lesiones y la decepción de 1998, 'El Fenómeno' marcó 8 goles en el torneo, incluidos dos en la final contra Alemania (2-0). Brasil ganó todos los partidos del torneo y se proclamó pentacampeona.",
+    "fr": "Le retour de Ronaldo. Après les blessures et la déception de 1998, 'Il Fenomeno' a marqué 8 buts dans le tournoi, dont deux en finale contre l’Allemagne (2-0). Le Brésil a remporté tous ses matches du tournoi, devenant pentacampeões.",
+    "zh": "罗纳尔多的回归。在经历了伤病和1998年的失望后，“外星人”在锦标赛中打入8球，包括在对阵德国的决赛中攻入两球（2-0）。巴西队赢得了锦标赛的所有比赛，成为五星巴西。"
+  },
+  "2010": {
+    "ru": "Эра испанского доминирования. Испания выиграла свой первый титул, показав футбол «тики-така». В напряженном финале против Нидерландов Андрес Иньеста забил единственный гол на 116-й минуте. Африканский вувузелы стали символом этого мундиаля.",
+    "en": "The era of Spanish dominance. Spain won its first title, showcasing 'tiki-taka' football. In a tense final against the Netherlands, Andres Iniesta scored the only goal in the 116th minute. African vuvuzelas became a symbol of this World Cup.",
+    "es": "La era del dominio español. España ganó su primer título exhibiendo el fútbol 'tiki-taka'. En una tensa final contra Holanda, Andrés Iniesta marcó el único gol en el minuto 116. Las vuvuzelas africanas se convirtieron en un símbolo de este Mundial.",
+    "fr": "L’ère de la domination espagnole. L’Espagne a remporté son premier titre en pratiquant le football 'tiki-taka'. Dans une finale tendue contre les Pays-Bas, Andrés Iniesta a marqué le seul but à la 116e minute. Les vuvuzelas africaines sont devenues le symbole de ce Mondial.",
+    "zh": "西班牙统治时代。西班牙凭借“传控足球”赢得了他们的首个冠军。在对阵荷兰的紧张决赛中，安德烈斯·伊涅斯塔在第116分钟打入全场唯一进球。非洲长笛（呜呜祖拉）成为了这届世界杯的象征。"
+  },
+  "2014": {
+    "ru": "Германия стала первой европейской командой, выигравшей чемпионат мира в Южной Америке. Разгром Бразилии со счетом 7:1 в полуфинале шокировал мир. В финале Марио Гётце забил победный гол в дополнительное время против Аргентины (1:0).",
+    "en": "Germany became the first European team to win a World Cup in South America. The 7-1 thrashing of Brazil in the semi-final shocked the world. In the final, Mario Götze scored the winning goal in extra time against Argentina (1-0).",
+    "es": "Alemania se convirtió en el primer equipo europeo en ganar un Mundial en Sudamérica. La goleada por 7-1 a Brasil en semifinales conmocionó al mundo. En la final, Mario Götze marcó el gol de la victoria en la prórroga contra Argentina (1-0).",
+    "fr": "L’Allemagne est devenue la première équipe européenne à gagner une Coupe du monde en Amérique du Sud. L’écrasement 7-1 du Brésil en demi-finale a choqué le monde entier. En finale, Mario Götze a marqué le but de la victoire en prolongation contre l’Argentine (1-0).",
+    "zh": "德国成为第一支在南美洲赢得世界杯的欧洲球队。半决赛7-1大胜巴西震惊了世界。决赛中，马里奥·格策在加时赛中打入制胜球，以1-0战胜阿根廷。"
+  },
+  "2018": {
+    "ru": "Второй титул «трехцветных». Сборная Франции, ведомая юным Килианом Мбаппе и Антуаном Гризманном, уверенно прошла по турнирной сетке. Финал против Хорватии (4:2) стал самым результативным за последние 50 лет.",
+    "en": "The second title for Les Bleus. The French team, led by young Kylian Mbappé and Antoine Griezmann, confidently marched through the tournament. The final against Croatia (4-2) was the highest-scoring in the last 50 years.",
+    "es": "El segundo título de Les Bleus. La selección francesa, liderada por los jóvenes Kylian Mbappé y Antoine Griezmann, avanzó con paso firme por el torneo. La final contra Croacia (4-2) fue la más goleadora de los últimos 50 años.",
+    "fr": "Le deuxième titre des Bleus. L’équipe de France, emmenée par les jeunes Kylian Mbappé et Antoine Griezmann, a traversé le tournoi avec assurance. La finale contre la Croatie (4-2) a été la plus prolifique de ces 50 dernières années.",
+    "zh": "“三色军团”的第二个冠军。由年轻的基利安·姆巴佩和安托万·格列兹曼领衔的法国队信心十足地走过了整个赛程。对阵克罗地亚的决赛（4-2）是近50年来进球最多的决赛。"
+  },
+  "2022": {
+    "ru": "Коронация Лионеля Месси. Один из лучших финалов в истории завершился победой Аргентины над Францией в серии пенальти (3:3 в основное время). Месси наконец поднял над головой заветный кубок, закрепив за собой статус величайшего.",
+    "en": "The coronation of Lionel Messi. One of the best finals in history ended with Argentina beating France on penalties (3-3 in regular time). Messi finally lifted the coveted cup over his head, cementing his status as the greatest.",
+    "es": "La coronación de Lionel Messi. Una de las mejores finales de la historia terminó con la victoria de Argentina sobre Francia en la tanda de penaltis (3-3 en el tiempo reglamentario). Messi levantó por fin la codiciada copa sobre su cabeza, consolidando su condición de más grande.",
+    "fr": "Le couronnement de Lionel Messi. L’une des plus belles finales de l’histoire s’est achevée par la victoire de l’Argentine sur la France aux tirs au but (3-3 dans le temps réglementaire). Messi a enfin brandi la coupe tant convoitée, confirmant son statut de plus grand de l’histoire.",
+    "zh": "利昂内尔·梅西的加冕。历史上最精彩的决赛之一以阿根廷点球大战击败法国告终（正赛3-3）。梅西终于高举起他梦寐以求的奖杯，巩固了他作为最伟大球员的地位。"
+  }
+};
+
 let isAdmin = false;
 let activeTab=0;
 let saveTimer=null;
@@ -39483,7 +39627,10 @@ function showSquad(teamId){
   let heritageH = '';
   if(t.heritage && t.heritage.length > 0) {
     heritageH = `<div class="heritage-container">` +
-      t.heritage.map(h => `<span class="heritage-badge">🏆 ${h}</span>`).join('') +
+      t.heritage.map(h => {
+        const year = h.split(' ').pop();
+        return `<span class="heritage-badge" onclick="showVictoryDetail('${year}')" title="Victory History">⭐ ${h}</span>`;
+      }).join('') +
       `</div>`;
   }
 
@@ -39661,7 +39808,7 @@ function showPersonDetail(teamId, type, idx) {
     if (extraEl) {
         const T = TRANSLATIONS[currentLang];
         let extraH = '';
-        
+
         if (person.club) {
             extraH += `<div><span>${T.club}</span> ${person.club}</div>`;
         }
@@ -39754,6 +39901,27 @@ function toggleKit(teamId) {
 
 function closePlayerModal(){
   document.getElementById('playerModal').classList.remove('show');
+}
+
+function showVictoryDetail(year) {
+  const story = VICTORY_STORIES[year];
+  if (!story) return;
+
+  const titleEl = document.getElementById('modalVictoryTitle');
+  const storyEl = document.getElementById('modalVictoryStory');
+  const modalEl = document.getElementById('victoryModal');
+
+  const T = TRANSLATIONS[currentLang];
+  const championText = T.champion || "Champion";
+
+  if (titleEl) titleEl.innerText = championText + " " + year;
+  if (storyEl) storyEl.innerText = story[currentLang] || story.en;
+
+  if (modalEl) modalEl.classList.add('show');
+}
+
+function closeVictoryModal() {
+  document.getElementById('victoryModal').classList.remove('show');
 }
 
 function renderStadiums(){
