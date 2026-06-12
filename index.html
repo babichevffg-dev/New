@@ -257,8 +257,7 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .standings td:nth-child(2){text-align:left}
 .standings tr.pos1{background:rgba(52,152,219,.35)}
 .standings tr.pos2{background:rgba(52,152,219,.2)}
-.standings tr.pos3{background:rgba(241,196,15,.25)}
-.standings tr.pos3.out3{opacity:.45}
+.standings tr.pos3{background:rgba(52,152,219,.12)}
 .match-block{border-bottom:1px solid rgba(255,255,255,.08);padding:10px 0}
 .match-meta{font-size:.78rem;color:var(--muted);margin-bottom:6px;line-height:1.4}
 .match-meta b{color:var(--gold);font-weight:600}
@@ -1209,11 +1208,11 @@ const VICTORY_STORIES = {
     "zh": "罗纳尔多的回归。在经历了伤病和1998年的失望后，“外星人”在锦标赛中打入8球，包括在对阵德国的决赛中攻入两球（2-0）。巴西队赢得了锦标赛的所有比赛，成为五星巴西。"
   },
   "2010": {
-    "ru": "Эра испанского доминирования. Испания выиграла свой первый титул, показав футбол «тики-така». В напряженном финале против Нидерландов Андрес Иньеста забил единственный гол на 116-й минуте. Африканский вувузелы стали символом этого мундиаля.",
-    "en": "The era of Spanish dominance. Spain won its first title, showcasing 'tiki-taka' football. In a tense final against the Netherlands, Andres Iniesta scored the only goal in the 116th minute. African vuvuzelas became a symbol of this World Cup.",
-    "es": "La era del dominio español. España ganó su primer título exhibiendo el fútbol 'tiki-taka'. En una tensa final contra Holanda, Andrés Iniesta marcó el único gol en el minuto 116. Las vuvuzelas africanas se convirtieron en un símbolo de este Mundial.",
-    "fr": "L’ère de la domination espagnole. L’Espagne a remporté son premier titre en pratiquant le football 'tiki-taka'. Dans une finale tendue contre les Pays-Bas, Andrés Iniesta a marqué le seul but à la 116e minute. Les vuvuzelas africaines sont devenues le symbole de ce Mondial.",
-    "zh": "西班牙统治时代。西班牙凭借“传控足球”赢得了他们的首个冠军。在对阵荷兰的紧张决赛中，安德烈斯·伊涅斯塔在第116分钟打入全场唯一进球。非洲长笛（呜呜祖拉）成为了这届世界杯的象征。"
+    "ru": "Триумф «Красной Фурии». Испания наконец подняла заветный трофей, очаровав мир гипнотическим танцем «тики-така». В драматичном финале против голландцев Андрес Иньеста вонзил кинжал победы на 116-й минуте, а оглушительный рой африканских вувузел навсегда остался саундтреком этого исторического лета.",
+    "en": "The triumph of the 'Red Fury'. Spain finally lifted the coveted trophy, enchanting the world with the hypnotic dance of 'tiki-taka'. In a dramatic final against the Dutch, Andrés Iniesta plunged the dagger of victory in the 116th minute, while the deafening swarm of African vuvuzelas forever remained the soundtrack of that historic summer.",
+    "es": "El triunfo de la 'Furia Roja'. España finalmente alzó el codiciado trofeo, encantando al mundo con la danza hipnótica del 'tiki-taka'. En una final dramática contra los neerlandeses, Andrés Iniesta clavó la daga de la victoria en el minuto 116, mientras que el ensordecedor enjambre de vuvuzelas africanas quedó para siempre como la banda sonora de aquel verano histórico.",
+    "fr": "Le triomphe de la 'Furie Rouge'. L'Espagne a enfin soulevé le trophée tant convoité, enchantant le monde par la danse hypnotique du 'tiki-taka'. Dans une finale dramatique contre les Néerlandais, Andrés Iniesta a planté le poignard de la victoire à la 116e minute, tandis que l'assourdissant essaim de vuvuzelas africaines est resté à jamais la bande-son de cet été historique.",
+    "zh": "“红色风暴”的凯旋。西班牙终于捧起了梦寐以求的奖杯，用“传控足球”的催眠之舞征服了世界。在与荷兰队的戏剧性决赛中，安德烈斯·伊涅斯塔在第116分钟刺入了胜利之剑，而非洲呜呜祖拉的震耳轰鸣永远成为了那个历史性夏天的背景音乐。"
   },
   "2014": {
     "ru": "Германия стала первой европейской командой, выигравшей чемпионат мира в Южной Америке. Разгром Бразилии со счетом 7:1 в полуфинале шокировал мир. В финале Марио Гётце забил победный гол в дополнительное время против Аргентины (1:0).",
@@ -1976,11 +1975,12 @@ function getWinner(mid){return resolveSlot('W'+mid);}
 function renderStandingsTable(g){
   const T = TRANSLATIONS[currentLang];
   const st=calcGroupStandings(g);
-  const q8=getQualifiedThirds().map(t=>t.group);
   let h='<table class="standings"><tr><th>'+T.st_pos+'</th><th>'+T.st_team+'</th><th>'+T.st_p+'</th><th>'+T.st_w+'</th><th>'+T.st_d+'</th><th>'+T.st_l+'</th><th>'+T.st_gf+'</th><th>'+T.st_ga+'</th><th>'+T.st_gd+'</th><th>'+T.st_pts+'</th></tr>';
   st.forEach((s,i)=>{
-    let cls='pos'+(i+1);
-    if(i===2){cls+=' pos3';if(!q8.includes(g))cls+=' out3'}
+    let cls='';
+    if(i===0)cls='pos1';
+    if(i===1)cls='pos2';
+    if(i===2)cls='pos3';
     h+='<tr class="'+cls+'"><td>'+(i+1)+'</td><td>'+teamLabel(s.id)+'</td><td>'+s.played+'</td><td>'+s.w+'</td><td>'+s.d+'</td><td>'+s.l+'</td><td>'+s.gf+'</td><td>'+s.ga+'</td><td>'+(s.gd>0?'+':'')+s.gd+'</td><td><b>'+s.pts+'</b></td></tr>';
   });
   return h+'</table>';
@@ -30230,7 +30230,7 @@ const SQUADS = {
           "fr": "Maître des interceptions et pilier défensif de Argentine. Leonardo Balerdi est connu pour son calme sous pression et sa capacité à lancer des contre-attaques avec une première passe précise. Il est le cœur de la défense. Il a commencé sa carrière comme attaquant, ce qui explique son instinct de buteur.",
           "zh": "阿根廷的拦截大师和防守支柱。莱昂纳多·巴莱尔迪以在高压下的沉着冷静以及通过精准的第一传发起反击的能力而闻名。他是后防线的核心。 职业生涯之初他是名前锋，这解释了他敏锐的进球本能。"
         },
-        "image": "https://img.championat.com/s/1200x630/news/big/u/m/agent-zaschitnika-marselya-balerdi-otreagiroval-na-sluhi-ob-interese-spartaka-k-igroku_17541286161998031828.jpg",
+        "image": "https://www.sport.fr/wp-content/uploads/2024/11/ICONSPORT_241000_0444-jpg.webp",
         "no": 21,
         "stats": {
           "speed": 56,
@@ -30719,7 +30719,7 @@ const SQUADS = {
           "fr": "Un attaquant rapide dont l'accélération explosive laisse les défenseurs sur place. Lionel Messi est la star la plus brillante de l'attaque de Argentine, connu pour ses tirs de loin et sa capacité à gagner des matchs cruciaux à lui seul. Il a marqué le but le plus rapide de l'histoire du championnat national.",
           "zh": "一位闪电般的飞翼，他爆发性的速度让后卫望尘莫及。莱昂内尔·梅西是阿根廷进攻线上最璀璨的明星，以远射和独自扭转战局的能力而闻名。 他打进了国家联赛历史上最快的进球。"
         },
-        "image": "https://platform.barcablaugranes.com/wp-content/uploads/sites/21/chorus/uploads/chorus_asset/file/24300404/1450101403.jpg?quality=90&amp;strip=all&amp;crop=0%2C5.2542174320525%2C100%2C80.594905715001&amp;w=1200",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Lionel_Messi_WC2022.jpg",
         "no": 10,
         "stats": {
           "speed": 65,
