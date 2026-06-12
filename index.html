@@ -534,9 +534,6 @@ body.admin-active .toolbar { display: flex; }
 #playerRadar { background: rgba(0,0,0,0.2); border-radius: 50%; }
 
 /* Kit Toggle */
-.kit-visualizer { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 20px; margin-top: 10px; transition: 0.2s; }
-.kit-visualizer:hover { background: rgba(255,255,255,0.1); border-color: var(--gold); }
-.kit-icon { width: 24px; height: 24px; fill: var(--team-accent, var(--accent)); }
 
 /* Road Map */
 .road-map { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px; border-left: 3px solid var(--team-accent, var(--accent)); }
@@ -39612,9 +39609,16 @@ function showSquad(teamId){
 
   // Dynamic branding
   if(t.colors && t.colors[0]) {
-    document.documentElement.style.setProperty('--team-accent', t.colors[0]);
+    let bestColor = t.colors[0];
+    const isBad = c => c.toUpperCase() === "#FFFFFF" || c.toUpperCase() === "#000000";
+    if (isBad(t.colors[0]) && t.colors[1] && !isBad(t.colors[1])) {
+      bestColor = t.colors[1];
+    } else if (t.colors[0].toUpperCase() === "#FFFFFF" && t.colors[1]) {
+      bestColor = t.colors[1];
+    }
+    document.documentElement.style.setProperty("--team-accent", bestColor);
   } else {
-    document.documentElement.style.removeProperty('--team-accent');
+    document.documentElement.style.removeProperty("--team-accent");
   }
 
   let h = `<button class="back-btn" onclick="renderTeamsGrid()"><span>${T.back_to_teams}</span></button>`;
@@ -39642,10 +39646,6 @@ function showSquad(teamId){
       ${heritageH}
       <p class="team-desc">${desc}</p>
 
-      <div class="kit-visualizer" onclick="toggleKit('${teamId}')">
-        <svg class="kit-icon" viewBox="0 0 24 24"><path d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/></svg>
-        <span>Kit / Color Toggle</span>
-      </div>
     </div>
 
     <div class="formation-controls">
@@ -39888,15 +39888,6 @@ function drawRadarChart(stats) {
     const y = centerY + Math.sin(angle) * (radius + 15);
     ctx.fillText(label.toUpperCase(), x, y);
   });
-}
-
-function toggleKit(teamId) {
-  const t = TEAMS[teamId];
-  if (!t.colors || t.colors.length < 2) return;
-
-  const currentAccent = getComputedStyle(document.documentElement).getPropertyValue('--team-accent').trim();
-  const nextColor = currentAccent === t.colors[0] ? t.colors[1] : t.colors[0];
-  document.documentElement.style.setProperty('--team-accent', nextColor);
 }
 
 function closePlayerModal(){
