@@ -691,6 +691,16 @@ body.admin-active .toolbar { display: flex; }
 }
 .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
 .color-picker::-webkit-color-swatch { border: 2px solid #fff; border-radius: 50%; }
+
+.match-events-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0 5px; opacity: 0.6; transition: 0.2s; }
+.match-events-btn:hover { opacity: 1; transform: scale(1.2); }
+.event-row-item { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; }
+.event-row-item select, .event-row-item input { background: #1a2a3a; color: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 4px; }
+.event-row-item .remove-event { cursor: pointer; color: #ff4d4d; font-weight: bold; padding: 0 8px; }
+.player-events-list { display: inline-flex; gap: 2px; vertical-align: middle; margin-left: 8px; }
+.event-icon { font-size: 0.9rem; cursor: help; position: relative; }
+.event-tooltip { visibility: hidden; width: 150px; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 5px; position: absolute; z-index: 100; bottom: 125%; left: 50%; margin-left: -75px; opacity: 0; transition: opacity 0.3s; font-size: 0.75rem; pointer-events: none; }
+.event-icon:hover .event-tooltip { visibility: visible; opacity: 1; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1335,7 +1345,14 @@ const TRANSLATIONS = {
     select_player: "Seleccionar jugador",
     start_greeting: "¡Bienvenidos a la Copa Mundial de la FIFA!",
     final_greeting: "¡Gran Final de la Copa Mundial!",
-    continue: "Continuar"
+    continue: "Continuar",
+    events: "Eventos",
+    add_event: "Añadir evento",
+    goal: "Gol",
+    yellow_card: "Tarjeta amarilla",
+    red_card: "Tarjeta roja",
+    minute: "Min",
+    cancel: "Cancelar"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     born: "Né le:",
@@ -1425,7 +1442,14 @@ const TRANSLATIONS = {
     select_player: "Sélectionner un joueur",
     start_greeting: "Bienvenue à la Coupe du Monde de la FIFA!",
     final_greeting: "Finale de la Coupe du Monde de la FIFA!",
-    continue: "Continuer"
+    continue: "Continuer",
+    events: "Événements",
+    add_event: "Ajouter un événement",
+    goal: "But",
+    yellow_card: "Carton jaune",
+    red_card: "Carton rouge",
+    minute: "Min",
+    cancel: "Annuler"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     born: "Родился:",
@@ -1515,7 +1539,14 @@ const TRANSLATIONS = {
     select_player: "Выбрать игрока",
     start_greeting: "С началом Чемпионата мира по Футболу!",
     final_greeting: "Финал Чемпионата мира по футболу!",
-    continue: "Продолжить"
+    continue: "Продолжить",
+    events: "События",
+    add_event: "Добавить событие",
+    goal: "Гол",
+    yellow_card: "Желтая карточка",
+    red_card: "Красная карточка",
+    minute: "Мин",
+    cancel: "Отмена"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     born: "Born:",
@@ -1605,7 +1636,14 @@ const TRANSLATIONS = {
     select_player: "Select Player",
     start_greeting: "Welcome to the FIFA World Cup!",
     final_greeting: "FIFA World Cup Final!",
-    continue: "Continue"
+    continue: "Continue",
+    events: "Events",
+    add_event: "Add Event",
+    goal: "Goal",
+    yellow_card: "Yellow Card",
+    red_card: "Red Card",
+    minute: "Min",
+    cancel: "Cancel"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     born: "出生日期:",
@@ -1695,7 +1733,14 @@ const TRANSLATIONS = {
     select_player: "选择球员",
     start_greeting: "欢迎来到国际足联世界杯！",
     final_greeting: "国际足联世界杯决赛！",
-    continue: "继续"
+    continue: "继续",
+    events: "事件",
+    add_event: "添加事件",
+    goal: "进球",
+    yellow_card: "黄牌",
+    red_card: "红牌",
+    minute: "分钟",
+    cancel: "取消"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -2030,6 +2075,7 @@ function renderMatchBlock(m,isKo){
   h+='<input class="score-inp'+filled+'" type="number" min="0" max="20" value="'+(sc.a??'')+'" data-id="'+m.id+'" data-side="a" inputmode="numeric"'+disabled+'>';
   h+='<span class="team-cell away">'+aName+'</span>';
   if(isKo)h+='<select class="pen-sel" data-id="'+m.id+'" title="' + T.penalty + '"'+disabled+'><option value="">—</option><option value="h"'+(pen==='h'?' selected':'')+'>' + T.pen1 + '</option><option value="a"'+(pen==='a'?' selected':'')+'>' + T.pen2 + '</option></select>';
+  if(isAdmin) h+=`<button class="match-events-btn" onclick="openEventsModal('${m.id}')" title="${T.events||'Events'}">📝</button>`;
   h+='</div></div>';
   return h;
 }
@@ -39724,8 +39770,37 @@ function showSquad(teamId){
     const pName = p.name[currentLang] || p.name.en;
     const pPos = T[p.pos] || p.pos;
     const isCaptain = p.status === 'Captain';
+
+    let playerEvents = [];
+    Object.keys(scores).forEach(mid => {
+      const match = [...GROUP_MATCHES, ...KO].find(m => m.id === mid);
+      if (match && scores[mid].events) {
+        const hId = match.h.includes('_') ? resolveSlot(match.h) : match.h;
+        const aId = match.a.includes('_') ? resolveSlot(match.a) : match.a;
+        scores[mid].events.forEach(ev => {
+          const evTeamId = ev.side === 'h' ? hId : aId;
+          if (evTeamId === teamId && ev.playerIdx === idx) {
+            playerEvents.push({ ...ev, mid: mid, matchName: `${teamLabel(hId)} vs ${teamLabel(aId)}` });
+          }
+        });
+      }
+    });
+
+    playerEvents.sort((a, b) => {
+      const order = { goal: 0, red: 1, yellow: 2 };
+      return order[a.type] - order[b.type];
+    });
+
+    let eventsHtml = '<div class="player-events-list">';
+    playerEvents.forEach(ev => {
+      const icon = ev.type === 'goal' ? '⚽' : (ev.type === 'yellow' ? '🟨' : '🟥');
+      const minText = (ev.type === 'goal' && ev.minute) ? ` (${ev.minute}')` : '';
+      eventsHtml += `<span class="event-icon">${icon}<span class="event-tooltip">${ev.matchName}${minText}</span></span>`;
+    });
+    eventsHtml += '</div>';
+
     h += `<div class="player-row" onclick="showPersonDetail('${teamId}', 'players', ${idx})">
-      <div class="player-name"> <span class="player-no">${p.no || ''}</span> ${pName}</div>
+      <div class="player-name"> <span class="player-no">${p.no || ''}</span> ${pName}${eventsHtml}</div>
       <div class="player-pos">${pPos}</div>
       <div class="player-status ${isCaptain ? 'captain' : ''}">${isCaptain ? T.captain : ''}</div>
     </div>`;
@@ -40746,6 +40821,151 @@ document.addEventListener('click', function startMusicOnFirstClick() {
     });
   }
 }, { once: true }); // { once: true } гарантирует, что этот код сработает ТОЛЬКО ОДИН РАЗ
+
+function openEventsModal(mid) {
+    const T = TRANSLATIONS[currentLang];
+    const m = [...GROUP_MATCHES, ...KO].find(x => x.id === mid);
+    if (!m) return;
+    const hId = m.h.includes('_') ? resolveSlot(m.h) : m.h;
+    const aId = m.a.includes('_') ? resolveSlot(m.a) : m.a;
+    if (!hId || !aId) { alert("Teams not resolved yet"); return; }
+
+    let modal = document.getElementById('eventsModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'eventsModal';
+        modal.className = 'modal-overlay';
+        document.body.appendChild(modal);
+    }
+
+    const sc = getScore(mid);
+    const events = sc.events || [];
+
+    modal.innerHTML = `
+    <div class="modal-content" style="width:min(600px, 95vw)">
+      <div class="modal-header">
+        <h3>${T.events || 'Events'}: ${teamLabel(hId)} vs ${teamLabel(aId)}</h3>
+        <button class="modal-close" onclick="closeEventsModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="eventsList"></div>
+        <button class="tool-btn" style="margin-top:10px" onclick="addEventRow('${mid}')">${T.add_event || 'Add Event'}</button>
+      </div>
+      <div style="padding:20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px;">
+        <button class="tool-btn" onclick="closeEventsModal()">${T.cancel || 'Cancel'}</button>
+        <button class="tool-btn btn-save" onclick="saveEvents('${mid}')">${T.save || 'Save'}</button>
+      </div>
+    </div>`;
+
+    modal.classList.add('show');
+    const list = document.getElementById('eventsList');
+    events.forEach(ev => {
+        addEventRow(mid, ev);
+    });
+}
+
+function closeEventsModal() {
+    document.getElementById('eventsModal').classList.remove('show');
+}
+
+function addEventRow(mid, ev = null) {
+    const T = TRANSLATIONS[currentLang];
+    const m = [...GROUP_MATCHES, ...KO].find(x => x.id === mid);
+    const hId = m.h.includes('_') ? resolveSlot(m.h) : m.h;
+    const aId = m.a.includes('_') ? resolveSlot(m.a) : m.a;
+
+    const row = document.createElement('div');
+    row.className = 'event-row-item';
+
+    const teams = [
+        { id: 'h', name: teamLabel(hId) },
+        { id: 'a', name: teamLabel(aId) }
+    ];
+
+    let teamHtml = `<select class="ev-team" onchange="updatePlayerSelect(this, '${hId}', '${aId}')">`;
+    teams.forEach(t => {
+        teamHtml += `<option value="${t.id}" ${ev && ev.side === t.id ? 'selected' : ''}>${t.name}</option>`;
+    });
+    teamHtml += `</select>`;
+
+    const types = [
+        { id: 'goal', name: '⚽ ' + (T.goal || 'Goal') },
+        { id: 'yellow', name: '🟨 ' + (T.yellow_card || 'Yellow Card') },
+        { id: 'red', name: '🟥 ' + (T.red_card || 'Red Card') }
+    ];
+
+    let typeHtml = `<select class="ev-type" onchange="toggleMinute(this)">`;
+    types.forEach(t => {
+        typeHtml += `<option value="${t.id}" ${ev && ev.type === t.id ? 'selected' : ''}>${t.name}</option>`;
+    });
+    typeHtml += `</select>`;
+
+    const initialSide = ev ? ev.side : 'h';
+    const initialTeamId = initialSide === 'h' ? hId : aId;
+    const players = SQUADS[initialTeamId]?.players || [];
+
+    let playerHtml = `<select class="ev-player">`;
+    players.forEach((p, idx) => {
+        const pName = p.name[currentLang] || p.name.en;
+        playerHtml += `<option value="${idx}" ${ev && ev.playerIdx == idx ? 'selected' : ''}>${pName}</option>`;
+    });
+    playerHtml += `</select>`;
+
+    const minuteValue = ev ? ev.minute || '' : '';
+    const minuteStyle = (ev && ev.type !== 'goal') ? 'display:none' : '';
+
+    row.innerHTML = `
+    ${teamHtml}
+    ${playerHtml}
+    ${typeHtml}
+    <input type="text" class="ev-minute" placeholder="${T.minute || 'Min'}" value="${minuteValue}" style="width:60px; ${minuteStyle}">
+    <span class="remove-event" onclick="this.parentElement.remove()">×</span>
+  `;
+
+    document.getElementById('eventsList').appendChild(row);
+}
+
+function updatePlayerSelect(selectEl, hId, aId) {
+    const side = selectEl.value;
+    const teamId = side === 'h' ? hId : aId;
+    const players = SQUADS[teamId]?.players || [];
+    const playerSelect = selectEl.parentElement.querySelector('.ev-player');
+    const currentLang = window.currentLang || 'ru';
+
+    let h = '';
+    players.forEach((p, idx) => {
+        const pName = p.name[currentLang] || p.name.en;
+        h += `<option value="${idx}">${pName}</option>`;
+    });
+    playerSelect.innerHTML = h;
+}
+
+function toggleMinute(selectEl) {
+    const minInput = selectEl.parentElement.querySelector('.ev-minute');
+    minInput.style.display = selectEl.value === 'goal' ? 'block' : 'none';
+}
+
+function saveEvents(mid) {
+    const list = document.getElementById('eventsList');
+    const rows = list.querySelectorAll('.event-row-item');
+    const events = [];
+    rows.forEach(row => {
+        const type = row.querySelector('.ev-type').value;
+        events.push({
+            side: row.querySelector('.ev-team').value,
+            playerIdx: parseInt(row.querySelector('.ev-player').value),
+            type: type,
+            minute: type === 'goal' ? row.querySelector('.ev-minute').value : ''
+        });
+    });
+
+    if (!scores[mid]) scores[mid] = { h: null, a: null, pen: null };
+    scores[mid].events = events;
+
+    persist();
+    renderAll();
+    closeEventsModal();
+}
 </script>
 
 </body>
