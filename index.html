@@ -308,9 +308,9 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .team-card-btn .flag{width:48px;height:32px}
 
 .squad-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
-.player-row{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:grid;grid-template-columns:1fr 120px 100px;align-items:center;cursor:pointer;transition:0.15s}
+.player-row{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:grid;grid-template-columns:1fr 120px 100px;align-items:center;cursor:pointer;transition:0.15s;overflow:hidden}
 .player-row:hover{background:rgba(255,255,255,0.08);border-color:var(--accent)}
-.player-name{font-weight:600;display:flex;align-items:center;gap:8px}
+.player-name{font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .player-pos{font-size:0.85rem;color:var(--muted)}
 .player-status{font-size:0.8rem;text-align:center;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.1)}
 .player-status.captain{background:var(--gold);color:#221;font-weight:700}
@@ -735,6 +735,52 @@ body.admin-active .toolbar { display: flex; }
 }
 .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
 .color-picker::-webkit-color-swatch { border: 2px solid #fff; border-radius: 50%; }
+
+/* Admin and Squad Styles */
+.admin-edit-row {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2) !important;
+  margin-bottom: 4px;
+}
+.admin-name-input, .admin-no-input, .admin-pos-select {
+  background: #1b263b;
+  color: #fff;
+  border: 1px solid #f1c40f;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+}
+.admin-no-input { width: 50px; text-align: center; margin: 0 5px; }
+.admin-name-input { width: 180px; }
+.admin-pos-select { padding: 3px 6px; }
+
+.admin-del-btn, .admin-info-btn, .admin-add-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: 4px;
+  transition: 0.2s;
+  font-family: inherit;
+}
+.admin-del-btn:hover { background: #e74c3c; border-color: #c0392b; }
+.admin-info-btn:hover { background: #3498db; border-color: #2980b9; }
+.admin-add-btn { background: #27ae60; border-color: #2ecc71; font-weight: bold; padding: 2px 10px; font-size: 1.2rem; }
+
+.first-xi-icon {
+  width: 28px;
+  height: 28px;
+  vertical-align: middle;
+  margin-left: 8px;
+  fill: var(--team-accent, #f1c40f);
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+  transition: transform 0.2s;
+}
+.first-xi-icon:hover {
+  transform: scale(1.1);
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -39921,7 +39967,7 @@ function initStartingXI(teamId) {
   }
   squad.players.forEach(p => p.isStarting = false);
   const sorted = [...squad.players].sort((a, b) => {
-    const order = { goalkeeper: 1, defender: 2, midfielder: 3, forward: 4 };
+    const order = { forward: 1, midfielder: 2, defender: 3, goalkeeper: 4 };
     return (order[a.pos] || 99) - (order[b.pos] || 99);
   });
   for (let i = 0; i < 11 && i < sorted.length; i++) {
@@ -39988,9 +40034,9 @@ function showSquad(teamId){
   }
   const players = [...(data.players || [])].sort((a, b) => {
     if (a.isStarting !== b.isStarting) {
-      return b.isStarting ? 1 : -1;
+      return a.isStarting ? -1 : 1;
     }
-    const order = { goalkeeper: 1, defender: 2, midfielder: 3, forward: 4 };
+    const order = { forward: 1, midfielder: 2, defender: 3, goalkeeper: 4 };
     return (order[a.pos] || 99) - (order[b.pos] || 99);
   });
   const coaches = data.coaches || [];
@@ -40135,7 +40181,7 @@ function showSquad(teamId){
     eventHtml += '</div>';
 
 
-    const stadiumIcon = p.isStarting ? ' 🏟️' : '';
+    const stadiumIcon = p.isStarting ? ` <svg class="first-xi-icon" viewBox="0 0 24 24" title="First XI"><path d="M13,2V4.84L17,3.12V7H19V2H13M11,2H5V7H7V3.12L11,4.84V2M18,8H16V7H8V8H6L5,13.25V22H19V13.25L18,8Z"/></svg>` : '';
     if (isAdmin) {
       const posOptions = ["forward", "midfielder", "defender", "goalkeeper"].map(pos =>
         `<option value="${pos}" ${p.pos === pos ? "selected" : ""}>${T[pos] || pos}</option>`
