@@ -314,6 +314,23 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .player-pos{font-size:0.85rem;color:var(--muted)}
 .player-status{font-size:0.8rem;text-align:center;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.1)}
 .player-status.captain{background:var(--gold);color:#221;font-weight:700}
+.event-marker { display: inline-flex; gap: 2px; margin-left: 8px; vertical-align: middle; }
+.card-icon { width: 10px; height: 14px; border-radius: 2px; display: inline-block; }
+.card-yellow { background: #f1c40f; box-shadow: 0 0 5px rgba(241,196,15,0.5); }
+.card-red { background: #e74c3c; box-shadow: 0 0 5px rgba(231,76,60,0.5); }
+.events-modal-content { background: var(--bg); border: 1px solid var(--gold); border-radius: 16px; width: min(800px, 95vw); max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+.events-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+.events-column { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+.events-column h4 { color: var(--gold); margin-bottom: 5px; text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+.events-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+.event-item { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; }
+.event-icon { font-size: 1.1rem; }
+.event-player { flex: 1; }
+.event-del { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem; padding: 0 5px; }
+.add-event-form { display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border); }
+.add-event-form select, .add-event-form input { padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: rgba(0,0,0,0.4); color: #fff; font-size: 0.9rem; }
+.add-event-form button { padding: 10px; background: var(--accent); border: none; border-radius: 6px; color: #fff; font-weight: 600; cursor: pointer; }
+.add-event-form button:hover { opacity: 0.9; }
 .back-btn{margin-bottom:20px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:0.9rem}
 .back-btn:hover{background:rgba(255,255,255,0.12)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px}
@@ -725,6 +742,53 @@ body.admin-active .toolbar { display: flex; }
     <div id="tacticalSelectGrid" class="tactical-select-grid"></div>
   </div>
 </div>
+
+<div id="eventsModal" class="modal-overlay">
+  <div class="events-modal-content" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="eventsModalTitle">Match Events</h3>
+      <button class="modal-close" onclick="closeEventsModal()">✕</button>
+    </div>
+    <div class="events-columns">
+      <div class="events-column" id="eventsHome">
+        <h4 id="eventsHomeTeam">Home</h4>
+        <div class="events-list" id="listHome"></div>
+        <div class="add-event-form">
+          <select id="selPlayerHome"></select>
+          <select id="selTypeHome" onchange="toggleMinuteInput('h')">
+            <option value="goal">⚽ Goal</option>
+            <option value="yellow">🟨 Yellow Card</option>
+            <option value="red">🟥 Red Card</option>
+          </select>
+          <div id="minWrapHome">
+            <input type="text" id="minHome" placeholder="Minute (e.g. 10, 90+)" list="minutesList">
+          </div>
+          <button onclick="handleAddEvent('h')">Add Event</button>
+        </div>
+      </div>
+      <div class="events-column" id="eventsAway">
+        <h4 id="eventsAwayTeam">Away</h4>
+        <div class="events-list" id="listAway"></div>
+        <div class="add-event-form">
+          <select id="selPlayerAway"></select>
+          <select id="selTypeAway" onchange="toggleMinuteInput('a')">
+            <option value="goal">⚽ Goal</option>
+            <option value="yellow">🟨 Yellow Card</option>
+            <option value="red">🟥 Red Card</option>
+          </select>
+          <div id="minWrapAway">
+            <input type="text" id="minAway" placeholder="Minute (e.g. 10, 90+)" list="minutesList">
+          </div>
+          <button onclick="handleAddEvent('a')">Add Event</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<datalist id="minutesList">
+  <option value="1"></option><option value="5"></option><option value="10"></option><option value="15"></option><option value="20"></option><option value="25"></option><option value="30"></option><option value="35"></option><option value="40"></option><option value="45"></option><option value="45+"></option><option value="50"></option><option value="55"></option><option value="60"></option><option value="65"></option><option value="70"></option><option value="75"></option><option value="80"></option><option value="85"></option><option value="90"></option><option value="90+"></option>
+</datalist>
 
 <div id="playerModal" class="modal-overlay">
 
@@ -1292,7 +1356,9 @@ const TRANSLATIONS = {
     champion: "Campeón del Mundo",
     reset_confirm: "¿Eliminar todos los resultados?",
     admin_mode: "Modo Administrador",
-    admin_denied: "¡Bien hecho por intentarlo, pero la contraseña es solo para el administrador!",
+    admin_denied: "¡Bien hecho по intentarlo, pero la contraseña es solo para el administrador!",
+    match_events: "Eventos del partido",
+    minute: "Minuto",
     saved: "Guardado",
     loaded: "Carga guardada de",
     pos_1st: "1º",
@@ -1383,6 +1449,8 @@ const TRANSLATIONS = {
     reset_confirm: "Supprimer tous les résultats ?",
     admin_mode: "Mode Administrateur",
     admin_denied: "Bravo d'avoir essayé, mais le mot de passe est réservé à l'administrateur !",
+    match_events: "Événements du match",
+    minute: "Minute",
     saved: "Enregistré",
     loaded: "Chargement réussi du",
     pos_1st: "1er",
@@ -1473,6 +1541,8 @@ const TRANSLATIONS = {
     reset_confirm: "Удалить все результаты?",
     admin_mode: "Режим администратора",
     admin_denied: "Молодцы, что попробовали, но пароль только для администратора!",
+    match_events: "События матча",
+    minute: "Минута",
     saved: "Сохранено",
     loaded: "Загружено сохранение от",
     pos_1st: "1-е",
@@ -1563,6 +1633,8 @@ const TRANSLATIONS = {
     reset_confirm: "Delete all results?",
     admin_mode: "Admin Mode",
     admin_denied: "Well done for trying, but the password is for admin only!",
+    match_events: "Match Events",
+    minute: "Minute",
     saved: "Saved",
     loaded: "Loaded save from",
     pos_1st: "1st",
@@ -1653,6 +1725,8 @@ const TRANSLATIONS = {
     reset_confirm: "重置所有结果吗？",
     admin_mode: "管理模式",
     admin_denied: "尝试得不错，但密码仅供管理员使用！",
+    match_events: "比赛事件",
+    minute: "分钟",
     saved: "已保存",
     loaded: "已加载保存于",
     pos_1st: "第1",
@@ -1800,6 +1874,152 @@ function findMatchIdByTeams(hTla, aTla) {
 }
 
 function getScore(id){return scores[id]||{h:null,a:null,pen:null}}
+
+function getPlayerEvents(playerNameEn) {
+  const events = [];
+  Object.entries(scores).forEach(([matchId, sc]) => {
+    if (sc.events) {
+      sc.events.forEach(ev => {
+        if (ev.playerName === playerNameEn) {
+          events.push({ ...ev, matchId });
+        }
+      });
+    }
+  });
+  return events;
+}
+
+function teamNameOnly(id) {
+  if(!id) return '';
+  const t = TEAMS[id];
+  if(!t) return id;
+  return t.n[currentLang] || t.n.en;
+}
+
+function getMatchTitle(matchId) {
+  const allMatches = [...GROUP_MATCHES, ...KO];
+  const m = allMatches.find(x => x.id === matchId);
+  if (!m) return matchId;
+  const hId = m.ko ? resolveSlot(m.h) : m.h;
+  const aId = m.ko ? resolveSlot(m.a) : m.a;
+  return `${teamNameOnly(hId)} — ${teamNameOnly(aId)}`;
+}
+
+let currentEventsMatchId = null;
+
+function openMatchEvents(matchId) {
+  currentEventsMatchId = matchId;
+  const allMatches = [...GROUP_MATCHES, ...KO];
+  const m = allMatches.find(x => x.id === matchId);
+  if (!m) return;
+
+  const hId = m.ko ? resolveSlot(m.h) : m.h;
+  const aId = m.ko ? resolveSlot(m.a) : m.a;
+
+  document.getElementById('eventsHomeTeam').textContent = teamNameOnly(hId);
+  document.getElementById('eventsAwayTeam').textContent = teamNameOnly(aId);
+
+  fillPlayerSelect('selPlayerHome', hId);
+  fillPlayerSelect('selPlayerAway', aId);
+
+  renderMatchEventsList();
+  toggleMinuteInput('h');
+  toggleMinuteInput('a');
+  document.getElementById('eventsModal').classList.add('show');
+}
+
+function closeEventsModal() {
+  document.getElementById('eventsModal').classList.remove('show');
+  currentEventsMatchId = null;
+}
+
+function toggleMinuteInput(side) {
+  const type = document.getElementById('selType' + (side === 'h' ? 'Home' : 'Away')).value;
+  const minWrap = document.getElementById('minWrap' + (side === 'h' ? 'Home' : 'Away'));
+  if (type === 'goal') {
+    minWrap.style.display = 'block';
+  } else {
+    minWrap.style.display = 'none';
+  }
+}
+
+function fillPlayerSelect(selectId, teamId) {
+  const sel = document.getElementById(selectId);
+  sel.innerHTML = '';
+  const data = SQUADS[teamId];
+  if (data && data.players) {
+    data.players.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.name.en;
+      opt.textContent = p.name[currentLang] || p.name.en;
+      sel.appendChild(opt);
+    });
+  }
+}
+
+function renderMatchEventsList() {
+  const sc = getScore(currentEventsMatchId);
+  const events = sc.events || [];
+  const listH = document.getElementById('listHome');
+  const listA = document.getElementById('listAway');
+  listH.innerHTML = '';
+  listA.innerHTML = '';
+
+  events.forEach((ev, idx) => {
+    const item = document.createElement('div');
+    item.className = 'event-item';
+    let icon = '';
+    if (ev.type === 'goal') icon = '⚽';
+    else if (ev.type === 'yellow') icon = '🟨';
+    else if (ev.type === 'red') icon = '🟥';
+
+    const minStr = ev.minute ? ` (${ev.minute}')` : '';
+
+    item.innerHTML = `
+      <span class="event-icon">${icon}</span>
+      <span class="event-player">${ev.playerName}${minStr}</span>
+      <button class="event-del" onclick="removeMatchEvent(${idx})">×</button>
+    `;
+
+    if (ev.side === 'h') listH.appendChild(item);
+    else listA.appendChild(item);
+  });
+}
+
+function handleAddEvent(side) {
+  const playerSel = document.getElementById(side === 'h' ? 'selPlayerHome' : 'selPlayerAway');
+  const typeSel = document.getElementById(side === 'h' ? 'selTypeHome' : 'selTypeAway');
+  const minInp = document.getElementById(side === 'h' ? 'minHome' : 'minAway');
+
+  const playerName = playerSel.value;
+  const type = typeSel.value;
+  let minute = minInp.value.trim();
+
+  if (!playerName) return;
+  if (type !== 'goal') minute = '';
+
+  const sc = getScore(currentEventsMatchId);
+  if (!sc.events) sc.events = [];
+  sc.events.push({ side, type, playerName, minute });
+  scores[currentEventsMatchId] = { ...sc };
+
+  minInp.value = '';
+  renderMatchEventsList();
+  renderAll();
+  debounceSave();
+}
+
+function removeMatchEvent(idx) {
+  const sc = getScore(currentEventsMatchId);
+  if (sc.events) {
+    sc.events.splice(idx, 1);
+    scores[currentEventsMatchId] = { ...sc };
+    renderMatchEventsList();
+    renderAll();
+    debounceSave();
+  }
+}
+
 function isPlayed(sc){return sc.h!==null&&sc.h!==''&&sc.a!==null&&sc.a!==''}
 function isGroupFinished(g){
   const ms = GROUP_MATCHES.filter(m => m.g === g);
@@ -2030,6 +2250,9 @@ function renderMatchBlock(m,isKo){
   h+='<input class="score-inp'+filled+'" type="number" min="0" max="20" value="'+(sc.a??'')+'" data-id="'+m.id+'" data-side="a" inputmode="numeric"'+disabled+'>';
   h+='<span class="team-cell away">'+aName+'</span>';
   if(isKo)h+='<select class="pen-sel" data-id="'+m.id+'" title="' + T.penalty + '"'+disabled+'><option value="">—</option><option value="h"'+(pen==='h'?' selected':'')+'>' + T.pen1 + '</option><option value="a"'+(pen==='a'?' selected':'')+'>' + T.pen2 + '</option></select>';
+  if(isAdmin && hId && aId) {
+    h+='<button class="event-btn" onclick="openMatchEvents(\''+m.id+'\')" title="'+T.match_events+'" style="background:none;border:none;cursor:pointer;font-size:1.2rem;margin-left:5px;">📝</button>';
+  }
   h+='</div></div>';
   return h;
 }
@@ -2045,6 +2268,9 @@ function buildUI(){
   document.getElementById('btnImport').textContent = T.import;
   document.getElementById('btnReset').textContent = T.reset;
   document.getElementById('adminTrigger').textContent = T.admin_mode;
+
+  const evTitle = document.getElementById('eventsModalTitle');
+  if (evTitle) evTitle.textContent = T.match_events || 'Match Events';
 
   const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.teams, T.stadiums];
   const tabEl=document.getElementById('tabs');
@@ -39603,7 +39829,10 @@ function showSquad(teamId){
   const t = TEAMS[teamId];
   const name = t.n[currentLang] || t.n.en;
   const data = SQUADS[teamId] || { players: [], coaches: [], desc: { ru: "", en: "" } };
-  const players = data.players || [];
+  const players = [...(data.players || [])].sort((a, b) => {
+    const order = { forward: 1, midfielder: 2, defender: 3, goalkeeper: 4 };
+    return (order[a.pos] || 99) - (order[b.pos] || 99);
+  });
   const coaches = data.coaches || [];
   const desc = data.desc[currentLang] || data.desc.en || "";
 
@@ -39724,8 +39953,29 @@ function showSquad(teamId){
     const pName = p.name[currentLang] || p.name.en;
     const pPos = T[p.pos] || p.pos;
     const isCaptain = p.status === 'Captain';
+
+    const pEvents = getPlayerEvents(p.name.en);
+    const goals = pEvents.filter(e => e.type === 'goal');
+    const reds = pEvents.filter(e => e.type === 'red');
+    const yellows = pEvents.filter(e => e.type === 'yellow');
+
+    let eventHtml = '<div class="event-marker">';
+    goals.forEach(ev => {
+      const title = `${getMatchTitle(ev.matchId)}${ev.minute ? `, ${ev.minute}'` : ''}`;
+      eventHtml += `<span style="font-size: 1.3em;" title="${title}">⚽</span>`;
+    });
+    reds.forEach(ev => {
+      const title = getMatchTitle(ev.matchId);
+      eventHtml += `<span class="card-icon card-red" title="${title}"></span>`;
+    });
+    yellows.forEach(ev => {
+      const title = getMatchTitle(ev.matchId);
+      eventHtml += `<span class="card-icon card-yellow" title="${title}"></span>`;
+    });
+    eventHtml += '</div>';
+
     h += `<div class="player-row" onclick="showPersonDetail('${teamId}', 'players', ${idx})">
-      <div class="player-name"> <span class="player-no">${p.no || ''}</span> ${pName}</div>
+      <div class="player-name"> <span class="player-no">${p.no || ''}</span> ${pName} ${eventHtml}</div>
       <div class="player-pos">${pPos}</div>
       <div class="player-status ${isCaptain ? 'captain' : ''}">${isCaptain ? T.captain : ''}</div>
     </div>`;
