@@ -1824,7 +1824,7 @@ async function load(){
     if (res.ok) {
       const d = await res.json();
       if (d && d.scores) {
-        scores = d.scores;
+        if (d.squads) SQUADS = d.squads; scores = d.scores;
         showStatus(TRANSLATIONS[currentLang].loaded + ' (DB) ' + (d.updatedAt ? new Date(d.updatedAt).toLocaleString(currentLang) : ''), true);
         return;
       }
@@ -1836,7 +1836,7 @@ async function load(){
     if(res.ok) {
       const d = await res.json();
       if(d && d.scores) {
-        scores = d.scores;
+        if (d.squads) SQUADS = d.squads; scores = d.scores;
         showStatus(TRANSLATIONS[currentLang].loaded + ' (results.json) ' + new Date(d.updatedAt).toLocaleString(currentLang), true);
         return;
       }
@@ -1847,11 +1847,11 @@ async function load(){
     const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('wc2026_results_v1');
     if(!raw)return;
     const d=JSON.parse(raw);
-    if(d&&d.scores){scores=d.scores;showStatus(TRANSLATIONS[currentLang].loaded+' (Local) '+new Date(d.updatedAt).toLocaleString(currentLang),true)}
+    if(d&&d.scores){if (d.squads) SQUADS = d.squads; scores=d.scores;showStatus(TRANSLATIONS[currentLang].loaded+' (Local) '+new Date(d.updatedAt).toLocaleString(currentLang),true)}
   }catch(e){}
 }
 async function persist(){
-  const payload={version:2,updatedAt:new Date().toISOString(),scores};
+  const payload={version:2,updatedAt:new Date().toISOString(),scores, squads: SQUADS};
   localStorage.setItem(STORAGE_KEY,JSON.stringify(payload));
   showStatus(TRANSLATIONS[currentLang].saved+' '+new Date().toLocaleString(currentLang),true);
 
@@ -2492,7 +2492,7 @@ function renderBracket(){
   else banner.classList.remove('show');
 }
 
-const SQUADS = {
+let SQUADS = {
   "MEX": {
     "desc": {
       "ru": "Мексика — это сердце и душа футбола Северной Америки. «Эль Три» не просто самая титулованная команда Конфедерации футбола Северной и Центральной Америки, это страсть, воплощенная в зеленой футболке. На домашнем ЧМ-2026 мексиканцы полны решимости разорвать оковы «проклятия пятого матча» и переписать историю под рёв «Ацтеки». Это сплав несгибаемого опыта ветеранов и энергии нового поколения, готового биться за каждый сантиметр поля.",
@@ -39911,14 +39911,86 @@ function goToStadiumByVenue(v){
   if(stadium) goToStadium(stadium.name.en);
 }
 
+
+function initStartingXI(teamId) {
+  const squad = SQUADS[teamId];
+  if (!squad || !squad.players) return;
+  if (squad.players.some(p => p.hasOwnProperty('isStarting'))) {
+    const starters = squad.players.filter(p => p.isStarting);
+    if (starters.length <= 11) return;
+  }
+  squad.players.forEach(p => p.isStarting = false);
+  const sorted = [...squad.players].sort((a, b) => {
+    const order = { goalkeeper: 1, defender: 2, midfielder: 3, forward: 4 };
+    return (order[a.pos] || 99) - (order[b.pos] || 99);
+  });
+  for (let i = 0; i < 11 && i < sorted.length; i++) {
+    sorted[i].isStarting = true;
+  }
+}
+
+function addPlayerToSquad(teamId) {
+  if (!SQUADS[teamId]) {
+    SQUADS[teamId] = { desc: { ru: '', en: '', es: '', fr: '', zh: '' }, players: [], coaches: [] };
+  }
+  const newPlayer = {
+    name: { ru: 'Новый игрок', en: 'New Player', es: 'Nuevo jugador', fr: 'Nouveau joueur', zh: '新球员' },
+    pos: 'forward', status: '',
+    story: { ru: 'История игрока...', en: 'Player story...', es: 'Historia del jugador...', fr: 'Histoire du joueur...', zh: '球员故事...' },
+    image: 'image/Kubok.jpg', no: 99,
+    stats: { speed: 70, technique: 70, defense: 70, physical: 70, experience: 70 },
+    isStarting: false
+  };
+  SQUADS[teamId].players.push(newPlayer);
+  persist();
+  showSquad(teamId);
+}
+
+function deletePlayerFromSquad(teamId, idx) {
+  if (!confirm('Are you sure you want to delete this player?')) return;
+  SQUADS[teamId].players.splice(idx, 1);
+  initStartingXI(teamId);
+  persist();
+  showSquad(teamId);
+}
+
+function updatePlayerField(teamId, idx, field, value) {
+  const player = SQUADS[teamId].players[idx];
+  if (!player) return;
+  if (field === 'isStarting') {
+    const squad = SQUADS[teamId];
+    const starters = squad.players.filter(p => p.isStarting);
+    if (value && starters.length >= 11) {
+      alert('Already have 11 players in Starting XI. Unset someone first.');
+      showSquad(teamId);
+      return;
+    }
+    player.isStarting = !!value;
+  } else if (field === 'name') {
+    player.name = { ru: value, en: value, es: value, fr: value, zh: value };
+  } else if (field === 'no') {
+    player.no = parseInt(value) || 0;
+  } else {
+    player[field] = value;
+  }
+  persist();
+  showSquad(teamId);
+}
 function showSquad(teamId){
+  initStartingXI(teamId);
   selectedTeamId = teamId;
   const T = TRANSLATIONS[currentLang];
   const t = TEAMS[teamId];
   const name = t.n[currentLang] || t.n.en;
   const data = SQUADS[teamId] || { players: [], coaches: [], desc: { ru: "", en: "" } };
+  if (data.players) {
+    data.players.forEach((p, i) => p._idx = i);
+  }
   const players = [...(data.players || [])].sort((a, b) => {
-    const order = { forward: 1, midfielder: 2, defender: 3, goalkeeper: 4 };
+    if (a.isStarting !== b.isStarting) {
+      return b.isStarting ? 1 : -1;
+    }
+    const order = { goalkeeper: 1, defender: 2, midfielder: 3, forward: 4 };
     return (order[a.pos] || 99) - (order[b.pos] || 99);
   });
   const coaches = data.coaches || [];
@@ -40034,7 +40106,7 @@ function showSquad(teamId){
 
     <div class="squad-container">
       <div class="players-section">
-        <h3 class="section-title"> ${T.squad}</h3>
+        <h3 class="section-title"> ${T.squad} ${isAdmin ? `<button class="admin-add-btn" onclick="addPlayerToSquad('${teamId}')" title="${T.add_player}">+</button>` : ""}</h3>
         <div class="squad-list">`;
 
   players.forEach((p, idx) => {
@@ -40062,11 +40134,37 @@ function showSquad(teamId){
     });
     eventHtml += '</div>';
 
-    h += `<div class="player-row" onclick="showPersonDetail('${teamId}', 'players', ${idx})">
-      <div class="player-name"> <span class="player-no">${p.no || ''}</span> ${pName} ${eventHtml}</div>
-      <div class="player-pos">${pPos}</div>
-      <div class="player-status ${isCaptain ? 'captain' : ''}">${isCaptain ? T.captain : ''}</div>
-    </div>`;
+
+    const stadiumIcon = p.isStarting ? ' 🏟️' : '';
+    if (isAdmin) {
+      const posOptions = ["forward", "midfielder", "defender", "goalkeeper"].map(pos =>
+        `<option value="${pos}" ${p.pos === pos ? "selected" : ""}>${T[pos] || pos}</option>`
+      ).join("");
+
+      h += `<div class="player-row admin-edit-row">
+        <div class="player-name">
+          <input type="checkbox" ${p.isStarting ? "checked" : ""} onchange="updatePlayerField('${teamId}', ${p._idx}, 'isStarting', this.checked)" title="В основе">
+          <input type="number" class="admin-no-input" value="${p.no || ''}" onchange="updatePlayerField('${teamId}', ${p._idx}, 'no', this.value)">
+          <input type="text" class="admin-name-input" value="${pName}" onchange="updatePlayerField('${teamId}', ${p._idx}, 'name', this.value)">
+          ${stadiumIcon} ${eventHtml}
+        </div>
+        <div class="player-pos">
+          <select class="admin-pos-select" onchange="updatePlayerField('${teamId}', ${p._idx}, 'pos', this.value)">
+            ${posOptions}
+          </select>
+        </div>
+        <div class="player-status">
+           <button class="admin-del-btn" onclick="deletePlayerFromSquad('${teamId}', ${p._idx})" title="${T.delete_player}">✕</button>
+           <button class="admin-info-btn" onclick="showPersonDetail('${teamId}', 'players', ${p._idx})" title="Info">ℹ️</button>
+        </div>
+      </div>`;
+    } else {
+      h += `<div class="player-row" onclick="showPersonDetail('${teamId}', 'players', ${p._idx})">
+        <div class="player-name"> <span class="player-no">${p.no || ''}</span> ${pName}${stadiumIcon} ${eventHtml}</div>
+        <div class="player-pos">${pPos}</div>
+        <div class="player-status ${isCaptain ? 'captain' : ''}">${isCaptain ? T.captain : ''}</div>
+      </div>`;
+    }
   });
 
   h += `</div></div>
