@@ -1383,6 +1383,9 @@ const TRANSLATIONS = {
     admin_denied: "¡Bien hecho по intentarlo, pero la contraseña es solo para el administrador!",
     match_events: "Eventos del partido",
     add_event: "Agregar evento",
+    ev_goal: "⚽ Gol",
+    ev_yellow: "🟨 Tarjeta amarilla",
+    ev_red: "🟥 Tarjeta roja",
     minute: "Minuto",
     saved: "Guardado",
     loaded: "Carga guardada de",
@@ -1476,6 +1479,9 @@ const TRANSLATIONS = {
     admin_denied: "Bravo d'avoir essayé, mais le mot de passe est réservé à l'administrateur !",
     match_events: "Événements du match",
     add_event: "Ajouter un événement",
+    ev_goal: "⚽ But",
+    ev_yellow: "🟨 Carton jaune",
+    ev_red: "🟥 Carton rouge",
     minute: "Minute",
     saved: "Enregistré",
     loaded: "Chargement réussi du",
@@ -1569,6 +1575,9 @@ const TRANSLATIONS = {
     admin_denied: "Молодцы, что попробовали, но пароль только для администратора!",
     match_events: "События матча",
     add_event: "Добавить событие",
+    ev_goal: "⚽ Гол",
+    ev_yellow: "🟨 Желтая карточка",
+    ev_red: "🟥 Красная карточка",
     minute: "Минута",
     saved: "Сохранено",
     loaded: "Загружено сохранение от",
@@ -1662,6 +1671,9 @@ const TRANSLATIONS = {
     admin_denied: "Well done for trying, but the password is for admin only!",
     match_events: "Match Events",
     add_event: "Add Event",
+    ev_goal: "⚽ Goal",
+    ev_yellow: "🟨 Yellow Card",
+    ev_red: "🟥 Red Card",
     minute: "Minute",
     saved: "Saved",
     loaded: "Loaded save from",
@@ -1755,6 +1767,9 @@ const TRANSLATIONS = {
     admin_denied: "尝试得不错，但密码仅供管理员使用！",
     match_events: "比赛事件",
     add_event: "添加事件",
+    ev_goal: "⚽ 进球",
+    ev_yellow: "🟨 黄牌",
+    ev_red: "🟥 红牌",
     minute: "分钟",
     saved: "已保存",
     loaded: "已加载保存于",
@@ -1977,6 +1992,14 @@ function openMatchEvents(matchId) {
   document.getElementById('btnAddHome').textContent = addText;
   document.getElementById('btnAddAway').textContent = addText;
 
+  ['Home', 'Away'].forEach(side => {
+    const sel = document.getElementById('selType' + side);
+    const T = TRANSLATIONS[currentLang];
+    sel.options[0].textContent = T.ev_goal || '⚽ Goal';
+    sel.options[1].textContent = T.ev_yellow || '🟨 Yellow Card';
+    sel.options[2].textContent = T.ev_red || '🟥 Red Card';
+  });
+
   document.getElementById('eventsModal').classList.add('show');
 }
 
@@ -1993,6 +2016,15 @@ function toggleMinuteInput(side) {
   } else {
     minWrap.style.display = 'none';
   }
+}
+
+function getPlayerTranslatedName(nameEn, teamId) {
+  const data = SQUADS[teamId];
+  if (data && data.players) {
+    const p = data.players.find(x => x.name.en === nameEn);
+    if (p) return p.name[currentLang] || p.name.en;
+  }
+  return nameEn;
 }
 
 function fillPlayerSelect(selectId, teamId) {
@@ -2026,10 +2058,14 @@ function renderMatchEventsList() {
     else if (ev.type === 'red') icon = '🟥';
 
     const minStr = ev.minute ? ` (${ev.minute}')` : '';
+    const allMatches = [...GROUP_MATCHES, ...KO];
+    const match = allMatches.find(x => x.id === currentEventsMatchId);
+    const teamId = ev.side === 'h' ? (match.ko ? resolveSlot(match.h) : match.h) : (match.ko ? resolveSlot(match.a) : match.a);
+    const displayName = getPlayerTranslatedName(ev.playerName, teamId);
 
     item.innerHTML = `
       <span class="event-icon">${icon}</span>
-      <span class="event-player">${ev.playerName}${minStr}</span>
+      <span class="event-player">${displayName}${minStr}</span>
       <button class="event-del" onclick="removeMatchEvent(${idx})">×</button>
     `;
 
