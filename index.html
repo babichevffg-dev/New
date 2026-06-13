@@ -323,6 +323,12 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
   position: relative;
   box-shadow: 0 2px 4px rgba(0,0,0,0.3);
   border: 1px solid rgba(255,255,255,0.1);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.card-icon:hover {
+  transform: rotate(-10deg) scale(1.15) translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  z-index: 2;
 }
 .card-yellow {
   background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
@@ -784,7 +790,7 @@ body.admin-active .toolbar { display: flex; }
           <div id="minWrapHome">
             <select id="minHome"></select>
           </div>
-          <button onclick="handleAddEvent('h')">Add Event</button>
+          <button onclick="handleAddEvent('h')" id="btnAddHome">Add Event</button>
         </div>
       </div>
       <div class="events-column" id="eventsAway">
@@ -800,7 +806,7 @@ body.admin-active .toolbar { display: flex; }
           <div id="minWrapAway">
             <select id="minAway"></select>
           </div>
-          <button onclick="handleAddEvent('a')">Add Event</button>
+          <button onclick="handleAddEvent('a')" id="btnAddAway">Add Event</button>
         </div>
       </div>
     </div>
@@ -1376,6 +1382,7 @@ const TRANSLATIONS = {
     admin_mode: "Modo Administrador",
     admin_denied: "¡Bien hecho по intentarlo, pero la contraseña es solo para el administrador!",
     match_events: "Eventos del partido",
+    add_event: "Agregar evento",
     minute: "Minuto",
     saved: "Guardado",
     loaded: "Carga guardada de",
@@ -1468,6 +1475,7 @@ const TRANSLATIONS = {
     admin_mode: "Mode Administrateur",
     admin_denied: "Bravo d'avoir essayé, mais le mot de passe est réservé à l'administrateur !",
     match_events: "Événements du match",
+    add_event: "Ajouter un événement",
     minute: "Minute",
     saved: "Enregistré",
     loaded: "Chargement réussi du",
@@ -1560,6 +1568,7 @@ const TRANSLATIONS = {
     admin_mode: "Режим администратора",
     admin_denied: "Молодцы, что попробовали, но пароль только для администратора!",
     match_events: "События матча",
+    add_event: "Добавить событие",
     minute: "Минута",
     saved: "Сохранено",
     loaded: "Загружено сохранение от",
@@ -1652,6 +1661,7 @@ const TRANSLATIONS = {
     admin_mode: "Admin Mode",
     admin_denied: "Well done for trying, but the password is for admin only!",
     match_events: "Match Events",
+    add_event: "Add Event",
     minute: "Minute",
     saved: "Saved",
     loaded: "Loaded save from",
@@ -1744,6 +1754,7 @@ const TRANSLATIONS = {
     admin_mode: "管理模式",
     admin_denied: "尝试得不错，但密码仅供管理员使用！",
     match_events: "比赛事件",
+    add_event: "添加事件",
     minute: "分钟",
     saved: "已保存",
     loaded: "已加载保存于",
@@ -1961,6 +1972,11 @@ function openMatchEvents(matchId) {
   renderMatchEventsList();
   toggleMinuteInput('h');
   toggleMinuteInput('a');
+
+  const addText = TRANSLATIONS[currentLang].add_event || 'Add Event';
+  document.getElementById('btnAddHome').textContent = addText;
+  document.getElementById('btnAddAway').textContent = addText;
+
   document.getElementById('eventsModal').classList.add('show');
 }
 
