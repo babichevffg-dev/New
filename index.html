@@ -501,6 +501,22 @@ body.admin-active .toolbar { display: flex; }
   border: 1px solid rgba(255,255,255,0.1);
 }
 
+.pitch-player.active {
+  transform: translate(-50%, -8px) scale(1.2) !important;
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 20px var(--team-accent, var(--gold));
+  border-color: #fff;
+}
+
+.player-row.active {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-left: 4px solid var(--team-accent, var(--gold));
+  transform: translateX(5px);
+}
+.player-row {
+  transition: all 0.2s ease;
+}
+
 /* Confederation Filter */
 .conf-filter {
   display: flex;
@@ -39936,18 +39952,33 @@ function changeFormation(f) {
   }
 }
 
+function highlightPlayer(idx, active) {
+  const pitchPlayer = document.getElementById(`pitch-player-${idx}`);
+  const squadRow = document.getElementById(`squad-player-${idx}`);
+
+  if (pitchPlayer) {
+    pitchPlayer.classList.toggle('active', active);
+  }
+  if (squadRow) {
+    squadRow.classList.toggle('active', active);
+  }
+}
+
 function renderTacticalPitch(players, teamId, formationName) {
   const fmt = FORMATIONS[formationName] || FORMATIONS["4-3-3"];
+  // Only starting players on the pitch
+  const startingPlayers = players.filter(p => p.isStarting);
   let h = `<canvas id="tacticalCanvas" class="tactical-canvas"></canvas>`;
   ["goalkeeper", "defender", "midfielder", "forward"].forEach(pos => {
-    const posPlayers = players.filter(p => p.pos === pos);
+    const posPlayers = startingPlayers.filter(p => p.pos === pos);
     const coords = fmt[pos] || [];
     coords.forEach((coord, i) => {
       const p = posPlayers[i];
       if (p) {
-        const playerIdx = SQUADS[teamId].players.indexOf(p);
+        const playerIdx = p._idx;
         h += `
           <div class="pitch-player"
+               id="pitch-player-${playerIdx}"
                data-player-idx="${playerIdx}"
                data-team-id="${teamId}"
                data-default-bottom="${coord.b}"
@@ -39955,6 +39986,8 @@ function renderTacticalPitch(players, teamId, formationName) {
                style="bottom: ${coord.b}%; left: ${coord.l}%; transform: translate(-50%, 0);"
                onmousedown="handlePlayerMouseDown(event, this)"
                ontouchstart="handlePlayerMouseDown(event, this)"
+               onmouseenter="highlightPlayer(${playerIdx}, true)"
+               onmouseleave="highlightPlayer(${playerIdx}, false)"
                onclick="if(!isTacticalMode) showPersonDetail('${teamId}', 'players', ${playerIdx})">
             ${p.no || ''}
             <span class="p-name">${(p.name[currentLang] || p.name.en).split(' ').pop()}</span>
@@ -40000,17 +40033,42 @@ function goToStadiumByVenue(v){
 function initStartingXI(teamId) {
   const squad = SQUADS[teamId];
   if (!squad || !squad.players) return;
-  if (squad.players.some(p => p.hasOwnProperty('isStarting'))) {
-    const starters = squad.players.filter(p => p.isStarting);
-    if (starters.length <= 11) return;
+
+  const formationName = squad.formation || "4-3-3";
+  const fmt = FORMATIONS[formationName] || FORMATIONS["4-3-3"];
+
+  // If we already have exactly 11 starters, check if they fit the formation
+  const currentStarters = squad.players.filter(p => p.isStarting);
+  if (currentStarters.length === 11) {
+    // Check if positional counts match
+    let matches = true;
+    ["goalkeeper", "defender", "midfielder", "forward"].forEach(pos => {
+      const needed = (fmt[pos] || []).length;
+      const actual = currentStarters.filter(p => p.pos === pos).length;
+      if (actual !== needed) matches = false;
+    });
+    if (matches) return;
   }
+
+  // Reset and re-assign based on formation
   squad.players.forEach(p => p.isStarting = false);
-  const sorted = [...squad.players].sort((a, b) => {
-    const order = { forward: 1, midfielder: 2, defender: 3, goalkeeper: 4 };
-    return (order[a.pos] || 99) - (order[b.pos] || 99);
+
+  ["goalkeeper", "defender", "midfielder", "forward"].forEach(pos => {
+    const needed = (fmt[pos] || []).length;
+    const available = squad.players.filter(p => p.pos === pos);
+    for (let i = 0; i < needed && i < available.length; i++) {
+      available[i].isStarting = true;
+    }
   });
-  for (let i = 0; i < 11 && i < sorted.length; i++) {
-    sorted[i].isStarting = true;
+
+  // If we still don't have 11 (e.g. not enough players in a position),
+  // just fill with whoever is left until 11
+  let totalStarters = squad.players.filter(p => p.isStarting).length;
+  if (totalStarters < 11) {
+    const remaining = squad.players.filter(p => !p.isStarting);
+    for (let i = 0; i < (11 - totalStarters) && i < remaining.length; i++) {
+      remaining[i].isStarting = true;
+    }
   }
 }
 
@@ -40044,9 +40102,13 @@ function updatePlayerField(teamId, idx, field, value) {
   if (!player) return;
   if (field === 'isStarting') {
     const squad = SQUADS[teamId];
-    const starters = squad.players.filter(p => p.isStarting);
-    if (value && starters.length >= 11) {
-      alert('Already have 11 players in Starting XI. Unset someone first.');
+    const formationName = squad.formation || "4-3-3";
+    const fmt = FORMATIONS[formationName] || FORMATIONS["4-3-3"];
+    const needed = (fmt[player.pos] || []).length;
+    const actual = squad.players.filter(p => p.isStarting && p.pos === player.pos).length;
+
+    if (value && actual >= needed) {
+      alert(`Already have ${needed} ${player.pos}s for the ${formationName} formation. Unset someone first.`);
       showSquad(teamId);
       return;
     }
@@ -40207,26 +40269,26 @@ function showSquad(teamId){
     let eventHtml = '<div class="event-marker">';
     goals.forEach(ev => {
       const title = `${getMatchTitle(ev.matchId)}${ev.minute ? `, ${ev.minute}'` : ''}`;
-      eventHtml += `<span class="ball-icon" title="${title}">⚽</span>`;
+      eventHtml += `<span class="ball-icon" title="${title}" onclick="event.stopPropagation(); if(this.title) alert(this.title)">⚽</span>`;
     });
     reds.forEach(ev => {
       const title = getMatchTitle(ev.matchId);
-      eventHtml += `<span class="card-icon card-red" title="${title}"></span>`;
+      eventHtml += `<span class="card-icon card-red" title="${title}" onclick="event.stopPropagation(); if(this.title) alert(this.title)"></span>`;
     });
     yellows.forEach(ev => {
       const title = getMatchTitle(ev.matchId);
-      eventHtml += `<span class="card-icon card-yellow" title="${title}"></span>`;
+      eventHtml += `<span class="card-icon card-yellow" title="${title}" onclick="event.stopPropagation(); if(this.title) alert(this.title)"></span>`;
     });
     eventHtml += '</div>';
 
 
-    const stadiumIcon = p.isStarting ? ` <svg class="first-xi-icon" viewBox="0 0 24 24" title="First XI"><path d="M13,2V4.84L17,3.12V7H19V2H13M11,2H5V7H7V3.12L11,4.84V2M18,8H16V7H8V8H6L5,13.25V22H19V13.25L18,8Z"/></svg>` : '';
+    const stadiumIcon = p.isStarting ? ` <svg class="first-xi-icon" viewBox="0 0 24 24" title="First XI"><path d="M7,2 L2,5 v5 h3 v12 h14 V10 h3 V5 L17,2 h-3 l-2,2 l-2,-2 Z"/></svg>` : '';
     if (isAdmin) {
       const posOptions = ["forward", "midfielder", "defender", "goalkeeper"].map(pos =>
         `<option value="${pos}" ${p.pos === pos ? "selected" : ""}>${T[pos] || pos}</option>`
       ).join("");
 
-      h += `<div class="player-row admin-edit-row" onclick="if(event.target.tagName !== 'INPUT' && event.target.tagName !== 'SELECT' && !event.target.closest('button')) showPersonDetail('${teamId}', 'players', ${p._idx})">
+      h += `<div class="player-row admin-edit-row" id="squad-player-${p._idx}" onmouseenter="highlightPlayer(${p._idx}, true)" onmouseleave="highlightPlayer(${p._idx}, false)" onclick="if(event.target.tagName !== 'INPUT' && event.target.tagName !== 'SELECT' && !event.target.closest('button')) showPersonDetail('${teamId}', 'players', ${p._idx})">
         <div class="player-name">
           <input type="checkbox" ${p.isStarting ? "checked" : ""} onchange="updatePlayerField('${teamId}', ${p._idx}, 'isStarting', this.checked)" title="В основе">
           <input type="number" class="admin-no-input" value="${p.no || ''}" onchange="updatePlayerField('${teamId}', ${p._idx}, 'no', this.value)">
@@ -40244,7 +40306,7 @@ function showSquad(teamId){
         </div>
       </div>`;
     } else {
-      h += `<div class="player-row" onclick="showPersonDetail('${teamId}', 'players', ${p._idx})">
+      h += `<div class="player-row" id="squad-player-${p._idx}" onmouseenter="highlightPlayer(${p._idx}, true)" onmouseleave="highlightPlayer(${p._idx}, false)" onclick="showPersonDetail('${teamId}', 'players', ${p._idx})">
         <div class="player-name"> <span class="player-no">${p.no || ''}</span> ${pName}${stadiumIcon} ${eventHtml}</div>
         <div class="player-pos">${pPos}</div>
         <div class="player-status ${isCaptain ? 'captain' : ''}">${isCaptain ? T.captain : ''}</div>
