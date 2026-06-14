@@ -40207,20 +40207,20 @@ function showSquad(teamId){
     let eventHtml = '<div class="event-marker">';
     goals.forEach(ev => {
       const title = `${getMatchTitle(ev.matchId)}${ev.minute ? `, ${ev.minute}'` : ''}`;
-      eventHtml += `<span class="ball-icon" title="${title}">⚽</span>`;
+      eventHtml += `<span class="ball-icon" title="${title}" onclick="event.stopPropagation(); if(this.title) alert(this.title)">⚽</span>`;
     });
     reds.forEach(ev => {
       const title = getMatchTitle(ev.matchId);
-      eventHtml += `<span class="card-icon card-red" title="${title}"></span>`;
+      eventHtml += `<span class="card-icon card-red" title="${title}" onclick="event.stopPropagation(); if(this.title) alert(this.title)"></span>`;
     });
     yellows.forEach(ev => {
       const title = getMatchTitle(ev.matchId);
-      eventHtml += `<span class="card-icon card-yellow" title="${title}"></span>`;
+      eventHtml += `<span class="card-icon card-yellow" title="${title}" onclick="event.stopPropagation(); if(this.title) alert(this.title)"></span>`;
     });
     eventHtml += '</div>';
 
 
-    const stadiumIcon = p.isStarting ? ` <svg class="first-xi-icon" viewBox="0 0 24 24" title="First XI"><path d="M13,2V4.84L17,3.12V7H19V2H13M11,2H5V7H7V3.12L11,4.84V2M18,8H16V7H8V8H6L5,13.25V22H19V13.25L18,8Z"/></svg>` : '';
+    const stadiumIcon = p.isStarting ? ` <svg class="first-xi-icon" viewBox="0 0 24 24" title="First XI"><path d="M7,2 L2,5 v5 h3 v12 h14 V10 h3 V5 L17,2 h-3 l-2,2 l-2,-2 Z"/></svg>` : '';
     if (isAdmin) {
       const posOptions = ["forward", "midfielder", "defender", "goalkeeper"].map(pos =>
         `<option value="${pos}" ${p.pos === pos ? "selected" : ""}>${T[pos] || pos}</option>`
