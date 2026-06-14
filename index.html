@@ -557,6 +557,12 @@ body.admin-active .toolbar { display: flex; }
 .modal-photo-link { display: block; width: 150px; height: 150px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 3px solid var(--gold); cursor: pointer; transition: 0.3s; }
 .modal-photo-link:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--gold); }
 .modal-photo { width: 100%; height: 100%; object-fit: cover; }
+.photo-slider-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; }
+.slider-btn { background: var(--blue); color: #fff; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+.slider-btn:hover { background: #2980b9; }
+.photo-counter { color: var(--text); font-weight: bold; min-width: 60px; text-align: center; }
+.btn-set-profile { background: #27ae60; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 10px; }
+.btn-set-profile:hover { background: #2ecc71; }
 .social-hint { display: block; text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: -15px; margin-bottom: 20px; }
 .modal-extra { text-align: center; margin-bottom: 20px; font-size: 0.9rem; color: var(--text); }
 .modal-extra div { margin-bottom: 4px; }
@@ -876,6 +882,16 @@ body.admin-active .toolbar { display: flex; }
         <img id="modalPlayerPhoto" src="" alt="" class="modal-photo">
       </a>
       <span class="social-hint">Click photo for Social Media</span>
+
+      <div id="photoSlider" class="photo-slider-controls" style="display: none;">
+          <button class="slider-btn" onclick="changePlayerPhoto(-1)" id="btnPrevPhoto"></button>
+          <div id="photoCounter" class="photo-counter">0 / 20</div>
+          <button class="slider-btn" onclick="changePlayerPhoto(1)" id="btnNextPhoto"></button>
+      </div>
+      <div id="adminPhotoAction" style="display: none;">
+        <button class="btn-set-profile" onclick="setAsProfilePhoto()" id="btnSetProfile"></button>
+      </div>
+
       <div id="modalPlayerExtra" class="modal-extra"></div>
       <p id="modalPlayerStory"></p>
 
@@ -1475,7 +1491,10 @@ const TRANSLATIONS = {
     select_player: "Seleccionar jugador",
     start_greeting: "¡Bienvenidos a la Copa Mundial de la FIFA!",
     final_greeting: "¡Gran Final de la Copa Mundial!",
-    continue: "Continuar"
+    continue: "Continuar",
+    prev_photo: "Foto anterior",
+    next_photo: "Foto siguiente",
+    set_profile_photo: "Hacer foto de perfil"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     born: "Né le:",
@@ -1571,7 +1590,10 @@ const TRANSLATIONS = {
     select_player: "Sélectionner un joueur",
     start_greeting: "Bienvenue à la Coupe du Monde de la FIFA!",
     final_greeting: "Finale de la Coupe du Monde de la FIFA!",
-    continue: "Continuer"
+    continue: "Continuer",
+    prev_photo: "Photo précédente",
+    next_photo: "Photo suivante",
+    set_profile_photo: "Définir comme photo de profil"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     born: "Родился:",
@@ -1667,7 +1689,10 @@ const TRANSLATIONS = {
     select_player: "Выбрать игрока",
     start_greeting: "С началом Чемпионата мира по Футболу!",
     final_greeting: "Финал Чемпионата мира по футболу!",
-    continue: "Продолжить"
+    continue: "Продолжить",
+    prev_photo: "Пред. фото",
+    next_photo: "След. фото",
+    set_profile_photo: "Сделать фото профиля"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     born: "Born:",
@@ -1763,7 +1788,10 @@ const TRANSLATIONS = {
     select_player: "Select Player",
     start_greeting: "Welcome to the FIFA World Cup!",
     final_greeting: "FIFA World Cup Final!",
-    continue: "Continue"
+    continue: "Continue",
+    prev_photo: "Prev Photo",
+    next_photo: "Next Photo",
+    set_profile_photo: "Set as Profile Photo"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     born: "出生日期:",
@@ -1859,7 +1887,10 @@ const TRANSLATIONS = {
     select_player: "选择球员",
     start_greeting: "欢迎来到国际足联世界杯！",
     final_greeting: "国际足联世界杯决赛！",
-    continue: "继续"
+    continue: "继续",
+    prev_photo: "上一张照片",
+    next_photo: "下一张照片",
+    set_profile_photo: "设为个人资料照片"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -40306,6 +40337,39 @@ function showPersonDetail(teamId, type, idx) {
         setTimeout(() => drawRadarChart(person.stats), 0);
     }
 
+    // Photo Slider Init
+    currentPreviewTeamId = teamId;
+    currentPreviewType = type;
+    currentPreviewIdx = idx;
+    previewPhotoIdx = 0; // Start at 0 (Kubok.jpg)
+
+    const sliderEl = document.getElementById('photoSlider');
+    const adminActionEl = document.getElementById('adminPhotoAction');
+    const counterEl = document.getElementById('photoCounter');
+    const btnPrev = document.getElementById('btnPrevPhoto');
+    const btnNext = document.getElementById('btnNextPhoto');
+    const btnSet = document.getElementById('btnSetProfile');
+    const T = TRANSLATIONS[currentLang];
+
+    if (isAdmin) {
+      if (sliderEl) sliderEl.style.display = 'flex';
+      if (adminActionEl) adminActionEl.style.display = 'block';
+      if (counterEl) counterEl.textContent = `0 / 20`;
+      if (btnPrev) btnPrev.textContent = T.prev_photo;
+      if (btnNext) btnNext.textContent = T.next_photo;
+      if (btnSet) btnSet.textContent = T.set_profile_photo;
+    } else {
+      if (sliderEl) sliderEl.style.display = 'none';
+      if (adminActionEl) adminActionEl.style.display = 'none';
+    }
+
+    if (photoEl) {
+      photoEl.onerror = function() {
+        // Show "blank screen" as requested: use a 1x1 transparent gif
+        this.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+      };
+    }
+
     // Показываем модальное окно
     if (modalEl) {
         modalEl.classList.add('show');
@@ -40374,6 +40438,59 @@ function drawRadarChart(stats) {
 
 function closePlayerModal(){
   document.getElementById('playerModal').classList.remove('show');
+}
+
+let previewPhotoIdx = 0;
+let currentPreviewPerson = null;
+let currentPreviewTeamId = null;
+let currentPreviewType = null;
+let currentPreviewIdx = null;
+
+function formatNameForPath(nameEn) {
+  // Remove diacritics
+  const normalized = nameEn.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const parts = normalized.split(' ');
+  if (parts.length === 1) return parts[0].toUpperCase();
+
+  // Pattern: First_LAST1_LAST2...
+  // First name Proper Case, others UPPERCASE
+  const first = parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase();
+  const rest = parts.slice(1).map(p => p.toUpperCase()).join('_');
+  return first + '_' + rest;
+}
+
+function getPlayerImagePath(teamId, person, idx) {
+  if (idx === 0) return "image/Kubok.jpg";
+  const t = TEAMS[teamId];
+  if (!t) return "image/Kubok.jpg";
+  const teamName = t.n.en;
+  const nameEnFormatted = formatNameForPath(person.name.en);
+  const numStr = String(idx).padStart(3, '0');
+  return `Image/${teamName}/${nameEnFormatted}_${numStr}`;
+}
+
+function changePlayerPhoto(delta) {
+  previewPhotoIdx += delta;
+  if (previewPhotoIdx < 0) previewPhotoIdx = 20;
+  if (previewPhotoIdx > 20) previewPhotoIdx = 0;
+
+  const photoEl = document.getElementById('modalPlayerPhoto');
+  const counterEl = document.getElementById('photoCounter');
+  const person = SQUADS[currentPreviewTeamId][currentPreviewType][currentPreviewIdx];
+
+  const newSrc = getPlayerImagePath(currentPreviewTeamId, person, previewPhotoIdx);
+  photoEl.src = newSrc;
+  counterEl.textContent = `${previewPhotoIdx} / 20`;
+}
+
+async function setAsProfilePhoto() {
+  const person = SQUADS[currentPreviewTeamId][currentPreviewType][currentPreviewIdx];
+  const newPhoto = getPlayerImagePath(currentPreviewTeamId, person, previewPhotoIdx);
+  person.image = newPhoto;
+
+  await persist();
+  alert(TRANSLATIONS[currentLang].saved || "Saved");
+  showSquad(currentPreviewTeamId);
 }
 
 function showVictoryDetail(year) {
