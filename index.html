@@ -881,7 +881,7 @@ body.admin-active .toolbar { display: flex; }
       <a id="modalPlayerSocial" href="#" target="_blank" class="modal-photo-link">
         <img id="modalPlayerPhoto" src="" alt="" class="modal-photo">
       </a>
-      <span class="social-hint">Click photo for Social Media</span>
+      <span id="modalSocialHint" class="social-hint">Click photo for Social Media</span>
 
       <div id="photoSlider" class="photo-slider-controls" style="display: none;">
           <button class="slider-btn" onclick="changePlayerPhoto(-1)" id="btnPrevPhoto"></button>
@@ -1494,7 +1494,8 @@ const TRANSLATIONS = {
     continue: "Continuar",
     prev_photo: "Foto anterior",
     next_photo: "Foto siguiente",
-    set_profile_photo: "Hacer foto de perfil"
+    set_profile_photo: "Hacer foto de perfil",
+    social_hint: "Haz clic en la foto para redes sociales"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
     born: "Né le:",
@@ -1593,7 +1594,8 @@ const TRANSLATIONS = {
     continue: "Continuer",
     prev_photo: "Photo précédente",
     next_photo: "Photo suivante",
-    set_profile_photo: "Définir comme photo de profil"
+    set_profile_photo: "Définir comme photo de profil",
+    social_hint: "Cliquez sur la photo pour les réseaux sociaux"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   ru: {
     born: "Родился:",
@@ -1692,7 +1694,8 @@ const TRANSLATIONS = {
     continue: "Продолжить",
     prev_photo: "Пред. фото",
     next_photo: "След. фото",
-    set_profile_photo: "Сделать фото профиля"
+    set_profile_photo: "Сделать фото профиля",
+    social_hint: "Нажмите на фото для соцсетей"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
     born: "Born:",
@@ -1791,7 +1794,8 @@ const TRANSLATIONS = {
     continue: "Continue",
     prev_photo: "Prev Photo",
     next_photo: "Next Photo",
-    set_profile_photo: "Set as Profile Photo"
+    set_profile_photo: "Set as Profile Photo",
+    social_hint: "Click photo for Social Media"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
     born: "出生日期:",
@@ -1890,7 +1894,8 @@ const TRANSLATIONS = {
     continue: "继续",
     prev_photo: "上一张照片",
     next_photo: "下一张照片",
-    set_profile_photo: "设为个人资料照片"
+    set_profile_photo: "设为个人资料照片",
+    social_hint: "点击照片查看社交媒体"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -40218,7 +40223,7 @@ function showSquad(teamId){
         `<option value="${pos}" ${p.pos === pos ? "selected" : ""}>${T[pos] || pos}</option>`
       ).join("");
 
-      h += `<div class="player-row admin-edit-row">
+      h += `<div class="player-row admin-edit-row" onclick="if(event.target.tagName !== 'INPUT' && event.target.tagName !== 'SELECT' && !event.target.closest('button')) showPersonDetail('${teamId}', 'players', ${p._idx})">
         <div class="player-name">
           <input type="checkbox" ${p.isStarting ? "checked" : ""} onchange="updatePlayerField('${teamId}', ${p._idx}, 'isStarting', this.checked)" title="В основе">
           <input type="number" class="admin-no-input" value="${p.no || ''}" onchange="updatePlayerField('${teamId}', ${p._idx}, 'no', this.value)">
@@ -40295,6 +40300,10 @@ function showPersonDetail(teamId, type, idx) {
     // Заполняем данные
     if (nameEl) {
         nameEl.innerHTML = (person.no ? `<span class="player-no">#${person.no}</span> ` : '') + pName;
+    }
+    const hintEl = document.getElementById('modalSocialHint');
+    if (hintEl) {
+        hintEl.textContent = TRANSLATIONS[currentLang].social_hint || "Click photo for Social Media";
     }
     if (storyEl) {
         storyEl.textContent = pStory;
@@ -40463,7 +40472,12 @@ function getPlayerImagePath(teamId, person, idx) {
   if (idx === 0) return "image/Kubok.jpg";
   const t = TEAMS[teamId];
   if (!t) return "image/Kubok.jpg";
-  const teamName = t.n.en;
+  let teamName = t.n.en;
+  if (teamId === 'TUR') teamName = "Türkiye";
+  if (teamId === 'CZE') teamName = "Czechia";
+  if (teamId === 'IRN') teamName = "IR_Iran";
+  if (teamId === 'COD') teamName = "Congo_DR";
+  teamName = teamName.replace(/ /g, '_');
   const nameEnFormatted = formatNameForPath(person.name.en);
   const numStr = String(idx).padStart(3, '0');
   return `Image/${teamName}/${nameEnFormatted}_${numStr}`;
