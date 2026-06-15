@@ -41376,3 +41376,65 @@ function checkCelebration() {
     startCelebration(T.final_greeting);
   }
 }
+
+function checkAdmin() {
+  const pass = prompt('Admin Password:');
+  if (pass === '32167ZZZ') {
+    isAdmin = true;
+    document.body.classList.add('admin-active');
+    renderAll();
+  } else if (pass !== null) {
+    alert(TRANSLATIONS[currentLang].admin_denied);
+  }
+}
+// =========================================
+</script>
+
+<!-- Видео модальное окно (должно быть в самом низу body) -->
+<div id="videoModal" onclick="closeVideoModal()">
+    <div class="video-modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeVideoModal()" title="Закрыть">✕</button>
+        <video id="playerVideo" controls playsinline>
+            <source src="image/Video.mp4" type="video/mp4">
+            Ваш браузер не поддерживает воспроизведение видео.
+        </video>
+    </div>
+</div>
+
+<div id="celebrationModal">
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="celebration-content">
+    <div id="celebrationText" class="celebration-text"></div>
+    <button id="celebrationButton"></button>
+  </div>
+</div>
+
+<span class="admin-trigger" id="adminTrigger" onclick="checkAdmin()"></span>
+
+<script>
+// Final initialization to ensure all DOM elements are present
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', async () => {
+        initTeamPopover(); await load(); buildUI(); renderAll(); checkCelebration();
+    });
+} else {
+    (async () => {
+        initTeamPopover(); await load(); buildUI(); renderAll(); checkCelebration();
+    })();
+}
+// === НОВОЕ: Запуск музыки по первому клику в любом месте сайта ===
+document.addEventListener('click', function startMusicOnFirstClick() {
+  if (bgMusic.paused) {
+    // Пытаемся воспроизвести и снимаем галочку mute, если она была
+    bgMusic.play().then(() => {
+      bgMusic.muted = false;
+      muteIcon.innerHTML = icons.up; // Ставим иконку "звук включен"
+    }).catch(() => {
+      // Игнорируем ошибки, если браузер всё ещё блокирует (крайне редко при реальном клике)
+    });
+  }
+}, { once: true }); // { once: true } гарантирует, что этот код сработает ТОЛЬКО ОДИН РАЗ
+</script>
+
+</body>
+</html>
