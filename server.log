@@ -1,0 +1,10 @@
+127.0.0.1 - - [15/Jun/2026 10:07:13] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jun/2026 10:07:13] code 404, message File not found
+127.0.0.1 - - [15/Jun/2026 10:07:13] "GET /image/Kubok.jpg HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jun/2026 10:07:14] code 404, message File not found
+127.0.0.1 - - [15/Jun/2026 10:07:14] "GET /1.mp3 HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jun/2026 10:07:14] code 404, message File not found
+127.0.0.1 - - [15/Jun/2026 10:07:14] "GET /image/Video.mp4 HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jun/2026 10:07:14] "GET /api.php HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jun/2026 10:07:14] code 404, message File not found
+127.0.0.1 - - [15/Jun/2026 10:07:14] "GET /results.json HTTP/1.1" 404 -
