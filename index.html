@@ -11,6 +11,13 @@
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+@keyframes flagWave {
+  0%, 100% { transform: rotate(0deg) skewY(0deg); }
+  25% { transform: rotate(2deg) skewY(1deg); }
+  50% { transform: rotate(-1deg) skewY(-1deg); }
+  75% { transform: rotate(1deg) skewY(0.5deg); }
+}
+
 /* === ВИДЕО МОДАЛЬНОЕ ОКНО === */
 #videoModal {
     display: none; /* Скрыто по умолчанию */
@@ -264,7 +271,7 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .match-row{display:grid;grid-template-columns:1fr 45px 15px 45px 1fr auto;gap:4px;align-items:center;font-size:.85rem}
 .team-cell{display:flex;align-items:center;gap:6px;min-width:0}
 .team-cell.away{justify-content:flex-end;text-align:right;flex-direction:row-reverse}
-.flag{width:24px;height:16px;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.3);flex-shrink:0}
+.flag{width:24px;height:16px;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.3);flex-shrink:0; animation: flagWave 4s infinite ease-in-out; transform-origin: left center}
 .team-tip{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border-bottom:1px dotted rgba(255,255,255,.25);transition:.15s}
 .team-tip:hover{color:var(--accent);border-bottom-color:var(--accent)}
 .team-tip span{text-shadow: -1px -1px 0 var(--pitch), 1px -1px 0 var(--pitch), -1px 1px 0 var(--pitch), 1px 1px 0 var(--pitch);}
@@ -561,7 +568,7 @@ body.admin-active .toolbar { display: flex; }
 .squad-container { display: grid; grid-template-columns: 1fr 300px; gap: 24px; margin-top: 20px; }
 @media (max-width: 900px) { .squad-container { grid-template-columns: 1fr; } }
 .team-header { text-align: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-.team-header .big-flag { width: 120px; height: 80px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 16px; }
+.team-header .big-flag { width: 120px; height: 80px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 16px; animation: flagWave 4s infinite ease-in-out; transform-origin: left center}
 .team-header h2 { font-size: 2.2rem; color: var(--gold); margin-bottom: 12px; text-shadow: -2px -2px 0 var(--pitch), 2px -2px 0 var(--pitch), -2px 2px 0 var(--pitch), 2px 2px 0 var(--pitch); }
 .team-desc { font-size: 1.05rem; line-height: 1.6; color: var(--text); max-width: 800px; margin: 0 auto; }
 .section-title { font-size: 1.2rem; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
