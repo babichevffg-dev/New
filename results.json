@@ -1,7 +1,13 @@
 {
   "players": [
     {
-      "name": { "ru": "Рауль Ранхель", "en": "Raul Rangel", "es": "Raul Rangel", "fr": "Raul Rangel", "zh": "劳尔·兰赫尔" },
+      "name": {
+        "ru": "Рауль Ранхель",
+        "en": "Raul Rangel",
+        "es": "Raul Rangel",
+        "fr": "Raul Rangel",
+        "zh": "劳尔·兰赫尔"
+      },
       "pos": "goalkeeper",
       "status": "",
       "story": {
@@ -10,10 +16,17 @@
         "es": "Portero de los Pumas UNAM, conocido por sus fiables atajadas y su formación en la academia del club.",
         "fr": "Gardien de but des Pumas UNAM, connu pour ses arrêts fiables et sa formation à l'académie du club.",
         "zh": "美洲狮队的守门员，以可靠的扑救和俱乐部青训营的培养而闻名。"
-      }
+      },
+      "no": 1
     },
     {
-      "name": { "ru": "Карлос Асеведо", "en": "Carlos Acevedo", "es": "Carlos Acevedo", "fr": "Carlos Acevedo", "zh": "卡洛斯·阿塞韦多" },
+      "name": {
+        "ru": "Карлос Асеведо",
+        "en": "Carlos Acevedo",
+        "es": "Carlos Acevedo",
+        "fr": "Carlos Acevedo",
+        "zh": "卡洛斯·阿塞韦多"
+      },
       "pos": "goalkeeper",
       "status": "",
       "story": {
@@ -22,10 +35,17 @@
         "es": "Portero del Santos Laguna, reconocido por los expertos por su excelente distribución del balón y el premio al Jugador Joven del Torneo de la Liga MX.",
         "fr": "Gardien de but du Santos Laguna, reconnu par les experts pour son excellente distribution du ballon et le prix du Jeune Joueur du Tournoi de la Liga MX.",
         "zh": "桑托斯拉古纳的守门员，因其出色的球权分配和墨西哥联赛年度最佳年轻球员奖而受到专家认可。"
-      }
+      },
+      "no": 12
     },
     {
-      "name": { "ru": "Гильермо Очоа", "en": "Guillermo Ochoa", "es": "Guillermo Ochoa", "fr": "Guillermo Ochoa", "zh": "吉列尔莫·奥乔亚" },
+      "name": {
+        "ru": "Гильермо Очоа",
+        "en": "Guillermo Ochoa",
+        "es": "Guillermo Ochoa",
+        "fr": "Guillermo Ochoa",
+        "zh": "吉列尔莫·奥乔亚"
+      },
       "pos": "goalkeeper",
       "status": "Regular",
       "story": {
@@ -34,10 +54,17 @@
         "es": "Un portero legendario, famoso por su atajada contra Brasil en el Mundial 2014 y por haber jugado en múltiples Copas del Mundo a lo largo de su carrera.",
         "fr": "Un gardien de but légendaire, célèbre pour son arrêt contre le Brésil lors de la Coupe du Monde 2014 et pour avoir joué dans plusieurs Coupes du Monde au cours de sa carrière.",
         "zh": "传奇守门员，因在2014年世界杯对阵巴西时的扑救以及职业生涯中参加过多届世界杯而闻名。"
-      }
+      },
+      "no": 13
     },
     {
-      "name": { "ru": "Хорхе Санчес", "en": "Jorge Sánchez", "es": "Jorge Sánchez", "fr": "Jorge Sánchez", "zh": "豪尔赫·桑切斯" },
+      "name": {
+        "ru": "Хорхе Санчес",
+        "en": "Jorge Sánchez",
+        "es": "Jorge Sánchez",
+        "fr": "Jorge Sánchez",
+        "zh": "豪尔赫·桑切斯"
+      },
       "pos": "defender",
       "status": "Regular",
       "story": {
@@ -46,10 +73,17 @@
         "es": "Defensa que jugó en el Ajax y el Porto, conocido por sus incorporaciones por la banda y un gol crucial ante Estados Unidos en 2021.",
         "fr": "Un défenseur ayant joué pour l'Ajax et le Porto, connu pour ses montées sur le côté et un but crucial contre les États-Unis en 2021.",
         "zh": "曾效力于阿贾克斯和波尔图的边后卫，以插上助攻和2021年对阵美国队的关键进球而闻名。"
-      }
+      },
+      "no": 2
     },
     {
-      "name": { "ru": "Сезар Монтес", "en": "César Montes", "es": "César Montes", "fr": "César Montes", "zh": "塞萨尔·蒙特斯" },
+      "name": {
+        "ru": "Сезар Монтес",
+        "en": "César Montes",
+        "es": "César Montes",
+        "fr": "César Montes",
+        "zh": "塞萨尔·蒙特斯"
+      },
       "pos": "defender",
       "status": "",
       "story": {
@@ -58,10 +92,17 @@
         "es": "Defensa central que anotó un gol crucial para México contra Arabia Saudita en la Copa del Mundo 2022.",
         "fr": "Un défenseur central qui a marqué un but crucial pour le Mexique contre l'Arabie Saoudite lors de la Coupe du Monde 2022.",
         "zh": "中后卫，在2022年世界杯上为墨西哥队对阵沙特阿拉伯时打入了关键进球。"
-      }
+      },
+      "no": 3
     },
     {
-      "name": { "ru": "Эдсон Альварес", "en": "Edson Álvarez", "es": "Edson Álvarez", "fr": "Edson Álvarez", "zh": "埃德森·阿尔瓦雷斯" },
+      "name": {
+        "ru": "Эдсон Альварес",
+        "en": "Edson Álvarez",
+        "es": "Edson Álvarez",
+        "fr": "Edson Álvarez",
+        "zh": "埃德森·阿尔瓦雷斯"
+      },
       "pos": "midfielder",
       "status": "Captain",
       "story": {
@@ -70,10 +111,17 @@
         "es": "Mediocampista del West Ham, apodado 'El Patrón' por su destacada inteligencia táctica y cualidades de liderazgo demostradas desde joven.",
         "fr": "Un milieu de terrain de West Ham, surnommé 'El Patrón' pour son intelligence tactique exceptionnelle et ses qualités de leadership démontrées dès son jeune âge.",
         "zh": "西汉姆联的中场球员，因年轻时就展现出卓越的战术智慧和领导才能而被称为“El Patrón”（老板）。"
-      }
+      },
+      "no": 4
     },
     {
-      "name": { "ru": "Йохан Васкес", "en": "Johan Vásquez", "es": "Johan Vásquez", "fr": "Johan Vásquez", "zh": "约翰·巴斯克斯" },
+      "name": {
+        "ru": "Йохан Васкес",
+        "en": "Johan Vásquez",
+        "es": "Johan Vásquez",
+        "fr": "Johan Vásquez",
+        "zh": "约翰·巴斯克斯"
+      },
       "pos": "defender",
       "status": "Regular",
       "story": {
@@ -82,10 +130,17 @@
         "es": "Defensa del Genoa, destacado por su elegante pase con la pierna izquierda y su compostura bajo presión, ganándose el apodo de 'El Príncipe'.",
         "fr": "Un défenseur de la Genoa, remarquable pour son élégante passe du pied gauche et son sang-froid sous pression, lui valant le surnom de 'Le Prince'.",
         "zh": "热那亚的后卫，以优雅的左脚传球和在压力下的冷静著称，赢得了“王子”的绰号。"
-      }
+      },
+      "no": 5
     },
     {
-      "name": { "ru": "Исраэль Рейес", "en": "Israel Reyes", "es": "Israel Reyes", "fr": "Israel Reyes", "zh": "以色列·雷耶斯" },
+      "name": {
+        "ru": "Исраэль Рейес",
+        "en": "Israel Reyes",
+        "es": "Israel Reyes",
+        "fr": "Israel Reyes",
+        "zh": "以色列·雷耶斯"
+      },
       "pos": "defender",
       "status": "",
       "story": {
@@ -94,10 +149,17 @@
         "es": "Defensa polivalente del Club América, capaz de jugar en cualquier posición de la defensa, conocido por su alta velocidad de recuperación.",
         "fr": "Un défenseur polyvalent du Club América, capable de jouer à n'importe quel poste en défense, connu pour sa grande vitesse de récupération.",
         "zh": "美洲俱乐部的多面手后卫，能够胜任后防线的任何位置，以出色的回追速度而闻名。"
-      }
+      },
+      "no": 15
     },
     {
-      "name": { "ru": "Матео Чавес", "en": "Mateo Chavez", "es": "Mateo Chavez", "fr": "Mateo Chavez", "zh": "马特奥·查韦斯" },
+      "name": {
+        "ru": "Матео Чавес",
+        "en": "Mateo Chavez",
+        "es": "Mateo Chavez",
+        "fr": "Mateo Chavez",
+        "zh": "马特奥·查韦斯"
+      },
       "pos": "defender",
       "status": "",
       "story": {
@@ -106,10 +168,17 @@
         "es": "Un joven defensa prometedor que se centra en la estricta disciplina posicional y la lectura del juego en las ligas en desarrollo de México.",
         "fr": "Un jeune défenseur prometteur qui met l'accent sur une discipline positionnelle stricte et la lecture du jeu dans les ligues en développement du Mexique.",
         "zh": "一位前途无量的年轻后卫，在墨西哥的发展中联赛中注重严格的位置纪律和比赛阅读能力。"
-      }
+      },
+      "no": 20
     },
     {
-      "name": { "ru": "Хесус Гальярдо", "en": "Jesús Gallardo", "es": "Jesús Gallardo", "fr": "Jesús Gallardo", "zh": "赫苏斯·加利亚多" },
+      "name": {
+        "ru": "Хесус Гальярдо",
+        "en": "Jesús Gallardo",
+        "es": "Jesús Gallardo",
+        "fr": "Jesús Gallardo",
+        "zh": "赫苏斯·加利亚多"
+      },
       "pos": "defender",
       "status": "Regular",
       "story": {
@@ -118,10 +187,17 @@
         "es": "Defensa del Monterrey que ostenta el récord oficial de la tarjeta amarilla más rápida en la historia de los Mundiales (15 segundos en 2018).",
         "fr": "Un défenseur du Monterrey qui détient le record officiel du carton jaune le plus rapide de l'histoire des Coupes du Monde (15 secondes en 2018).",
         "zh": "蒙特雷的后卫，保持着世界杯历史上最快黄牌纪录（2018年的15秒）。"
-      }
+      },
+      "no": 23
     },
     {
-      "name": { "ru": "Эрик Лира", "en": "Erik Lira", "es": "Erik Lira", "fr": "Erik Lira", "zh": "埃里克·利拉" },
+      "name": {
+        "ru": "Эрик Лира",
+        "en": "Erik Lira",
+        "es": "Erik Lira",
+        "fr": "Erik Lira",
+        "zh": "埃里克·利拉"
+      },
       "pos": "midfielder",
       "status": "",
       "story": {
@@ -130,10 +206,17 @@
         "es": "Mediocampista del Cruz Azul, conocido por su energía de área a área y por ganar el premio al Mejor Jugador Joven de la Liga MX.",
         "fr": "Un milieu de terrain du Cruz Azul, connu pour son énergie box-to-box et pour avoir remporté le prix du Meilleur Jeune Joueur de la Liga MX.",
         "zh": "蓝十字的中场球员，以全场奔袭的活力和获得墨西哥联赛最佳年轻球员奖而闻名。"
-      }
+      },
+      "no": 6
     },
     {
-      "name": { "ru": "Луис Ромо", "en": "Luis Romo", "es": "Luis Romo", "fr": "Luis Romo", "zh": "路易斯·罗莫" },
+      "name": {
+        "ru": "Луис Ромо",
+        "en": "Luis Romo",
+        "es": "Luis Romo",
+        "fr": "Luis Romo",
+        "zh": "路易斯·罗莫"
+      },
       "pos": "midfielder",
       "status": "",
       "story": {
@@ -142,10 +225,17 @@
         "es": "Jugador polivalente capaz de actuar como mediocampista defensivo o defensa central, conocido por sus precisos pases diagonales largos.",
         "fr": "Un joueur polyvalent capable de jouer comme milieu défensif ou défenseur central, connu pour ses longues passes diagonales précises.",
         "zh": "多面手球员，能够胜任防守型中场或中后卫，以精准的长距离对角线传球而闻名。"
-      }
+      },
+      "no": 7
     },
     {
-      "name": { "ru": "Альваро Фидальго", "en": "Alvaro Fidalgo", "es": "Alvaro Fidalgo", "fr": "Alvaro Fidalgo", "zh": "阿尔瓦罗·菲达尔戈" },
+      "name": {
+        "ru": "Альваро Фидальго",
+        "en": "Alvaro Fidalgo",
+        "es": "Alvaro Fidalgo",
+        "fr": "Alvaro Fidalgo",
+        "zh": "阿尔瓦罗·菲达尔戈"
+      },
       "pos": "midfielder",
       "status": "",
       "story": {
@@ -154,10 +244,17 @@
         "es": "Mediocampista del América, destacado por sus pases creativos y lanzamientos de balón parado tras una exitosa transición de España a la Liga MX.",
         "fr": "Un milieu de terrain de l'América, remarquable pour ses passes créatives et ses coups de pied arrêtés après une transition réussie de l'Espagne à la Liga MX.",
         "zh": "美洲俱乐部的中场球员，在成功从西班牙转会至墨西哥联赛后，以创造性传球和定位球主罚而脱颖而出。"
-      }
+      },
+      "no": 8
     },
     {
-      "name": { "ru": "Орбелин Пинеда", "en": "Orbelín Pineda", "es": "Orbelín Pineda", "fr": "Orbelín Pineda", "zh": "奥尔贝林·皮内达" },
+      "name": {
+        "ru": "Орбелин Пинеда",
+        "en": "Orbelín Pineda",
+        "es": "Orbelín Pineda",
+        "fr": "Orbelín Pineda",
+        "zh": "奥尔贝林·皮内达"
+      },
       "pos": "midfielder",
       "status": "",
       "story": {
@@ -166,10 +263,17 @@
         "es": "Mediocampista apodado 'Cebollita', conocido por su incansable ritmo de trabajo y capacidad para marcar goles desde posiciones profundas.",
         "fr": "Un milieu de terrain surnommé 'Cebollita', connu pour son rythme de travail infatigable et sa capacité à marquer des buts depuis des positions reculées.",
         "zh": "绰号为“Cebollita”（小洋葱）的中场球员，以不知疲倦的跑动和从深远位置进球的能力而闻名。"
-      }
+      },
+      "no": 17
     },
     {
-      "name": { "ru": "Обед Варгас", "en": "Obed Vargas", "es": "Obed Vargas", "fr": "Obed Vargas", "zh": "奥贝德·巴尔加斯" },
+      "name": {
+        "ru": "Обед Варгас",
+        "en": "Obed Vargas",
+        "es": "Obed Vargas",
+        "fr": "Obed Vargas",
+        "zh": "奥贝德·巴尔加斯"
+      },
       "pos": "midfielder",
       "status": "",
       "story": {
@@ -178,10 +282,17 @@
         "es": "Mediocampista del Seattle Sounders, uno de los jugadores más jóvenes en firmar un contrato de cantera en la MLS, conocido por su madurez con el balón.",
         "fr": "Un milieu de terrain du Seattle Sounders, l'un des plus jeunes joueurs à signer un contrat de formation en MLS, connu pour sa maturité avec le ballon.",
         "zh": "西雅图海湾人的中场球员，是MLS中最年轻的本土签约球员之一，以控球时的成熟度而闻名。"
-      }
+      },
+      "no": 18
     },
     {
-      "name": { "ru": "Хильберто Мора", "en": "Gilberto Mora", "es": "Gilberto Mora", "fr": "Gilberto Mora", "zh": "吉尔伯托·莫拉" },
+      "name": {
+        "ru": "Хильберто Мора",
+        "en": "Gilberto Mora",
+        "es": "Gilberto Mora",
+        "fr": "Gilberto Mora",
+        "zh": "吉尔伯托·莫拉"
+      },
       "pos": "midfielder",
       "status": "",
       "story": {
@@ -190,10 +301,17 @@
         "es": "Un joven mediocampista prometedor de la academia del Club América, reconocido por los expertos por su regate técnico y buena visión de juego.",
         "fr": "Un jeune milieu de terrain prometteur de l'académie du Club América, reconnu par les experts pour son dribble technique et sa bonne vision du jeu.",
         "zh": "美洲俱乐部青训营中前途无量的年轻中场，因技术性盘带和良好的视野而受到专家认可。"
-      }
+      },
+      "no": 22
     },
     {
-      "name": { "ru": "Луис Чавес", "en": "Luis Chavez", "es": "Luis Chavez", "fr": "Luis Chavez", "zh": "路易斯·查韦斯" },
+      "name": {
+        "ru": "Луис Чавес",
+        "en": "Luis Chavez",
+        "es": "Luis Chavez",
+        "fr": "Luis Chavez",
+        "zh": "路易斯·查韦斯"
+      },
       "pos": "midfielder",
       "status": "",
       "story": {
@@ -202,10 +320,17 @@
         "es": "Mediocampista que pasó a la historia por marcar un espectacular gol de tiro libre directo contra Arabia Saudita en la Copa del Mundo 2022.",
         "fr": "Un milieu de terrain qui est entré dans l'histoire en marquant un spectaculaire but sur coup franc direct contre l'Arabie Saoudite lors de la Coupe du Monde 2022.",
         "zh": "中场球员，因在2022年世界杯上对阵沙特阿拉伯时打入精彩的直接任意球而永载史册。"
-      }
+      },
+      "no": 24
     },
     {
-      "name": { "ru": "Брайан Гутьеррес", "en": "Brian Gutierrez", "es": "Brian Gutierrez", "fr": "Brian Gutierrez", "zh": "布莱恩·古铁雷斯" },
+      "name": {
+        "ru": "Брайан Гутьеррес",
+        "en": "Brian Gutierrez",
+        "es": "Brian Gutierrez",
+        "fr": "Brian Gutierrez",
+        "zh": "布莱恩·古铁雷斯"
+      },
       "pos": "midfielder",
       "status": "",
       "story": {
@@ -214,10 +339,17 @@
         "es": "Mediocampista del Chicago Fire y Jugador Joven del Año de la MLS, conocido por su visión y pases progresivos.",
         "fr": "Un milieu de terrain du Chicago Fire et Jeune Joueur de l'Année de la MLS, connu pour sa vision et ses passes progressives.",
         "zh": "芝加哥火焰的中场球员，MLS年度最佳年轻球员，以视野和推进性传球而闻名。"
-      }
+      },
+      "no": 26
     },
     {
-      "name": { "ru": "Рауль Хименес", "en": "Raul Jimenez", "es": "Raúl Jiménez", "fr": "Raúl Jiménez", "zh": "劳尔·希门尼斯" },
+      "name": {
+        "ru": "Рауль Хименес",
+        "en": "Raul Jimenez",
+        "es": "Raúl Jiménez",
+        "fr": "Raúl Jiménez",
+        "zh": "劳尔·希门尼斯"
+      },
       "pos": "forward",
       "status": "",
       "story": {
@@ -226,10 +358,17 @@
         "es": "Delantero del Fulham y máximo goleador histórico de México en eliminatorias mundialistas, conocido por su definición clínica.",
         "fr": "Un attaquant de Fulham et meilleur buteur de tous les temps du Mexique en éliminatoires de la Coupe du Monde, connu pour son sens du but.",
         "zh": "富勒姆的前锋，墨西哥世界杯预选赛历史最佳射手，以冷静的终结能力而闻名。"
-      }
+      },
+      "no": 9
     },
     {
-      "name": { "ru": "Алексис Вега", "en": "Alexis Vega", "es": "Alexis Vega", "fr": "Alexis Vega", "zh": "亚历克西斯·维加" },
+      "name": {
+        "ru": "Алексис Вега",
+        "en": "Alexis Vega",
+        "es": "Alexis Vega",
+        "fr": "Alexis Vega",
+        "zh": "亚历克西斯·维加"
+      },
       "pos": "forward",
       "status": "",
       "story": {
@@ -238,10 +377,17 @@
         "es": "Delantero del Guadalajara que posee un potente pie izquierdo y la capacidad de marcar goles espectaculares de larga distancia.",
         "fr": "Un attaquant de Guadalajara possédant un puissant pied gauche et la capacité de marquer des buts spectaculaires de loin.",
         "zh": "瓜达拉哈拉的前锋，拥有强大的左脚和打入精彩远射的能力。"
-      }
+      },
+      "no": 10
     },
     {
-      "name": { "ru": "Сантьяго Хименес", "en": "Santiago Gimenez", "es": "Santiago Giménez", "fr": "Santiago Giménez", "zh": "圣地亚哥·希门尼斯" },
+      "name": {
+        "ru": "Сантьяго Хименес",
+        "en": "Santiago Gimenez",
+        "es": "Santiago Giménez",
+        "fr": "Santiago Giménez",
+        "zh": "圣地亚哥·希门尼斯"
+      },
       "pos": "forward",
       "status": "",
       "story": {
@@ -250,10 +396,17 @@
         "es": "Delantero del Feyenoord que estableció una racha goleadora récord en la Eredivisie, conocido por su instinto de depredador.",
         "fr": "Un attaquant du Feyenoord qui a établi une série de buts record en Eredivisie, connu pour son instinct de renard des surfaces.",
         "zh": "费耶诺德的前锋，在荷甲创造了破纪录的进球连续纪录，以禁区内的嗅觉而闻名。"
-      }
+      },
+      "no": 11
     },
     {
-      "name": { "ru": "Армандо Гонсалес", "en": "Armando Gonzalez", "es": "Armando Gonzalez", "fr": "Armando Gonzalez", "zh": "阿曼多·冈萨雷斯" },
+      "name": {
+        "ru": "Армандо Гонсалес",
+        "en": "Armando Gonzalez",
+        "es": "Armando Gonzalez",
+        "fr": "Armando Gonzalez",
+        "zh": "阿曼多·冈萨雷斯"
+      },
       "pos": "forward",
       "status": "",
       "story": {
@@ -262,10 +415,17 @@
         "es": "Un joven delantero que se centra en la alta velocidad inicial y las carreras directas a través del centro de la defensa rival.",
         "fr": "Un jeune attaquant qui mise sur une grande vitesse initiale et des courses directes à travers le centre de la défense adverse.",
         "zh": "年轻的前锋，注重高初始速度和直接穿透对手防线中路的跑动。"
-      }
+      },
+      "no": 14
     },
     {
-      "name": { "ru": "Хулиан Киньонес", "en": "Julián Quiñones", "es": "Julián Quiñones", "fr": "Julián Quiñones", "zh": "胡利安·基尼奥内斯" },
+      "name": {
+        "ru": "Хулиан Киньонес",
+        "en": "Julián Quiñones",
+        "es": "Julián Quiñones",
+        "fr": "Julián Quiñones",
+        "zh": "胡利安·基尼奥内斯"
+      },
       "pos": "forward",
       "status": "Regular",
       "story": {
@@ -274,10 +434,17 @@
         "es": "Delantero del América, destacado por su físico y capacidad aérea, convirtiéndose en un goleador clave para el club en las últimas temporadas.",
         "fr": "Un attaquant de l'América, remarquable pour sa physicalité et son jeu aérien, devenant un buteur clé pour le club ces dernières saisons.",
         "zh": "美洲俱乐部的前锋，以身体素质和空中能力脱颖而出，在近几个赛季成为俱乐部的关键射手。"
-      }
+      },
+      "no": 16
     },
     {
-      "name": { "ru": "Сесар Уэрта", "en": "Cesar Huerta", "es": "Cesar Huerta", "fr": "Cesar Huerta", "zh": "塞萨尔·韦尔塔" },
+      "name": {
+        "ru": "Сесар Уэрта",
+        "en": "Cesar Huerta",
+        "es": "Cesar Huerta",
+        "fr": "Cesar Huerta",
+        "zh": "塞萨尔·韦尔塔"
+      },
       "pos": "forward",
       "status": "",
       "story": {
@@ -286,10 +453,17 @@
         "es": "Delantero del Monterrey, apodado 'Canguro' por su aceleración explosiva y capacidad para regatear en espacios reducidos.",
         "fr": "Un attaquant du Monterrey, surnommé 'Canguro' pour son accélération explosive et sa capacité à dribbler dans les espaces restreints.",
         "zh": "蒙特雷的前锋，绰号“袋鼠”，以爆发性的加速和在狭小空间内过人而闻名。"
-      }
+      },
+      "no": 21
     },
     {
-      "name": { "ru": "Гильермо Мартинес", "en": "Guillermo Martinez", "es": "Guillermo Martinez", "fr": "Guillermo Martinez", "zh": "吉列尔莫·马丁内斯" },
+      "name": {
+        "ru": "Гильермо Мартинес",
+        "en": "Guillermo Martinez",
+        "es": "Guillermo Martinez",
+        "fr": "Guillermo Martinez",
+        "zh": "吉列尔莫·马丁内斯"
+      },
       "pos": "forward",
       "status": "",
       "story": {
@@ -298,10 +472,17 @@
         "es": "Delantero conocido por su inteligente posicionamiento en el área y su capacidad para castigar los errores defensivos.",
         "fr": "Un attaquant connu pour son positionnement intelligent dans la surface de réparation et sa capacité à punir les erreurs défensives.",
         "zh": "前锋，以在禁区内的聪明跑位和惩罚防守失误的能力而闻名。"
-      }
+      },
+      "no": 19
     },
     {
-      "name": { "ru": "Роберто Альварадо", "en": "Roberto Alvarado", "es": "Roberto Alvarado", "fr": "Roberto Alvarado", "zh": "罗伯托·阿尔瓦拉多" },
+      "name": {
+        "ru": "Роберто Альварадо",
+        "en": "Roberto Alvarado",
+        "es": "Roberto Alvarado",
+        "fr": "Roberto Alvarado",
+        "zh": "罗伯托·阿尔瓦拉多"
+      },
       "pos": "forward",
       "status": "",
       "story": {
@@ -310,7 +491,8 @@
         "es": "Delantero que debutó en la Copa del Mundo a una edad temprana y es valorado por los entrenadores por su versatilidad en todas las posiciones ofensivas.",
         "fr": "Un attaquant qui a fait ses débuts en Coupe du Monde à un jeune âge et qui est apprécié par les entraîneurs pour sa polyvalence à tous les postes offensifs.",
         "zh": "年轻时就在世界杯首秀的前锋，因其在所有进攻位置上的多功能性而受到教练的重视。"
-      }
+      },
+      "no": 25
     }
   ]
 }
