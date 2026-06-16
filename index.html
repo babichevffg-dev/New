@@ -1523,7 +1523,7 @@ const TRANSLATIONS = {
     next_photo: "Foto siguiente",
     set_profile_photo: "Hacer foto de perfil",
     social_hint: "Haz clic en la foto para redes sociales"
-  , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
+  , coaches: "Cuerpo técnico", description: "Sobre el equipo", info_unavailable: "Información no disponible"},
   fr: {
     born: "Né le:",
     club: "Club:",
@@ -1623,7 +1623,7 @@ const TRANSLATIONS = {
     next_photo: "Photo suivante",
     set_profile_photo: "Définir comme photo de profil",
     social_hint: "Cliquez sur la photo pour les réseaux sociaux"
-  , coaches: "Staff technique", description: "À propos de l'équipe"},
+  , coaches: "Staff technique", description: "À propos de l'équipe", info_unavailable: "Information non disponible"},
   ru: {
     born: "Родился:",
     club: "Клуб:",
@@ -1723,7 +1723,7 @@ const TRANSLATIONS = {
     next_photo: "След. фото",
     set_profile_photo: "Сделать фото профиля",
     social_hint: "Нажмите на фото для соцсетей"
-  , coaches: "Тренерский штаб", description: "О сборной"},
+  , coaches: "Тренерский штаб", description: "О сборной", info_unavailable: "Информация временно недоступна"},
   en: {
     born: "Born:",
     club: "Club:",
@@ -1823,7 +1823,7 @@ const TRANSLATIONS = {
     next_photo: "Next Photo",
     set_profile_photo: "Set as Profile Photo",
     social_hint: "Click photo for Social Media"
-  , coaches: "Coaching Staff", description: "About the Team"},
+  , coaches: "Coaching Staff", description: "About the Team", info_unavailable: "Information is currently unavailable"},
   zh: {
     born: "出生日期:",
     club: "俱乐部:",
@@ -1923,7 +1923,7 @@ const TRANSLATIONS = {
     next_photo: "下一张照片",
     set_profile_photo: "设为个人资料照片",
     social_hint: "点击照片查看社交媒体"
-  , coaches: "教练组", description: "球队简介"}
+  , coaches: "教练组", description: "球队简介", info_unavailable: "信息暂时不可用"}
 };
 
 async function load(){
@@ -43051,7 +43051,6 @@ function showPersonDetail(teamId, type, idx) {
 
     const extraEl = document.getElementById('modalPlayerExtra');
     if (extraEl) {
-        const T = TRANSLATIONS[currentLang];
         let extraH = '';
 
         if (person.club) {
@@ -43081,7 +43080,6 @@ function showPersonDetail(teamId, type, idx) {
     const btnPrev = document.getElementById('btnPrevPhoto');
     const btnNext = document.getElementById('btnNextPhoto');
     const btnSet = document.getElementById('btnSetProfile');
-    const T = TRANSLATIONS[currentLang];
 
     if (isAdmin) {
       if (sliderEl) sliderEl.style.display = 'flex';
