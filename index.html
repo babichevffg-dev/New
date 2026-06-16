@@ -789,6 +789,17 @@ body.admin-active .toolbar { display: flex; }
 }
 .admin-del-btn:hover { background: #e74c3c; border-color: #c0392b; }
 .admin-info-btn:hover { background: #3498db; border-color: #2980b9; }
+.admin-eye-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: 4px;
+  transition: 0.2s;
+}
+.admin-eye-btn:hover { background: #9b59b6; border-color: #8e44ad; }
 .admin-add-btn { background: #27ae60; border-color: #2ecc71; font-weight: bold; padding: 2px 10px; font-size: 1.2rem; }
 
 .first-xi-icon {
@@ -42689,10 +42700,27 @@ function deletePlayerFromSquad(teamId, idx) {
   showSquad(teamId);
 }
 
-function updatePlayerField(teamId, idx, field, value) {
-  const player = SQUADS[teamId].players[idx];
+function toggleDescription(teamId, type, idx) {
+  const person = SQUADS[teamId][type][idx];
+  if (!person) return;
+  person.isHidden = !person.isHidden;
+  persist();
+  showSquad(teamId);
+}
+
+function toggleTeamDescriptions(teamId, hide) {
+  const squad = SQUADS[teamId];
+  if (!squad) return;
+  if (squad.players) squad.players.forEach(p => p.isHidden = hide);
+  if (squad.coaches) squad.coaches.forEach(c => c.isHidden = hide);
+  persist();
+  showSquad(teamId);
+}
+
+function updatePlayerField(teamId, idx, field, value, type = 'players') {
+  const player = SQUADS[teamId][type][idx];
   if (!player) return;
-  if (field === 'isStarting') {
+  if (field === 'isStarting' && type === 'players') {
     const squad = SQUADS[teamId];
     const formationName = squad.formation || "4-3-3";
     const fmt = FORMATIONS[formationName] || FORMATIONS["4-3-3"];
@@ -42709,6 +42737,8 @@ function updatePlayerField(teamId, idx, field, value) {
     player.name = { ru: value, en: value, es: value, fr: value, zh: value };
   } else if (field === 'no') {
     player.no = parseInt(value) || 0;
+  } else if (field === 'isHidden') {
+    player.isHidden = !!value;
   } else {
     player[field] = value;
   }
@@ -42766,6 +42796,16 @@ function showSquad(teamId){
       `</div>`;
   }
 
+  let adminTeamControls = "";
+  if (isAdmin) {
+    adminTeamControls = `
+      <div class="admin-team-controls" style="margin-top: 10px;">
+        <button class="tool-btn" onclick="toggleTeamDescriptions('${teamId}', false)">👁️ Show All Info</button>
+        <button class="tool-btn" onclick="toggleTeamDescriptions('${teamId}', true)">🔒 Hide All Info</button>
+      </div>
+    `;
+  }
+
   h += `<div class="card">
     <div class="team-header">
       ${starsH}
@@ -42773,7 +42813,7 @@ function showSquad(teamId){
       <h2>${name}</h2>
       ${heritageH}
       <p class="team-desc">${desc}</p>
-
+      ${adminTeamControls}
     </div>
 
     <div class="formation-controls">
@@ -42880,12 +42920,15 @@ function showSquad(teamId){
         `<option value="${pos}" ${p.pos === pos ? "selected" : ""}>${T[pos] || pos}</option>`
       ).join("");
 
+      const preciseMark = p.isPrecise ? '<span style="color: #f1c40f; margin-left: 4px;" title="Verified Description">✔</span>' : '';
+      const eyeIcon = p.isHidden ? '🔒' : '👁️';
+
       h += `<div class="player-row admin-edit-row" id="squad-player-${p._idx}" onmouseenter="highlightPlayer(${p._idx}, true)" onmouseleave="highlightPlayer(${p._idx}, false)" onclick="if(event.target.tagName !== 'INPUT' && event.target.tagName !== 'SELECT' && !event.target.closest('button')) showPersonDetail('${teamId}', 'players', ${p._idx})">
         <div class="player-name">
           <input type="checkbox" ${p.isStarting ? "checked" : ""} onchange="updatePlayerField('${teamId}', ${p._idx}, 'isStarting', this.checked)" title="В основе">
           <input type="number" class="admin-no-input" value="${p.no || ''}" onchange="updatePlayerField('${teamId}', ${p._idx}, 'no', this.value)">
           <input type="text" class="admin-name-input" value="${pName}" onchange="updatePlayerField('${teamId}', ${p._idx}, 'name', this.value)">
-          ${stadiumIcon} ${eventHtml}
+          ${preciseMark} ${stadiumIcon} ${eventHtml}
         </div>
         <div class="player-pos">
           <select class="admin-pos-select" onchange="updatePlayerField('${teamId}', ${p._idx}, 'pos', this.value)">
@@ -42893,6 +42936,7 @@ function showSquad(teamId){
           </select>
         </div>
         <div class="player-status">
+           <button class="admin-eye-btn" onclick="event.stopPropagation(); toggleDescription('${teamId}', 'players', ${p._idx})" title="Toggle Visibility">${eyeIcon}</button>
            <button class="admin-del-btn" onclick="deletePlayerFromSquad('${teamId}', ${p._idx})" title="${T.delete_player}">✕</button>
            <button class="admin-info-btn" onclick="showPersonDetail('${teamId}', 'players', ${p._idx})" title="Info">ℹ️</button>
         </div>
@@ -42921,12 +42965,27 @@ function showSquad(teamId){
       es: 'Entrenador principal',
       fr: 'Entraîneur principal'
     }[currentLang] || 'Head Coach';
-    h += `<div class="coach-card" onclick="showPersonDetail('${teamId}', 'coaches', ${idx})">
-      <div class="coach-info">
-        <h4>${cName}</h4>
-        <span>${coachRole}</span>
-      </div>
-    </div>`;
+    const eyeIcon = c.isHidden ? '🔒' : '👁️';
+    const preciseMark = c.isPrecise ? '<span style="color: #f1c40f; margin-left: 4px;" title="Verified Description">✔</span>' : '';
+
+    if (isAdmin) {
+      h += `<div class="coach-card" style="position: relative;" onclick="if(!event.target.closest('button')) showPersonDetail('${teamId}', 'coaches', ${idx})">
+        <div class="coach-info">
+          <h4>${cName}${preciseMark}</h4>
+          <span>${coachRole}</span>
+        </div>
+        <div class="admin-coach-tools" style="position: absolute; top: 5px; right: 5px;">
+           <button class="admin-eye-btn" onclick="event.stopPropagation(); toggleDescription('${teamId}', 'coaches', ${idx})" title="Toggle Visibility">${eyeIcon}</button>
+        </div>
+      </div>`;
+    } else {
+      h += `<div class="coach-card" onclick="showPersonDetail('${teamId}', 'coaches', ${idx})">
+        <div class="coach-info">
+          <h4>${cName}</h4>
+          <span>${coachRole}</span>
+        </div>
+      </div>`;
+    }
   });
 
 
@@ -42944,13 +43003,13 @@ function showPersonDetail(teamId, type, idx) {
 
     const pName = person.name[currentLang] || person.name.en;
     let pStory = "";
-if (type === 'players') {
-    // Заглушка только для игроков
-    pStory = "Information about the players is under moderation.";
-} else {
-    // Для тренеров (coaches) оставляем оригинальное описание
-    pStory = person.story[currentLang] || person.story.en;
-}
+    const T = TRANSLATIONS[currentLang];
+
+    if (!isAdmin && person.isHidden) {
+        pStory = T.info_unavailable || "Information is currently unavailable.";
+    } else {
+        pStory = person.story[currentLang] || person.story.en;
+    }
     const pPhoto = person.image || "";
     const pSocial = person.social || "#";
 
