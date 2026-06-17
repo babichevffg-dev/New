@@ -816,21 +816,20 @@ body.admin-active .toolbar { display: flex; }
   backface-visibility: hidden;
   transition: transform 0.3s ease;
 }
+.big-flag {
+  animation: flagWave 1.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
 
 /* Animation on hover/active for different containers */
 .team-card-btn:hover .flag, .team-card-btn:active .flag,
 .team-tip:hover .flag, .team-tip:active .flag,
-.team-header:hover .big-flag, .team-header:active .big-flag,
 .flag:hover, .flag:active,
-.big-flag:hover, .big-flag:active,
 .team-flag:hover, .team-flag:active,
 .team-logo-wrapper:hover img, .team-logo-wrapper:active img {
   animation: flagWave 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
-/* Slightly slower animation for larger flags on hover/active */
-.team-header:hover .big-flag, .team-header:active .big-flag,
-.big-flag:hover, .big-flag:active,
+/* Slower animation for team-flag specifically on hover */
 .team-flag:hover, .team-flag:active {
   animation-duration: 1.8s;
 }
