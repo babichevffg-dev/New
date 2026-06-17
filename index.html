@@ -805,19 +805,27 @@ body.admin-active .toolbar { display: flex; }
 }
 
 @keyframes flagWave {
-  0% { transform: perspective(600px) rotateY(0deg) skewY(0deg); filter: brightness(1) contrast(1); }
-  25% { transform: perspective(600px) rotateY(15deg) skewY(8deg); filter: brightness(1.2) contrast(1.1); }
-  50% { transform: perspective(600px) rotateY(0deg) skewY(-8deg); filter: brightness(0.8) contrast(1.2); }
-  75% { transform: perspective(600px) rotateY(-15deg) skewY(8deg); filter: brightness(1.2) contrast(1.1); }
-  100% { transform: perspective(600px) rotateY(0deg) skewY(0deg); filter: brightness(1) contrast(1); }
+  0% { transform: perspective(1000px) rotateY(0deg) rotateZ(0deg) skewY(0deg); filter: brightness(1) contrast(1); box-shadow: -5px 5px 15px rgba(0,0,0,0.3); }
+  25% { transform: perspective(1000px) rotateY(15deg) rotateZ(1deg) skewY(2deg); filter: brightness(1.1) contrast(1.1); box-shadow: -10px 10px 25px rgba(0,0,0,0.2); }
+  50% { transform: perspective(1000px) rotateY(-10deg) rotateZ(-1deg) skewY(-1deg); filter: brightness(0.85) contrast(1.2); box-shadow: -2px 5px 10px rgba(0,0,0,0.4); }
+  75% { transform: perspective(1000px) rotateY(8deg) rotateZ(0.5deg) skewY(1deg); filter: brightness(1.05) contrast(1.05); box-shadow: -8px 8px 20px rgba(0,0,0,0.25); }
+  100% { transform: perspective(1000px) rotateY(0deg) rotateZ(0deg) skewY(0deg); filter: brightness(1) contrast(1); box-shadow: -5px 5px 15px rgba(0,0,0,0.3); }
 }
 .flag, .big-flag, .team-logo-wrapper img, .team-flag {
   transform-origin: left center;
   backface-visibility: hidden;
   transition: transform 0.3s ease;
 }
-.big-flag {
-  animation: flagWave 1.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+/* Big flag: Auto on mobile, Hover on desktop */
+@media (min-width: 901px) {
+  .big-flag:hover {
+    animation: flagWave 3s ease-in-out infinite;
+  }
+}
+@media (max-width: 900px) {
+  .big-flag {
+    animation: flagWave 3s ease-in-out infinite;
+  }
 }
 
 /* Animation on hover/active for different containers */
@@ -826,12 +834,12 @@ body.admin-active .toolbar { display: flex; }
 .flag:hover, .flag:active,
 .team-flag:hover, .team-flag:active,
 .team-logo-wrapper:hover img, .team-logo-wrapper:active img {
-  animation: flagWave 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  animation: flagWave 2s ease-in-out infinite;
 }
 
 /* Slower animation for team-flag specifically on hover */
 .team-flag:hover, .team-flag:active {
-  animation-duration: 1.8s;
+  animation-duration: 2.5s;
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
