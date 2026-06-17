@@ -805,19 +805,21 @@ body.admin-active .toolbar { display: flex; }
 }
 
 @keyframes flagWave {
-  0% { transform: rotate(0deg) skewY(0deg); }
-  25% { transform: rotate(2deg) skewY(1deg); }
-  50% { transform: rotate(0deg) skewY(0deg); }
-  75% { transform: rotate(-2deg) skewY(-1deg); }
-  100% { transform: rotate(0deg) skewY(0deg); }
+  0% { transform: perspective(600px) rotateY(0deg) skewY(0deg); filter: brightness(1) contrast(1); }
+  25% { transform: perspective(600px) rotateY(15deg) skewY(8deg); filter: brightness(1.2) contrast(1.1); }
+  50% { transform: perspective(600px) rotateY(0deg) skewY(-8deg); filter: brightness(0.8) contrast(1.2); }
+  75% { transform: perspective(600px) rotateY(-15deg) skewY(8deg); filter: brightness(1.2) contrast(1.1); }
+  100% { transform: perspective(600px) rotateY(0deg) skewY(0deg); filter: brightness(1) contrast(1); }
 }
-.flag {
-  animation: flagWave 3s ease-in-out infinite;
+.flag, .big-flag, .team-logo-wrapper img, .team-flag {
   transform-origin: left center;
+  backface-visibility: hidden;
 }
-.big-flag {
-  animation: flagWave 4s ease-in-out infinite;
-  transform-origin: left center;
+.flag, .team-logo-wrapper img {
+  animation: flagWave 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+.big-flag, .team-flag {
+  animation: flagWave 1.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
