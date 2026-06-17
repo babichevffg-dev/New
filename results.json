@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-06-16T21:33:57.819Z",
+  "updatedAt": "2026-06-17T07:09:56.822Z",
   "scores": {
     "A1": {
       "h": 2,
@@ -570,6 +570,99 @@
           "type": "goal",
           "playerName": "Ibrahim Mbaye",
           "minute": "90+"
+        }
+      ]
+    },
+    "I2": {
+      "h": 1,
+      "a": 4,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Zaid Tahseen",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Aymen Hussein",
+          "minute": "39"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Erling Haaland",
+          "minute": "29"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Erling Haaland",
+          "minute": "43"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Leo Ostigard",
+          "minute": "76"
+        }
+      ]
+    },
+    "J1": {
+      "h": 3,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Lionel Messi",
+          "minute": "17"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Lionel Messi",
+          "minute": "60"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Lionel Messi",
+          "minute": "76"
+        }
+      ]
+    },
+    "J2": {
+      "h": 1,
+      "a": 3,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Marcel Sabitzer",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Romano Schmid",
+          "minute": "21"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Marko Arnautović",
+          "minute": "90+"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Ali Olwan",
+          "minute": "50"
         }
       ]
     }
@@ -2924,7 +3017,7 @@
             "zh": "效力于苏格兰凯尔特人队及此前蔚山HD队的前锋。以进球嗅觉和禁区内表现而著称。"
           },
           "image": "image/Kubok.jpg",
-          "no": 1,
+          "no": 18,
           "stats": {
             "speed": 65,
             "technique": 53,
@@ -7200,7 +7293,7 @@
             "zh": "意大利尤文图斯的巴西右后卫。巴西国家队的经验丰富的球员，以耐力和多面手能力而著称。"
           },
           "image": "image/Brazil/DANILO_001.jpg",
-          "no": 13,
+          "no": 18,
           "stats": {
             "speed": 63,
             "technique": 57,
@@ -7350,7 +7443,7 @@
             "zh": "弗拉门戈俱乐部的巴西中场。以左脚、从深处指挥比赛的能力和精准的长传而著称。"
           },
           "image": "image/Brazil/EDERSON_SILVA_009.jpg",
-          "no": 23,
+          "no": 2,
           "stats": {
             "speed": 92,
             "technique": 78,
@@ -8906,7 +8999,7 @@
             "zh": "在欧洲俱乐部效力的海地后卫。凭借身体素质和中路防守的可靠性入选国家队。"
           },
           "image": "image/Haiti/Jean-Kevin_DUVERNE_008.jpg",
-          "no": 17,
+          "no": 22,
           "stats": {
             "speed": 83,
             "technique": 80,
@@ -8996,7 +9089,7 @@
             "zh": "英格兰狼队的海地/法国中场。以高活力、B2B（禁区到禁区）的踢法和盘带而著称。"
           },
           "image": "image/Haiti/Jean-Ricner_Bellegarde_003.jpg",
-          "no": 17,
+          "no": 10,
           "stats": {
             "speed": 84,
             "technique": 90,
@@ -23642,7 +23735,7 @@
             "zh": "巴塞罗那的中场球员，2021年欧洲金童奖得主。以出色的视野和在压力下保持控球的能力而闻名。"
           },
           "image": "image/Spain/PEDRI_007.jpg",
-          "no": 12,
+          "no": 20,
           "stats": {
             "speed": 79,
             "technique": 95,
@@ -33774,7 +33867,7 @@
             "zh": "效力于欧洲顶级俱乐部（如马赛）的经验丰富的中后卫。刚果民主共和国国家队防线的队长和无可争议的领袖。"
           },
           "image": "image/Congo_DR/Chancel_MBEMBA_006.jpg",
-          "no": 12,
+          "no": 22,
           "stats": {
             "speed": 52,
             "technique": 62,
