@@ -234,7 +234,7 @@ header{text-align:center;padding:24px 16px 12px}
 header h1{font-size:clamp(1.4rem,3vw,2rem);font-weight:700}
 header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:24px 0 16px;align-items:center}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:20px}
+
 .tab,.btn{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;font-size:.9rem;transition:.15s}
 .tab:hover,.btn:hover{background:rgba(255,255,255,.12)}
 .tab.active{background:var(--accent);color:#042;border-color:var(--accent);font-weight:600}
@@ -841,6 +841,63 @@ body.admin-active .toolbar { display: flex; }
 .team-flag:hover, .team-flag:active {
   animation-duration: 2.5s;
 }
+
+.tabs{display:flex;gap:6px;justify-content:flex-start;margin-bottom:20px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+
+:root.light {
+  --bg: #f0f2f5;
+  --card: #ffffff;
+  --border: #dcdde1;
+  --accent: #2980b9;
+  --gold: #d4af37;
+  --text: #2f3640;
+  --muted: #7f8c8d;
+  --pitch: #ecf0f1;
+}
+.theme-toggle { cursor: pointer; background: none; border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--text); font-size: 1.2rem; }
+
+.scorers-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; padding: 10px; }
+.scorer-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; padding: 12px; gap: 15px; position: relative; }
+.scorer-rank { font-size: 1.2rem; font-weight: 800; color: var(--gold); min-width: 30px; }
+.scorer-photo-wrapper { position: relative; width: 60px; height: 60px; }
+.scorer-photo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
+.scorer-flag { position: absolute; bottom: 0; right: 0; width: 20px; height: 14px; border-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.scorer-info { flex: 1; }
+.scorer-name { font-weight: 700; font-size: 1rem; }
+.scorer-team { font-size: 0.85rem; color: var(--muted); }
+.scorer-count { font-size: 1.2rem; font-weight: 800; color: var(--gold); }
+
+.map-container { position: relative; background: #0d1b2a; border-radius: 16px; padding: 20px; overflow: hidden; border: 1px solid var(--border); }
+.wc-map { width: 100%; height: auto; display: block; }
+.map-marker { cursor: pointer; transition: transform 0.2s; }
+.map-marker:hover { transform: scale(1.2); }
+.map-marker text { pointer-events: none; text-shadow: 1px 1px 2px #000; }
+.marker-pulse { animation: mapPulse 2s infinite; pointer-events: none; }
+@keyframes mapPulse { 0% { r: 8; opacity: 0.8; } 100% { r: 20; opacity: 0; } }
+.map-hint { text-align: center; margin-top: 15px; color: var(--gold); font-weight: 600; }
+
+.h2h-container { background: var(--card); border-radius: 16px; padding: 25px; border: 1px solid var(--border); max-width: 800px; margin: 0 auto; }
+.h2h-selectors { display: flex; align-items: center; justify-content: space-around; margin-bottom: 30px; gap: 20px; }
+.h2h-sel-block { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
+.h2h-sel-block select { width: 100%; background: #1a2a44; color: #fff; border: 1px solid var(--gold); border-radius: 8px; padding: 8px; font-weight: 600; }
+.h2h-flag { width: 80px; height: 50px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); object-fit: cover; }
+.h2h-vs { font-size: 2rem; font-weight: 900; color: var(--gold); font-style: italic; }
+.h2h-table { width: 100%; border-collapse: collapse; }
+.h2h-table th { color: var(--muted); font-size: 0.8rem; letter-spacing: 1px; padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; }
+.h2h-table td { font-size: 1.5rem; font-weight: 700; text-align: center; padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); width: 33%; }
+.win-stat { color: #2ecc71; text-shadow: 0 0 10px rgba(46, 204, 113, 0.4); }
+
+.form-dots { display: flex; gap: 3px; justify-content: center; }
+.form-dot { width: 14px; height: 14px; border-radius: 50%; font-size: 8px; line-height: 14px; text-align: center; color: #fff; font-weight: 900; }
+.form-dot.W { background: #2ecc71; }
+.form-dot.D { background: #f1c40f; }
+.form-dot.L { background: #e74c3c; }
+.fav-btn { cursor: pointer; font-size: 1.2rem; color: #555; transition: 0.2s; }
+.fav-btn.active { color: var(--gold); text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
+.is-favorite { border-left: 4px solid var(--gold) !important; background: rgba(255, 215, 0, 0.05) !important; }
+.is-fav-text span { color: var(--gold); font-weight: 700; }
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -848,7 +905,7 @@ body.admin-active .toolbar { display: flex; }
 <div class="bg-trophy" aria-hidden="true"></div>
 <div id="teamPopover" class="team-popover" role="tooltip" aria-hidden="true"></div>
 
-<div class="lang-switcher">
+<div class="lang-switcher"><button id="themeToggleBtn" class="theme-toggle" onclick="toggleTheme()">🌙</button>
   <button class="lang-btn" data-lang="en">EN</button>
   <button class="lang-btn active" data-lang="ru">RU</button>
   <button class="lang-btn" data-lang="zh">ZH</button>
@@ -1451,7 +1508,7 @@ let isTacticalMode = false;
 let currentTacticalTool = 'brush';
 let currentTacticalColor = '#f1c40f';
 const TRANSLATIONS = {
-  es: {
+es: {
     born: "Nacido:",
     club: "Club:",
     title: "Copa Mundial de la FIFA 2026",
@@ -1552,9 +1609,9 @@ const TRANSLATIONS = {
     prev_photo: "Foto anterior",
     next_photo: "Foto siguiente",
     set_profile_photo: "Hacer foto de perfil",
-    social_hint: "Haz clic en la foto para redes sociales"
+    social_hint: "Haz clic en la foto para redes sociales", scorers: "Goleadores", map: "Mapa", h2h: "H2H", compare: "Comparar", fav: "Favorito", search: "Buscar", export_cal: "Exportar", win: "Victoria", draw: "Empate", loss: "Derrota", st_form: "FORMA", map_hint: "Haga clic en los marcadores para ver los detalles del estadio"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
-  fr: {
+fr: {
     born: "Né le:",
     club: "Club:",
     title: "Coupe du Monde de la FIFA 2026",
@@ -1655,9 +1712,9 @@ const TRANSLATIONS = {
     prev_photo: "Photo précédente",
     next_photo: "Photo suivante",
     set_profile_photo: "Définir comme photo de profil",
-    social_hint: "Cliquez sur la photo pour les réseaux sociaux"
+    social_hint: "Cliquez sur la photo pour les réseaux sociaux", scorers: "Buteurs", map: "Carte", h2h: "H2H", compare: "Comparer", fav: "Favori", search: "Rechercher", export_cal: "Exporter", win: "Victoire", draw: "Nul", loss: "Défaite", st_form: "FORME", map_hint: "Cliquez sur les marqueurs pour voir les détails du stade"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
-  ru: {
+ru: {
     born: "Родился:",
     club: "Клуб:",
     title: "Чемпионат мира FIFA 2026",
@@ -1758,9 +1815,9 @@ const TRANSLATIONS = {
     prev_photo: "Пред. фото",
     next_photo: "След. фото",
     set_profile_photo: "Сделать фото профиля",
-    social_hint: "Нажмите на фото для соцсетей"
+    social_hint: "Нажмите на фото для соцсетей", scorers: "Бомбардиры", map: "Карта", h2h: "H2H", compare: "Сравнить", fav: "Избранное", search: "Поиск", export_cal: "Экспорт", win: "Победа", draw: "Ничья", loss: "Поражение", st_form: "ФОРМА", map_hint: "Нажмите на маркеры, чтобы увидеть детали стадиона"
   , coaches: "Тренерский штаб", description: "О сборной"},
-  en: {
+en: {
     born: "Born:",
     club: "Club:",
     title: "FIFA World Cup 2026",
@@ -1861,9 +1918,9 @@ const TRANSLATIONS = {
     prev_photo: "Prev Photo",
     next_photo: "Next Photo",
     set_profile_photo: "Set as Profile Photo",
-    social_hint: "Click photo for Social Media"
+    social_hint: "Click photo for Social Media", scorers: "Scorers", map: "Map", h2h: "H2H", compare: "Compare", fav: "Favorite", search: "Search", export_cal: "Export", win: "Win", draw: "Draw", loss: "Loss", st_form: "FORM", map_hint: "Click on markers to see stadium details"
   , coaches: "Coaching Staff", description: "About the Team"},
-  zh: {
+zh: {
     born: "出生日期:",
     club: "俱乐部:",
     title: "2026年国际足联世界杯",
@@ -1964,7 +2021,7 @@ const TRANSLATIONS = {
     prev_photo: "上一张照片",
     next_photo: "下一张照片",
     set_profile_photo: "设为个人资料照片",
-    social_hint: "点击照片查看社交媒体"
+    social_hint: "点击照片查看社交媒体", scorers: "射手榜", map: "地图", h2h: "对阵记录", compare: "比较", fav: "收藏", search: "搜索", export_cal: "导出", win: "胜", draw: "平", loss: "负", st_form: "状态", map_hint: "点击标记查看场馆详情"
   , coaches: "教练组", description: "球队简介"}
 };
 
@@ -2312,7 +2369,7 @@ function teamLabel(id){
   const t=TEAMS[id];
   if(!t)return id;
   const name = typeof t.n === 'object' ? t.n[currentLang] : t.n;
-  return '<span class="team-tip" data-team="'+id+'" onclick="goToTeam(\''+id+'\')">'+flagImg(id)+'<span>'+name+'</span></span>';
+  const isFav = favoriteTeam === id; return '<span class="team-tip '+(isFav?'is-fav-text':'')+'" data-team="'+id+'" onclick="goToTeam(\''+id+'\')">'+flagImg(id)+'<span>'+name+'</span> <span class="fav-btn '+(isFav?'active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+id+'\')">★</span></span>';
 }
 function slotLabel(s){
   const T = TRANSLATIONS[currentLang];
@@ -2434,13 +2491,13 @@ function getWinner(mid){return resolveSlot('W'+mid);}
 function renderStandingsTable(g){
   const T = TRANSLATIONS[currentLang];
   const st=calcGroupStandings(g);
-  let h='<table class="standings"><tr><th>'+T.st_pos+'</th><th>'+T.st_team+'</th><th>'+T.st_p+'</th><th>'+T.st_w+'</th><th>'+T.st_d+'</th><th>'+T.st_l+'</th><th>'+T.st_gf+'</th><th>'+T.st_ga+'</th><th>'+T.st_gd+'</th><th>'+T.st_pts+'</th></tr>';
+  let h='<table class="standings"><tr><th>'+T.st_pos+'</th><th>'+T.st_team+'</th><th>'+T.st_p+'</th><th>'+T.st_w+'</th><th>'+T.st_d+'</th><th>'+T.st_l+'</th><th>'+T.st_gf+'</th><th>'+T.st_ga+'</th><th>'+T.st_gd+'</th><th>'+T.st_pts+'</th><th>'+(T.st_form||"FORM")+'</th></tr>';
   st.forEach((s,i)=>{
     let cls='';
     if(i===0)cls='pos1';
     if(i===1)cls='pos2';
     if(i===2)cls='pos3';
-    h+='<tr class="'+cls+'"><td>'+(i+1)+'</td><td>'+teamLabel(s.id)+'</td><td>'+s.played+'</td><td>'+s.w+'</td><td>'+s.d+'</td><td>'+s.l+'</td><td>'+s.gf+'</td><td>'+s.ga+'</td><td>'+(s.gd>0?'+':'')+s.gd+'</td><td><b>'+s.pts+'</b></td></tr>';
+    if(favoriteTeam === s.id) cls += ' is-favorite'; h+='<tr class="'+cls+'"><td>'+(i+1)+'</td><td>'+teamLabel(s.id)+'</td><td>'+s.played+'</td><td>'+s.w+'</td><td>'+s.d+'</td><td>'+s.l+'</td><td>'+s.gf+'</td><td>'+s.ga+'</td><td>'+(s.gd>0?'+':'')+s.gd+'</td><td><b>'+s.pts+'</b></td><td><div class="form-dots">' + getTeamForm(s.id).map(f => `<div class="form-dot ${f}">${f}</div>`).join('') + '</div></td></tr>';
   });
   return h+'</table>';
 }
@@ -2511,7 +2568,7 @@ function buildUI(){
   const evTitle = document.getElementById('eventsModalTitle');
   if (evTitle) evTitle.textContent = T.match_events || 'Match Events';
 
-  const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.teams, T.stadiums];
+  const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.teams, T.stadiums, T.scorers, T.map, T.h2h];
   const tabEl=document.getElementById('tabs');
   const panels=document.getElementById('panels');
   tabEl.innerHTML='';panels.innerHTML='';
@@ -41361,7 +41418,7 @@ function goToTeam(id){
 
 function goToStadium(nameEn){
   activeTab = 7;
-  renderStadiums();
+  renderStadiums();renderScorers();renderMap();renderH2H();
   const tabs = document.querySelectorAll('.tab');
   tabs.forEach((t, i) => t.classList.toggle('active', i === 7));
   const panels = document.querySelectorAll('.panel');
@@ -41986,6 +42043,134 @@ function closeVictoryModal() {
   document.getElementById('victoryModal').classList.remove('show');
 }
 
+
+let currentTheme = localStorage.getItem("wc2026_theme") || "dark";
+if (currentTheme === "light") document.documentElement.classList.add("light");
+
+function toggleTheme() {
+  currentTheme = currentTheme === "dark" ? "light" : "dark";
+  document.documentElement.classList.toggle("light", currentTheme === "light");
+  localStorage.setItem("wc2026_theme", currentTheme);
+  const btn = document.getElementById("themeToggleBtn");
+  if (btn) btn.innerHTML = currentTheme === "dark" ? "🌙" : "☀️";
+}
+
+let favoriteTeam = localStorage.getItem("wc2026_favorite") || null;
+
+function toggleFavorite(teamId) {
+  if (favoriteTeam === teamId) {
+    favoriteTeam = null;
+    localStorage.removeItem("wc2026_favorite");
+  } else {
+    favoriteTeam = teamId;
+    localStorage.setItem("wc2026_favorite", teamId);
+  }
+  renderAll();
+}
+
+function getTeamForm(teamId) {
+  const form = [];
+  const matches = GROUP_MATCHES.filter(m => m.h === teamId || m.a === teamId)
+    .concat(KO.filter(m => m.h === teamId || m.a === teamId))
+    .sort((a, b) => parseInt(a.id.substring(1)) - parseInt(b.id.substring(1)));
+
+  matches.forEach(m => {
+    const sc = getScore(m.id);
+    if (!isPlayed(sc)) return;
+    if (m.h === teamId) {
+        if (sc.h > sc.a) form.push("W");
+        else if (sc.h < sc.a) form.push("L");
+        else form.push("D");
+    } else {
+        if (sc.a > sc.h) form.push("W");
+        else if (sc.a < sc.h) form.push("L");
+        else form.push("D");
+    }
+  });
+  return form.slice(-5);
+}
+
+function renderScorers() {
+  const T = TRANSLATIONS[currentLang];
+  const scorerMap = {};
+  Object.values(scores).forEach(match => {
+    if (match.events) {
+      match.events.forEach(ev => {
+        if (ev.type === "goal") {
+          const key = ev.playerIdx + "_" + (ev.side === "h" ? match.h : match.a);
+          if (!scorerMap[key]) scorerMap[key] = { goals: 0, playerIdx: ev.playerIdx, teamId: (ev.side === "h" ? match.h : match.a) };
+          scorerMap[key].goals++;
+        }
+      });
+    }
+  });
+  const sortedScorers = Object.values(scorerMap).sort((a, b) => b.goals - a.goals);
+  let h = '<div class="scorers-list">';
+  if (sortedScorers.length === 0) h += `<div class="no-data">${T.no_data || "No data available"}</div>`;
+  else {
+    sortedScorers.forEach((s, idx) => {
+      const team = TEAMS[s.teamId];
+      const player = SQUADS[s.teamId].players[s.playerIdx];
+      const name = player.name[currentLang] || player.name.en;
+      const teamName = team.n[currentLang] || team.n.en;
+      const img = getPlayerImagePath(s.teamId, player, s.playerIdx + 1);
+      h += `<div class="scorer-card"><div class="scorer-rank">#${idx + 1}</div><div class="scorer-photo-wrapper"><img src="${img}" class="scorer-photo" onerror="this.src='image/Kubok.jpg'"><img src="${team.f}" class="scorer-flag"></div><div class="scorer-info"><div class="scorer-name">${name}</div><div class="scorer-team">${teamName}</div></div><div class="scorer-count">${s.goals} ⚽</div></div>`;
+    });
+  }
+  const panel = document.getElementById("panel8");
+  if (panel) panel.innerHTML = h + "</div>";
+}
+
+function renderMap() {
+  const T = TRANSLATIONS[currentLang];
+  const cities = [
+    { id: "mexico-city", name: "Mexico City", x: 420, y: 480, s: "Estadio Azteca" },
+    { id: "guadalajara", name: "Guadalajara", x: 380, y: 460, s: "Estadio Akron" },
+    { id: "monterrey", name: "Monterrey", x: 410, y: 420, s: "Estadio BBVA" },
+    { id: "vancouver", name: "Vancouver", x: 150, y: 150, s: "BC Place" },
+    { id: "toronto", name: "Toronto", x: 680, y: 240, s: "BMO Field" },
+    { id: "seattle", name: "Seattle", x: 160, y: 180, s: "Lumen Field" },
+    { id: "san-francisco", name: "San Francisco", x: 130, y: 280, s: "Levi's Stadium" },
+    { id: "los-angeles", name: "Los Angeles", x: 150, y: 320, s: "SoFi Stadium" },
+    { id: "houston", name: "Houston", x: 450, y: 400, s: "NRG Stadium" },
+    { id: "dallas", name: "Dallas", x: 450, y: 370, s: "AT&T Stadium" },
+    { id: "kansas-city", name: "Kansas City", x: 480, y: 320, s: "Arrowhead Stadium" },
+    { id: "atlanta", name: "Atlanta", x: 620, y: 360, s: "Mercedes-Benz Stadium" },
+    { id: "miami", name: "Miami", x: 680, y: 450, s: "Hard Rock Stadium" },
+    { id: "philadelphia", name: "Philadelphia", x: 720, y: 280, s: "Lincoln Financial Field" },
+    { id: "new-york", name: "New York", x: 730, y: 260, s: "MetLife Stadium" },
+    { id: "boston", name: "Boston", x: 750, y: 240, s: "Gillette Stadium" }
+  ];
+  let h = `<div class="map-container"><svg viewBox="0 0 800 600" class="wc-map"><path d="M100,100 L200,50 L400,30 L700,50 L750,200 L700,400 L600,550 L400,580 L200,550 L100,400 Z" fill="#1a2a44" stroke="#34495e" stroke-width="2" />${cities.map(c => `<g class="map-marker" onclick="goToStadium('${c.s}')"><circle cx="${c.x}" cy="${c.y}" r="8" fill="#f1c40f" /><circle cx="${c.x}" cy="${c.y}" r="12" fill="rgba(241, 196, 15, 0.3)" class="marker-pulse" /><text x="${c.x + 12}" y="${c.y + 5}" fill="#fff" font-size="10" font-weight="bold">${c.name}</text></g>`).join("")}</svg><div class="map-hint">${T.map_hint || "Click on markers to see stadium details"}</div></div>`;
+  const panel = document.getElementById("panel9");
+  if (panel) panel.innerHTML = h;
+}
+
+let h2hTeamA = "MEX", h2hTeamB = "USA";
+function renderH2H() {
+  const T = TRANSLATIONS[currentLang];
+  const getStats = (teamId) => {
+    let goals = 0, yellow = 0, red = 0;
+    Object.values(scores).forEach(m => {
+      if ((m.h === teamId || m.a === teamId) && m.events) {
+        m.events.forEach(ev => {
+          const side = (m.h === teamId ? "h" : "a");
+          if (ev.side === side) {
+            if (ev.type === "goal") goals++;
+            if (ev.type === "yellow") yellow++;
+            if (ev.type === "red") red++;
+          }
+        });
+      }
+    });
+    return { goals, yellow, red, rank: TEAMS[teamId].r };
+  };
+  const sA = getStats(h2hTeamA), sB = getStats(h2hTeamB);
+  let h = `<div class="h2h-container"><div class="h2h-selectors"><div class="h2h-sel-block"><img src="${TEAMS[h2hTeamA].f}" class="h2h-flag"><select onchange="h2hTeamA=this.value;renderH2H()">${Object.keys(TEAMS).map(id => `<option value="${id}" ${id===h2hTeamA?"selected":""}>${TEAMS[id].n[currentLang] || TEAMS[id].n.en}</option>`).join("")}</select></div><div class="h2h-vs">VS</div><div class="h2h-sel-block"><select onchange="h2hTeamB=this.value;renderH2H()">${Object.keys(TEAMS).map(id => `<option value="${id}" ${id===h2hTeamB?"selected":""}>${TEAMS[id].n[currentLang] || TEAMS[id].n.en}</option>`).join("")}</select><img src="${TEAMS[h2hTeamB].f}" class="h2h-flag"></div></div><table class="h2h-table"><tr><td>${sA.rank}</td><th>FIFA RANK</th><td>${sB.rank}</td></tr><tr><td class="${sA.goals > sB.goals ? 'win-stat' : ''}">${sA.goals}</td><th>GOALS</th><td class="${sB.goals > sA.goals ? 'win-stat' : ''}">${sB.goals}</td></tr><tr><td>${sA.yellow}</td><th>YELLOW CARDS</th><td>${sB.yellow}</td></tr><tr><td>${sA.red}</td><th>RED CARDS</th><td>${sB.red}</td></tr></table></div>`;
+  const panel = document.getElementById("panel10");
+  if (panel) panel.innerHTML = h;
+}
+
 function renderStadiums(){
   let h='<div class="stadium-grid">';
   STADIUMS_DATA.forEach(s=>{
@@ -42017,7 +42202,7 @@ function renderAll(){
   const fid=ae&&ae.dataset?ae.dataset.id:null;
   const fside=ae&&ae.dataset?ae.dataset.side:null;
   const selStart=ae&&ae.selectionStart!=null?ae.selectionStart:null;
-  renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderTeams();renderStadiums();
+  renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderTeams();renderStadiums();renderScorers();renderMap();renderH2H();
   bindInputs();
   if(fid){
     const inp=document.querySelector('input.score-inp[data-id="'+fid+'"][data-side="'+fside+'"]');
@@ -42509,7 +42694,7 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
   btn.onclick = () => {
     currentLang = btn.dataset.lang;
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b === btn));
-    buildUI();
+    buildUI(); const btn = document.getElementById('themeToggleBtn'); if(btn) btn.innerHTML = currentTheme === 'dark' ? '🌙' : '☀️';
     renderAll();
   };
 });
@@ -42798,11 +42983,11 @@ function checkAdmin() {
 // Final initialization to ensure all DOM elements are present
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', async () => {
-        initTeamPopover(); await load(); buildUI(); renderAll(); checkCelebration();
+        initTeamPopover(); await load(); buildUI(); const btn = document.getElementById('themeToggleBtn'); if(btn) btn.innerHTML = currentTheme === 'dark' ? '🌙' : '☀️'; renderAll(); checkCelebration();
     });
 } else {
     (async () => {
-        initTeamPopover(); await load(); buildUI(); renderAll(); checkCelebration();
+        initTeamPopover(); await load(); buildUI(); const btn = document.getElementById('themeToggleBtn'); if(btn) btn.innerHTML = currentTheme === 'dark' ? '🌙' : '☀️'; renderAll(); checkCelebration();
     })();
 }
 // === НОВОЕ: Запуск музыки по первому клику в любом месте сайта ===
