@@ -218,11 +218,16 @@
   cursor: pointer;
 }
 :root{--bg:#050b18;--card:rgba(16,33,61,.94);--border:rgba(255,255,255,.12);--accent:#3498db;--gold:#f1c40f;--text:#f8f9fa;--muted:#8ea6c7;--pitch:#0a1931}
+[data-theme="dark"]{--bg:#03070f;--card:rgba(10,20,40,.96);--border:rgba(255,255,255,.08);--pitch:#061122}
+[data-theme="extra-dark"]{--bg:#000000;--card:rgba(5,10,20,.98);--border:rgba(255,255,255,.05);--pitch:#000000}
+[data-theme="dark"] .bg-trophy{opacity:0.3}
+[data-theme="extra-dark"] .bg-trophy{opacity:0.15}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.45}
 .lang-switcher{position:fixed;top:10px;left:10px;display:flex;gap:8px;z-index:1000}
 .lang-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-weight:400;font-size:0.75rem;padding:2px 4px;transition:0.2s}
 .lang-btn.active{color:var(--gold)}
+#theme-toggle{font-size:1.1rem;padding:0 5px;margin-right:5px}
 .bg-trophy{position:fixed;inset:0;z-index:0;pointer-events:none;
   background: url("https://api.tvrgomel.by/upload/iblock/776/aaoipplamffc4dt1o9rq49ve47z9jl02.jpg") no-repeat center;
   background-size: cover;
@@ -849,6 +854,7 @@ body.admin-active .toolbar { display: flex; }
 <div id="teamPopover" class="team-popover" role="tooltip" aria-hidden="true"></div>
 
 <div class="lang-switcher">
+  <button id="theme-toggle" class="lang-btn">☀</button>
   <button class="lang-btn" data-lang="en">EN</button>
   <button class="lang-btn active" data-lang="ru">RU</button>
   <button class="lang-btn" data-lang="zh">ZH</button>
@@ -43569,6 +43575,35 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
     renderAll();
   };
 });
+
+(function() {
+  const themeToggle = document.getElementById('theme-toggle');
+  if (!themeToggle) return;
+  const themes = ['default', 'dark', 'extra-dark'];
+  const themeIcons = ['☀️', '🌙', '🌙🌙'];
+
+  let currentThemeIdx = themes.indexOf(localStorage.getItem('theme') || 'default');
+  if (currentThemeIdx === -1) currentThemeIdx = 0;
+
+  function applyTheme(idx) {
+    const theme = themes[idx];
+    if (theme === 'default') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    themeToggle.innerText = themeIcons[idx];
+    localStorage.setItem('theme', theme);
+  }
+
+  themeToggle.onclick = (e) => {
+    e.stopPropagation();
+    currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+    applyTheme(currentThemeIdx);
+  };
+
+  applyTheme(currentThemeIdx);
+})();
 
 
 </script>
