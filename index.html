@@ -218,16 +218,91 @@
   cursor: pointer;
 }
 :root{--bg:#050b18;--card:rgba(16,33,61,.94);--border:rgba(255,255,255,.12);--accent:#3498db;--gold:#f1c40f;--text:#f8f9fa;--muted:#8ea6c7;--pitch:#0a1931}
-[data-theme="dark"]{--bg:#03070f;--card:rgba(10,20,40,.96);--border:rgba(255,255,255,.08);--pitch:#061122}
-[data-theme="extra-dark"]{--bg:#000000;--card:rgba(5,10,20,.98);--border:rgba(255,255,255,.05);--pitch:#000000}
-[data-theme="dark"] .bg-trophy{opacity:0.3}
-[data-theme="extra-dark"] .bg-trophy{opacity:0.15}
+[data-theme="dark"]{
+  --bg:#1e293b;
+  --card:rgba(30,41,59,0.95);
+  --border:rgba(56,189,248,0.3);
+  --accent:#38bdf8;
+  --gold:#ffd700;
+  --pitch:#334155;
+}
+[data-theme="extra-dark"]{
+  --bg:#1a3a3a;
+  --card:rgba(20,45,45,0.95);
+  --border:rgba(16,185,129,0.4);
+  --accent:#10b981;
+  --gold:#fcd34d;
+  --pitch:#2a4a4a;
+}
+[data-theme="dark"] .bg-trophy{opacity:0.25}
+[data-theme="extra-dark"] .bg-trophy{opacity:0.2}
+
+[data-theme="dark"] .tab.active, [data-theme="dark"] .btn-save {
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+  border-color: #7dd3fc;
+  color: #fff;
+}
+[data-theme="extra-dark"] .tab.active, [data-theme="extra-dark"] .btn-save {
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669, #10b981);
+  border-color: #6ee7b7;
+  border-radius: 4px;
+  color: #fff;
+}
+[data-theme="extra-dark"] .card {
+  border-left: 4px solid var(--accent);
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.45}
 .lang-switcher{position:fixed;top:10px;left:10px;display:flex;gap:8px;z-index:1000}
 .lang-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-weight:400;font-size:0.75rem;padding:2px 4px;transition:0.2s}
 .lang-btn.active{color:var(--gold)}
-#theme-toggle{font-size:1.1rem;padding:0 5px;margin-right:5px}
+#theme-toggle{
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  padding: 0;
+  margin-right: 8px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+#theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--gold);
+  transform: scale(1.05);
+}
+.double-moon-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.double-moon-icon span:nth-child(1) {
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  font-size: 0.9rem;
+  z-index: 1;
+}
+.double-moon-icon span:nth-child(2) {
+  position: absolute;
+  right: 5px;
+  bottom: 6px;
+  font-size: 0.9rem;
+  z-index: 2;
+  filter: drop-shadow(-1px -1px 2px rgba(0,0,0,0.5));
+}
 .bg-trophy{position:fixed;inset:0;z-index:0;pointer-events:none;
   background: url("https://api.tvrgomel.by/upload/iblock/776/aaoipplamffc4dt1o9rq49ve47z9jl02.jpg") no-repeat center;
   background-size: cover;
@@ -43580,7 +43655,11 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
   const themeToggle = document.getElementById('theme-toggle');
   if (!themeToggle) return;
   const themes = ['default', 'dark', 'extra-dark'];
-  const themeIcons = ['☀️', '🌙', '🌙🌙'];
+  const themeIcons = [
+    '☀️',
+    '🌙',
+    '<div class="double-moon-icon"><span>🌙</span><span>🌙</span></div>'
+  ];
 
   let currentThemeIdx = themes.indexOf(localStorage.getItem('theme') || 'default');
   if (currentThemeIdx === -1) currentThemeIdx = 0;
@@ -43592,7 +43671,7 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
     } else {
       document.documentElement.setAttribute('data-theme', theme);
     }
-    themeToggle.innerText = themeIcons[idx];
+    themeToggle.innerHTML = themeIcons[idx];
     localStorage.setItem('theme', theme);
   }
 
@@ -43604,7 +43683,6 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 
   applyTheme(currentThemeIdx);
 })();
-
 
 </script>
 
