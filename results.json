@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-06-22T02:07:17.511Z",
+  "updatedAt": "2026-06-23T05:29:33.386Z",
   "scores": {
     "A1": {
       "h": 2,
@@ -636,8 +636,8 @@
       ]
     },
     "J2": {
-      "h": 1,
-      "a": 3,
+      "h": 3,
+      "a": 1,
       "pen": null,
       "events": [
         {
@@ -1272,22 +1272,317 @@
     "F4": {
       "h": 0,
       "a": 4,
-      "pen": null
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Daichi Kamada",
+          "minute": "4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Ayase Ueda",
+          "minute": "31"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Junya Ito",
+          "minute": "69"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Ayase Ueda",
+          "minute": "83"
+        }
+      ]
     },
     "H3": {
       "h": 4,
       "a": 0,
-      "pen": null
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Nasser Aldawsari",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Lamine Yamal",
+          "minute": "10"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Mikel Oyarzabal",
+          "minute": "21"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Mikel Oyarzabal",
+          "minute": "24"
+        }
+      ]
     },
     "G3": {
       "h": 0,
       "a": 0,
-      "pen": null
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "red",
+          "playerName": "Nathan Ngoy",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Romelu Lukaku",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Saeid Ezatolahi",
+          "minute": ""
+        }
+      ]
     },
     "H4": {
       "h": 2,
       "a": 2,
-      "pen": null
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Mathías Olivera",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Rodrigo Bentancur",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Diney Borges",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Sidny Lopes Cabral",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Ronald Araújo",
+          "minute": "44"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Agustín Canobbio",
+          "minute": "45"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Helio Varela",
+          "minute": "61"
+        }
+      ]
+    },
+    "G4": {
+      "h": 1,
+      "a": 3,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Sarpreet Singh",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Callum Mccowatt",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Mohanad Lashin",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Mostafa Zico",
+          "minute": "58"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Mohamed Salah",
+          "minute": "68"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Trezeguet",
+          "minute": "82"
+        }
+      ]
+    },
+    "J3": {
+      "h": 2,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Facundo Medina",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Stefan Posch",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Konrad Laimer",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Lionel Messi",
+          "minute": "38"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Lionel Messi",
+          "minute": "90+"
+        }
+      ]
+    },
+    "I3": {
+      "h": 3,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Amir Al-Ammari",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Kylian Mbappé",
+          "minute": "14"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Kylian Mbappé",
+          "minute": "54"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Ousmane Dembélé",
+          "minute": "66"
+        }
+      ]
+    },
+    "I4": {
+      "h": 3,
+      "a": 2,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Marcus Holmgren Pedersen",
+          "minute": "43"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Erling Haaland",
+          "minute": "48"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Erling Haaland",
+          "minute": "58"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Ismaila Sarr",
+          "minute": "53"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Ismaila Sarr",
+          "minute": "90+"
+        }
+      ]
+    },
+    "J4": {
+      "h": 1,
+      "a": 2,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Ramiz Zerrouki",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Saed Alrosan",
+          "minute": "36"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Nadhir Benbouali",
+          "minute": "69"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Amine Gouiri",
+          "minute": "82"
+        }
+      ]
     }
   },
   "squads": {
