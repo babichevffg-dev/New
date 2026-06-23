@@ -979,6 +979,9 @@ body.admin-active .toolbar { display: flex; }
           <div id="minWrapHome">
             <select id="minHome"></select>
           </div>
+          <div id="videoWrapHome" style="display:none; margin-top:5px;">
+            <input type="text" id="videoHome" placeholder="Video URL (mp4)" style="width:100%; box-sizing:border-box;">
+          </div>
           <button onclick="handleAddEvent('h')" id="btnAddHome">Add Event</button>
         </div>
       </div>
@@ -994,6 +997,9 @@ body.admin-active .toolbar { display: flex; }
           </select>
           <div id="minWrapAway">
             <select id="minAway"></select>
+          </div>
+          <div id="videoWrapAway" style="display:none; margin-top:5px;">
+            <input type="text" id="videoAway" placeholder="Video URL (mp4)" style="width:100%; box-sizing:border-box;">
           </div>
           <button onclick="handleAddEvent('a')" id="btnAddAway">Add Event</button>
         </div>
@@ -3296,10 +3302,13 @@ function closeEventsModal() {
 function toggleMinuteInput(side) {
   const type = document.getElementById('selType' + (side === 'h' ? 'Home' : 'Away')).value;
   const minWrap = document.getElementById('minWrap' + (side === 'h' ? 'Home' : 'Away'));
+  const videoWrap = document.getElementById('videoWrap' + (side === 'h' ? 'Home' : 'Away'));
   if (type === 'goal') {
     minWrap.style.display = 'block';
+    if (videoWrap) videoWrap.style.display = 'block';
   } else {
     minWrap.style.display = 'none';
+    if (videoWrap) videoWrap.style.display = 'none';
   }
 }
 
@@ -3348,10 +3357,24 @@ function renderMatchEventsList() {
     const teamId = ev.side === 'h' ? (match.ko ? resolveSlot(match.h) : match.h) : (match.ko ? resolveSlot(match.a) : match.a);
     const displayName = getPlayerTranslatedName(ev.playerName, teamId);
 
+    let videoInput = '';
+    if (isAdmin && ev.type === 'goal') {
+      videoInput = `<div style="margin-top:4px; width:100%;">
+        <input type="text" placeholder="Video URL" value="${ev.video || ''}"
+               onchange="updateEventVideo(${idx}, this.value)"
+               style="width:80%; font-size:11px; padding:2px; box-sizing:border-box;">
+      </div>`;
+    }
+
     item.innerHTML = `
-      <span class="event-icon">${icon}</span>
-      <span class="event-player">${displayName}${minStr}</span>
-      <button class="event-del" onclick="removeMatchEvent(${idx})">×</button>
+      <div style="display:flex; align-items:center; width:100%; justify-content:space-between;">
+        <div style="display:flex; align-items:center;">
+          <span class="event-icon">${icon}</span>
+          <span class="event-player" style="margin-left:5px;">${displayName}${minStr}</span>
+        </div>
+        <button class="event-del" onclick="removeMatchEvent(${idx})">×</button>
+      </div>
+      ${videoInput}
     `;
 
     if (ev.side === 'h') listH.appendChild(item);
@@ -3363,23 +3386,39 @@ function handleAddEvent(side) {
   const playerSel = document.getElementById(side === 'h' ? 'selPlayerHome' : 'selPlayerAway');
   const typeSel = document.getElementById(side === 'h' ? 'selTypeHome' : 'selTypeAway');
   const minInp = document.getElementById(side === 'h' ? 'minHome' : 'minAway');
+  const videoInp = document.getElementById(side === 'h' ? 'videoHome' : 'videoAway');
 
   const playerName = playerSel.value;
   const type = typeSel.value;
   let minute = minInp.value.trim();
+  let video = videoInp ? videoInp.value.trim() : '';
 
   if (!playerName) return;
-  if (type !== 'goal') minute = '';
+  if (type !== 'goal') {
+    minute = '';
+    video = '';
+  }
 
   const sc = getScore(currentEventsMatchId);
   if (!sc.events) sc.events = [];
-  sc.events.push({ side, type, playerName, minute });
+  sc.events.push({ side, type, playerName, minute, video });
   scores[currentEventsMatchId] = { ...sc };
 
   minInp.value = '';
+  if (videoInp) videoInp.value = '';
   renderMatchEventsList();
   renderAll();
   debounceSave();
+}
+
+function updateEventVideo(idx, videoUrl) {
+  const sc = getScore(currentEventsMatchId);
+  if (sc.events && sc.events[idx]) {
+    sc.events[idx].video = videoUrl.trim();
+    scores[currentEventsMatchId] = { ...sc };
+    renderAll();
+    debounceSave();
+  }
 }
 
 function removeMatchEvent(idx) {
@@ -42776,7 +42815,7 @@ function showSquad(teamId){
     let eventHtml = '<div class="event-marker">';
     goals.forEach(ev => {
       const title = `${getMatchTitle(ev.matchId)}${ev.minute ? `, ${ev.minute}'` : ''}`;
-      eventHtml += `<span class="ball-icon" title="${title}" onclick="event.stopPropagation(); if(this.title) alert(this.title)">⚽</span>`;
+      eventHtml += `<span class="ball-icon" title="${title}" onclick="event.stopPropagation(); if('${ev.video || ''}') playVideo('${ev.video}'); else if(this.title) alert(this.title)">⚽</span>`;
     });
     reds.forEach(ev => {
       const title = getMatchTitle(ev.matchId);
@@ -43889,13 +43928,24 @@ function startCelebration(text) {
 }
 
 // === ФУНКЦИИ ДЛЯ ВОСПРОИЗВЕДЕНИЯ ВИДЕО ===
-function playPlayerVideo() {
+function playVideo(url) {
     const videoModal = document.getElementById('videoModal');
     const video = document.getElementById('playerVideo');
     if (videoModal && video) {
+        if (url) {
+            if (!url.includes('/') && !url.includes('://')) {
+                video.src = 'image/' + url;
+            } else {
+                video.src = url;
+            }
+        }
         videoModal.classList.add('show');
         video.play();
     }
+}
+
+function playPlayerVideo() {
+    playVideo('Video.mp4');
 }
 
 function closeVideoModal() {
