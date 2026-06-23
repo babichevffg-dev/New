@@ -980,7 +980,7 @@ body.admin-active .toolbar { display: flex; }
             <select id="minHome"></select>
           </div>
           <div id="videoWrapHome" style="display:none; margin-top:5px;">
-            <input type="text" id="videoHome" placeholder="Video URL (mp4)" style="width:100%; box-sizing:border-box;">
+            <input type="text" id="videoHome" placeholder="image/1.mov" style="width:100%; box-sizing:border-box;">
           </div>
           <button onclick="handleAddEvent('h')" id="btnAddHome">Add Event</button>
         </div>
@@ -999,7 +999,7 @@ body.admin-active .toolbar { display: flex; }
             <select id="minAway"></select>
           </div>
           <div id="videoWrapAway" style="display:none; margin-top:5px;">
-            <input type="text" id="videoAway" placeholder="Video URL (mp4)" style="width:100%; box-sizing:border-box;">
+            <input type="text" id="videoAway" placeholder="image/1.mov" style="width:100%; box-sizing:border-box;">
           </div>
           <button onclick="handleAddEvent('a')" id="btnAddAway">Add Event</button>
         </div>
@@ -3360,7 +3360,7 @@ function renderMatchEventsList() {
     let videoInput = '';
     if (isAdmin && ev.type === 'goal') {
       videoInput = `<div style="margin-top:4px; width:100%;">
-        <input type="text" placeholder="Video URL" value="${ev.video || ''}"
+        <input type="text" placeholder="image/1.mov" value="${ev.video || ''}"
                onchange="updateEventVideo(${idx}, this.value)"
                style="width:80%; font-size:11px; padding:2px; box-sizing:border-box;">
       </div>`;
@@ -43940,6 +43940,7 @@ function playVideo(url) {
             }
         }
         videoModal.classList.add('show');
+        video.load();
         video.play();
     }
 }
