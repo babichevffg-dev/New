@@ -10,6 +10,7 @@
 <meta property="og:url" content="http://babichevfootball.ru">
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* === ВИДЕО МОДАЛЬНОЕ ОКНО === */
 #videoModal {
@@ -921,10 +922,73 @@ body.admin-active .toolbar { display: flex; }
 .team-flag:hover, .team-flag:active {
   animation-duration: 2.5s;
 }
+
+[data-theme="stellar"] {
+  --bg: #050505;
+  --card: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.15);
+  --accent: #22d3ee;
+  --gold: #f1c40f;
+  --text: #e5e2e1;
+  --muted: #94a3b8;
+  --pitch: #0f172a;
+}
+[data-theme="stellar"] body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+}
+[data-theme="stellar"] .card,
+[data-theme="stellar"] .tab,
+[data-theme="stellar"] .btn {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+}
+[data-theme="stellar"] .tab.active {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+  text-shadow: none;
+}
+[data-theme="stellar"] .bg-trophy {
+  display: none;
+}
+#stellar-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  display: none;
+  pointer-events: none;
+}
+[data-theme="stellar"] #stellar-bg {
+  display: block;
+}
+
+
+[data-theme="stellar"]::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 10000;
+  background-size: 100% 4px, 4px 100%;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+<canvas id="stellar-bg"></canvas>
 <div class="bg-trophy" aria-hidden="true"></div>
 <div id="teamPopover" class="team-popover" role="tooltip" aria-hidden="true"></div>
 
@@ -43266,6 +43330,7 @@ function initTeamPopover(){
     const tip=document.querySelector('.team-tip[data-team="'+teamPopPinned+'"]')||document.querySelector('.team-tip:hover');
     if(tip&&pop.classList.contains('show'))positionTeamPopover(tip);
   },true);
+
   window.addEventListener('resize',()=>{
     const tip=document.querySelector('.team-tip[data-team="'+teamPopPinned+'"]');
     if(tip&&pop.classList.contains('show'))positionTeamPopover(tip);
@@ -43693,11 +43758,12 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 (function() {
   const themeToggle = document.getElementById('theme-toggle');
   if (!themeToggle) return;
-  const themes = ['default', 'dark', 'extra-dark'];
+  const themes = ['default', 'dark', 'extra-dark', 'stellar'];
   const themeIcons = [
     '☀️',
     '🌙',
-    '<div class="double-moon-icon"><span>🌙</span><span>🌙</span></div>'
+    '<div class="double-moon-icon"><span>🌙</span><span>🌙</span></div>',
+    '🚀'
   ];
 
   let currentThemeIdx = themes.indexOf(localStorage.getItem('theme') || 'default');
@@ -44037,6 +44103,133 @@ document.addEventListener('click', function startMusicOnFirstClick() {
     });
   }
 }, { once: true }); // { once: true } гарантирует, что этот код сработает ТОЛЬКО ОДИН РАЗ
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+(function() {
+  let scene, camera, renderer, globe, stars, satellites = [];
+  let isInitialized = false;
+
+  function initStellarBackground() {
+    if (isInitialized) return;
+    const canvas = document.getElementById('stellar-bg');
+    if (!canvas) return;
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // Globe (Wireframe Earth)
+    const geometry = new THREE.IcosahedronGeometry(2, 2);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x22d3ee,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.3
+    });
+    globe = new THREE.Mesh(geometry, material);
+    scene.add(globe);
+
+    // Core
+    const coreGeom = new THREE.SphereGeometry(1.9, 32, 32);
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0x0a1931, transparent: true, opacity: 0.5 });
+    const core = new THREE.Mesh(coreGeom, coreMat);
+    scene.add(core);
+
+    // Stars
+    const starGeometry = new THREE.BufferGeometry();
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
+    const starVertices = [];
+    for (let i = 0; i < 2000; i++) {
+      const x = (Math.random() - 0.5) * 2000;
+      const y = (Math.random() - 0.5) * 2000;
+      const z = (Math.random() - 0.5) * 2000;
+      starVertices.push(x, y, z);
+    }
+    starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+    stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+
+    // Satellites / Trajectories
+    for (let i = 0; i < 6; i++) {
+      const radius = 3 + i * 0.4;
+      const ringGeom = new THREE.RingGeometry(radius, radius + 0.015, 128);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: i % 2 === 0 ? 0x22d3ee : 0xbd00ff,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.3
+      });
+      const ring = new THREE.Mesh(ringGeom, ringMat);
+      ring.rotation.x = Math.random() * Math.PI;
+      ring.rotation.y = Math.random() * Math.PI;
+      scene.add(ring);
+      satellites.push(ring);
+    }
+
+
+    camera.position.z = 6;
+    isInitialized = true;
+    animate();
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (document.documentElement.getAttribute('data-theme') !== 'stellar') return;
+
+    globe.rotation.y += 0.002;
+    globe.rotation.x += 0.001;
+
+    satellites.forEach((s, i) => {
+      s.rotation.z += 0.005 * (i + 1);
+    });
+
+    stars.rotation.y += 0.0002;
+
+    renderer.render(scene, camera);
+  }
+
+
+  window.addEventListener('resize', () => {
+    if (!isInitialized) return;
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // Watch for theme changes to init Three.js
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+        if (document.documentElement.getAttribute('data-theme') === 'stellar') {
+          initStellarBackground();
+        }
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+
+  // Check initial theme
+  if (document.documentElement.getAttribute('data-theme') === 'stellar') {
+    initStellarBackground();
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isInitialized || document.documentElement.getAttribute('data-theme') !== 'stellar') return;
+    const x = (e.clientX / window.innerWidth) - 0.5;
+    const y = (e.clientY / window.innerHeight) - 0.5;
+    if (scene) {
+        scene.rotation.y = x * 0.1;
+        scene.rotation.x = y * 0.1;
+    }
+  });
+
+})();
 </script>
 
 </body>
