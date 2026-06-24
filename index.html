@@ -44145,9 +44145,9 @@ document.addEventListener('click', function startMusicOnFirstClick() {
     const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.8 });
     const starVertices = [];
     for (let i = 0; i < 5000; i++) {
-      const x = (Math.random() - 0.5) * 100;
-      const y = (Math.random() - 0.5) * 100;
-      const z = (Math.random() - 0.5) * 200;
+      const x = (Math.random() - 0.5) * 400;
+      const y = (Math.random() - 0.5) * 400;
+      const z = (Math.random() - 0.5) * 400;
       starVertices.push(x, y, z);
     }
     starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
@@ -44194,9 +44194,9 @@ document.addEventListener('click', function startMusicOnFirstClick() {
     for (let i = 0; i < positions.length; i += 3) {
       positions[i+2] += 0.5; // Z speed
       if (positions[i+2] > 10) { // Reset star behind the scene
-        positions[i+2] = -190;
-        positions[i] = (Math.random() - 0.5) * 100;
-        positions[i+1] = (Math.random() - 0.5) * 100;
+                positions[i+2] = -390;
+        positions[i] = (Math.random() - 0.5) * 400;
+        positions[i+1] = (Math.random() - 0.5) * 400;
       }
     }
     stars.geometry.attributes.position.needsUpdate = true;
