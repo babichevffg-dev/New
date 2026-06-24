@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-06-23T05:29:33.386Z",
+  "updatedAt": "2026-06-24T04:02:48.884Z",
   "scores": {
     "A1": {
       "h": 2,
@@ -1581,6 +1581,106 @@
           "type": "goal",
           "playerName": "Amine Gouiri",
           "minute": "82"
+        }
+      ]
+    },
+    "K3": {
+      "h": 5,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Renato Veiga",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Odiljon Xamrobekov",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Cristiano Ronaldo",
+          "minute": "6"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Nuno Mendes",
+          "minute": "17"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Cristiano Ronaldo",
+          "minute": "39"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Rafael Leão",
+          "minute": "87"
+        }
+      ]
+    },
+    "L3": {
+      "h": 0,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Declan Rice",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Iñaki Williams",
+          "minute": ""
+        }
+      ]
+    },
+    "L4": {
+      "h": 0,
+      "a": 1,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Yoel Bárcenas",
+          "minute": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Ante Budimir",
+          "minute": "54"
+        }
+      ]
+    },
+    "K4": {
+      "h": 1,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Jhon Lucumi",
+          "minute": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Daniel Muñoz",
+          "minute": "76"
         }
       ]
     }
