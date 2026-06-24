@@ -44140,16 +44140,17 @@ document.addEventListener('click', function startMusicOnFirstClick() {
     const core = new THREE.Mesh(coreGeom, coreMat);
     scene.add(core);
 
-            // Stars (Natural Starfield Flight)
+                // Stars (Subtle Background Starfield)
     const starGeometry = new THREE.BufferGeometry();
-    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.8 });
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.04, transparent: true, opacity: 0.6 });
     const starVertices = [];
     for (let i = 0; i < 5000; i++) {
-      const r = Math.random() * 300; // Radius
-      const theta = Math.random() * Math.PI * 2; // Angle
-      const x = r * Math.cos(theta);
-      const y = r * Math.sin(theta);
-      const z = (Math.random() - 0.5) * 800; // Deep Z range
+      const r = 200 + Math.random() * 800; // Far Radius
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI; // Full sphere
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi);
       starVertices.push(x, y, z);
     }
     starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
@@ -44191,20 +44192,10 @@ document.addEventListener('click', function startMusicOnFirstClick() {
       s.rotation.z += 0.005 * (i + 1);
     });
 
-        // Move stars towards camera (Flight Effect)
-    const positions = stars.geometry.attributes.position.array;
-    for (let i = 0; i < positions.length; i += 3) {
-      positions[i+2] += 0.5; // Z speed
-      if (positions[i+2] > 10) { // Reset star behind the scene
-                        const r = Math.random() * 300;
-        const theta = Math.random() * Math.PI * 2;
-        positions[i] = r * Math.cos(theta);
-        positions[i+1] = r * Math.sin(theta);
-        positions[i+2] = -400 - Math.random() * 400; // Randomize reset Z to avoid "walls"
-      }
-    }
-    stars.geometry.attributes.position.needsUpdate = true;
-    // stars.rotation.y += 0.0002; // Removed rotation to keep flight straight
+            // Subtle Starfield Rotation
+    stars.rotation.y += 0.0001;
+    stars.rotation.x += 0.00005;
+
 
     renderer.render(scene, camera);
   }
