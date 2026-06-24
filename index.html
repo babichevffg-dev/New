@@ -44129,7 +44129,7 @@ document.addEventListener('click', function startMusicOnFirstClick() {
       color: 0x22d3ee,
       wireframe: true,
       transparent: true,
-      opacity: 0.1
+      opacity: 0.3
     });
     globe = new THREE.Mesh(geometry, material);
     scene.add(globe);
@@ -44158,12 +44158,12 @@ document.addEventListener('click', function startMusicOnFirstClick() {
     // Satellites / Trajectories
     for (let i = 0; i < 6; i++) {
       const radius = 3 + i * 0.4;
-      const ringGeom = new THREE.RingGeometry(radius, radius + 0.005, 128);
+      const ringGeom = new THREE.RingGeometry(radius, radius + 0.01, 128);
       const ringMat = new THREE.MeshBasicMaterial({
         color: i % 2 === 0 ? 0x22d3ee : 0xbd00ff,
         side: THREE.DoubleSide,
         transparent: true,
-        opacity: 0.1
+        opacity:  0.2
       });
       const ring = new THREE.Mesh(ringGeom, ringMat);
       ring.rotation.x = Math.random() * Math.PI;
