@@ -44140,14 +44140,14 @@ document.addEventListener('click', function startMusicOnFirstClick() {
     const core = new THREE.Mesh(coreGeom, coreMat);
     scene.add(core);
 
-    // Stars
+        // Stars (Starfield Flight)
     const starGeometry = new THREE.BufferGeometry();
-    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.8 });
     const starVertices = [];
     for (let i = 0; i < 5000; i++) {
-      const x = (Math.random() - 0.5) * 2000;
-      const y = (Math.random() - 0.5) * 2000;
-      const z = (Math.random() - 0.5) * 2000;
+      const x = (Math.random() - 0.5) * 100;
+      const y = (Math.random() - 0.5) * 100;
+      const z = (Math.random() - 0.5) * 200;
       starVertices.push(x, y, z);
     }
     starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
@@ -44189,7 +44189,18 @@ document.addEventListener('click', function startMusicOnFirstClick() {
       s.rotation.z += 0.005 * (i + 1);
     });
 
-    stars.rotation.y += 0.0002;
+        // Move stars towards camera (Flight Effect)
+    const positions = stars.geometry.attributes.position.array;
+    for (let i = 0; i < positions.length; i += 3) {
+      positions[i+2] += 0.5; // Z speed
+      if (positions[i+2] > 10) { // Reset star behind the scene
+        positions[i+2] = -190;
+        positions[i] = (Math.random() - 0.5) * 100;
+        positions[i+1] = (Math.random() - 0.5) * 100;
+      }
+    }
+    stars.geometry.attributes.position.needsUpdate = true;
+    // stars.rotation.y += 0.0002; // Removed rotation to keep flight straight
 
     renderer.render(scene, camera);
   }
