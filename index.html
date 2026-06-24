@@ -217,7 +217,7 @@
   transition: all 0.3s ease;
   cursor: pointer;
 }
-:root{--bg:#050b18;--card:rgba(16,33,61,.94);--border:rgba(255,255,255,.12);--accent:#3498db;--gold:#f1c40f;--text:#f8f9fa;--muted:#8ea6c7;--pitch:#0a1931}
+:root{--bg:#101415;--card:rgba(16,33,61,.94);--border:rgba(255,255,255,.12);--accent:#00dbe7;--gold:#e9c349;--text:#f8f9fa;--muted:#8ea6c7;--pitch:#0a0e1a}
 [data-theme="dark"]{
   --bg:#1e293b;
   --card:rgba(30,41,59,0.95);
@@ -304,10 +304,10 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
   filter: drop-shadow(-1px -1px 2px rgba(0,0,0,0.5));
 }
 .bg-trophy{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background: url("https://api.tvrgomel.by/upload/iblock/776/aaoipplamffc4dt1o9rq49ve47z9jl02.jpg") no-repeat center;
-  background-size: cover;
+  background: none;
+
   opacity: 0.5;
-  filter: brightness(1.5) contrast(1.1);
+
 }
 .wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:16px}
 header{text-align:center;padding:24px 16px 12px}
@@ -921,11 +921,257 @@ body.admin-active .toolbar { display: flex; }
 .team-flag:hover, .team-flag:active {
   animation-duration: 2.5s;
 }
+
+.card, .group-block, .squad-card, .modal-content, .player-row {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+}
+.card:hover, .player-row:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--accent) !important;
+}
+
+
+.tab {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: 0.3s !important;
+}
+.tab.active {
+    background: var(--accent) !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px var(--accent) !important;
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-<div class="bg-trophy" aria-hidden="true"></div>
+<div class="bg-trophy" aria-hidden="true">
+    <div style="position:absolute; inset:0; opacity:0.4;">
+        <canvas id="shader-canvas-ANIMATION_3" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_3');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `
+precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+
+varying vec2 v_texCoord;
+
+float hash(vec2 p) {
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+}
+
+void main() {
+    vec2 uv = v_texCoord;
+    vec2 center = uv - 0.5;
+    center.x *= u_resolution.x / u_resolution.y;
+
+    // Deep Navy Base
+    vec3 color = vec3(0.04, 0.05, 0.1);
+
+    // Floating "data" particles
+    for(float i=0.0; i<40.0; i++) {
+        float h = hash(vec2(i, 123.45));
+        vec2 pos = vec2(
+            sin(u_time * 0.1 + h * 6.28) * 0.8,
+            cos(u_time * 0.15 + h * 6.28) * 0.5
+        );
+        float dist = length(center - pos);
+        float size = 0.002 + h * 0.005;
+        float glow = smoothstep(size * 10.0, 0.0, dist);
+        color += vec3(0.83, 0.69, 0.22) * glow * 0.3; // Gold glow
+        color += vec3(0.0, 0.95, 1.0) * glow * 0.1; // Cyan pulse
+    }
+
+    // Scanlines
+    float scan = sin(uv.y * 400.0 + u_time * 2.0) * 0.02;
+    color += scan;
+
+    gl_FragColor = vec4(color, 1.0);
+}
+`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+
+    </div>
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+        <div style="width:100%; height:100%; max-width:800px; max-height:800px;">
+            <!-- STITCH_THREEJS_START:ANIMATION_2 class="absolute inset-0 w-full h-full" -->
+<div class="absolute inset-0 w-full h-full" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_2" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_2');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+renderer.setSize(width, height);
+container.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0xD4AF37, 2);
+pointLight.position.set(5, 5, 5);
+scene.add(pointLight);
+
+// Trophy Group
+const trophy = new THREE.Group();
+
+// Base - Stacked Cylinders
+const baseGeo1 = new THREE.CylinderGeometry(0.8, 1, 0.4, 32);
+const baseMat = new THREE.MeshPhongMaterial({ color: 0x101415, shininess: 100 });
+const base1 = new THREE.Mesh(baseGeo1, baseMat);
+base1.position.y = -2;
+trophy.add(base1);
+
+const baseGeo2 = new THREE.CylinderGeometry(0.7, 0.8, 0.3, 32);
+const base2 = new THREE.Mesh(baseGeo2, baseMat);
+base2.position.y = -1.65;
+trophy.add(base2);
+
+// Body - Stylized "Atlas" holding the world
+const goldMat = new THREE.MeshPhongMaterial({
+    color: 0xD4AF37,
+    shininess: 100,
+    specular: 0xffffff
+});
+
+const bodyGeo = new THREE.CylinderGeometry(0.4, 0.1, 1.5, 8);
+const body = new THREE.Mesh(bodyGeo, goldMat);
+body.position.y = -0.8;
+trophy.add(body);
+
+// The Globe
+const globeGeo = new THREE.SphereGeometry(0.9, 32, 32);
+const globe = new THREE.Mesh(globeGeo, goldMat);
+globe.position.y = 0.5;
+trophy.add(globe);
+
+// Stylized bands wrapping the trophy
+const ringGeo = new THREE.TorusGeometry(0.7, 0.05, 16, 100);
+const ring1 = new THREE.Mesh(ringGeo, goldMat);
+ring1.rotation.x = Math.PI / 2.5;
+ring1.position.y = -0.5;
+trophy.add(ring1);
+
+const ring2 = new THREE.Mesh(ringGeo, goldMat);
+ring2.rotation.x = -Math.PI / 2.5;
+ring2.position.y = -0.5;
+trophy.add(ring2);
+
+scene.add(trophy);
+
+camera.position.z = 5;
+
+// Animation
+function animate() {
+    requestAnimationFrame(animate);
+    trophy.rotation.y += 0.005;
+    renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+    const w = container.clientWidth || window.innerWidth;
+    const h = container.clientHeight || window.innerHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+});
+
+animate();
+
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_2 -->
+
+        </div>
+    </div>
+</div>
 <div id="teamPopover" class="team-popover" role="tooltip" aria-hidden="true"></div>
 
 <div class="lang-switcher">
