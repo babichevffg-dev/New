@@ -426,6 +426,26 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .ball-icon:hover {
   transform: rotate(20deg) scale(1.1);
 }
+.goal-dropdown-container { position: relative; display: inline-block; vertical-align: middle; margin-left: 8px; }
+.match-ball-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); }
+.match-ball-btn:hover { transform: scale(1.2) rotate(15deg); }
+.goal-dropdown-content {
+  display: none; position: absolute; right: 0; top: 100%; background: rgba(20, 20, 25, 0.95);
+  backdrop-filter: blur(10px); border: 1px solid var(--gold); border-radius: 8px; min-width: 180px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 1000; padding: 8px 0; margin-top: 5px;
+}
+.goal-dropdown-content.show { display: block; animation: fadeInDown 0.2s ease-out; }
+.goal-item {
+  padding: 8px 16px; color: #fff; text-decoration: none; display: flex; align-items: center;
+  gap: 10px; font-size: 0.85rem; transition: background 0.2s; cursor: pointer; white-space: nowrap;
+}
+.goal-item:hover { background: rgba(212, 175, 55, 0.2); }
+.goal-item .ball-small { font-size: 1rem; }
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .events-modal-content { background: var(--bg); border: 1px solid var(--gold); border-radius: 16px; width: min(800px, 95vw); max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
 .events-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
 .events-column { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
@@ -467,7 +487,7 @@ body.admin-active .toolbar { display: flex; }
 }
 .admin-trigger:hover { opacity: 1; }
 @media (max-width: 600px) {
-  .match-row { grid-template-columns: 1fr 38px 10px 38px 1fr auto; font-size: 0.75rem; }
+  .match-row { grid-template-columns: 1fr 38px 10px 38px 1fr auto auto; font-size: 0.75rem; align-items: center; }
   .flag { width: 20px; height: 13px; }
   .score-inp { width: 35px !important; padding: 4px 2px !important; }
   .teams-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
@@ -3668,6 +3688,53 @@ function resolveSlot(slot,memo={}){
 }
 function getWinner(mid){return resolveSlot('W'+mid);}
 
+
+function renderMatchGoals(matchId) {
+  const sc = getScore(matchId);
+  const events = sc.events || [];
+  const goals = events.filter(e => e.type === 'goal' && e.video);
+  if (goals.length === 0) return '';
+
+  const allMatches = [...GROUP_MATCHES, ...KO];
+  const match = allMatches.find(x => x.id === matchId);
+
+  let h = '<div class="goal-dropdown-container">';
+  h += '<button class="match-ball-btn" onclick="toggleGoalDropdown(this); event.stopPropagation();" title="Goals">⚽</button>';
+  h += '<div class="goal-dropdown-content">';
+
+  goals.forEach(ev => {
+    const teamId = ev.side === 'h' ? (match.ko ? resolveSlot(match.h) : match.h) : (match.ko ? resolveSlot(match.a) : match.a);
+    const displayName = getPlayerTranslatedName(ev.playerName, teamId);
+    const minStr = ev.minute ? ` (${ev.minute}')` : '';
+    h += `<div class="goal-item" onclick="playVideo('${ev.video}'); toggleGoalDropdown(null); event.stopPropagation();">`;
+    h += `<span class="ball-small">⚽</span><span>${displayName}${minStr}</span>`;
+    h += '</div>';
+  });
+
+  h += '</div></div>';
+  return h;
+}
+
+function toggleGoalDropdown(btn) {
+  const all = document.querySelectorAll('.goal-dropdown-content');
+  let target = null;
+  if (btn) {
+    target = btn.nextElementSibling;
+  }
+
+  all.forEach(d => {
+    if (d !== target) d.classList.remove('show');
+  });
+
+  if (target) {
+    target.classList.toggle('show');
+  }
+}
+
+window.addEventListener('click', () => {
+  toggleGoalDropdown(null);
+});
+
 function renderStandingsTable(g){
   const T = TRANSLATIONS[currentLang];
   const st=calcGroupStandings(g);
@@ -3725,6 +3792,7 @@ function renderMatchBlock(m,isKo){
   h+='<span>:</span>';
   h+='<input class="score-inp'+filled+'" type="number" min="0" max="20" value="'+(sc.a??'')+'" data-id="'+m.id+'" data-side="a" inputmode="numeric"'+disabled+'>';
   h+='<span class="team-cell away">'+aName+'</span>';
+  h+=renderMatchGoals(m.id);
   if(isKo)h+='<select class="pen-sel" data-id="'+m.id+'" title="' + T.penalty + '"'+disabled+'><option value="">—</option><option value="h"'+(pen==='h'?' selected':'')+'>' + T.pen1 + '</option><option value="a"'+(pen==='a'?' selected':'')+'>' + T.pen2 + '</option></select>';
   if(isAdmin && hId && aId) {
     h+='<button class="event-btn" onclick="openMatchEvents(\''+m.id+'\')" title="'+T.match_events+'" style="background:none;border:none;cursor:pointer;font-size:1.2rem;margin-left:5px;">📝</button>';
