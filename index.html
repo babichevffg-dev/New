@@ -3707,6 +3707,7 @@ function renderMatchGoals(matchId) {
     const displayName = getPlayerTranslatedName(ev.playerName, teamId);
     const minStr = ev.minute ? ` (${ev.minute}')` : '';
     h += `<div class="goal-item" onclick="playVideo('${ev.video}'); toggleGoalDropdown(null); event.stopPropagation();">`;
+    h += flagImg(teamId);
     h += `<span class="ball-small">⚽</span><span>${displayName}${minStr}</span>`;
     h += '</div>';
   });
