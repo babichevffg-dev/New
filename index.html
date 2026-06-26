@@ -325,21 +325,22 @@ header p{color:var(--muted);margin-top:6px;font-size:.95rem}
 .panel{display:none}
 .panel.active{display:block}
 .grid-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%, 360px),1fr));gap:16px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;backdrop-filter:blur(10px)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;backdrop-filter:blur(10px);position:relative}
 .card h3{font-size:1.05rem;margin-bottom:10px;color:var(--gold)}
 .standings{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:12px}
 .standings th,.standings td{padding:5px 4px;text-align:center;border-bottom:1px solid var(--border)}
 .standings th:not(:nth-child(2)), .standings td:not(:nth-child(2)) { width: 1%; white-space: nowrap; }
 @media (max-width: 480px) {
   .standings th, .standings td { padding: 4px 2px; font-size: 0.7rem; }
-  .card { padding: 8px; overflow-x: auto; }
+  .card { padding: 8px; }
 }
 .standings th{color:var(--muted);font-weight:500}
 .standings td:nth-child(2){text-align:left}
 .standings tr.pos1{background:rgba(52,152,219,.35)}
 .standings tr.pos2{background:rgba(52,152,219,.2)}
 .standings tr.pos3{background:rgba(52,152,219,.12)}
-.match-block{border-bottom:1px solid rgba(255,255,255,.08);padding:10px 0}
+.match-block{border-bottom:1px solid rgba(255,255,255,.08);padding:10px 0;position:relative}
+.match-block.active-dropdown{z-index:1001}
 .match-meta{font-size:.78rem;color:var(--muted);margin-bottom:6px;line-height:1.4}
 .match-meta b{color:var(--gold);font-weight:600}
 .match-row{display:grid;grid-template-columns:1fr 45px 15px 45px 1fr auto;gap:4px;align-items:center;font-size:.85rem}
@@ -3718,22 +3719,34 @@ function renderMatchGoals(matchId) {
 
 function toggleGoalDropdown(btn) {
   const all = document.querySelectorAll('.goal-dropdown-content');
+  const allBlocks = document.querySelectorAll('.match-block');
   let target = null;
+  let targetBlock = null;
+
   if (btn) {
     target = btn.nextElementSibling;
+    targetBlock = btn.closest('.match-block');
   }
 
   all.forEach(d => {
     if (d !== target) d.classList.remove('show');
   });
 
+  allBlocks.forEach(b => {
+    if (b !== targetBlock) b.classList.remove('active-dropdown');
+  });
+
   if (target) {
     target.classList.toggle('show');
+    if (targetBlock) {
+      targetBlock.classList.toggle('active-dropdown', target.classList.contains('show'));
+    }
   }
 }
 
 window.addEventListener('click', () => {
   toggleGoalDropdown(null);
+  document.querySelectorAll('.match-block').forEach(b => b.classList.remove('active-dropdown'));
 });
 
 function renderStandingsTable(g){
