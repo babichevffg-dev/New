@@ -3321,8 +3321,8 @@ function getMatchTitle(matchId) {
   const allMatches = [...GROUP_MATCHES, ...KO];
   const m = allMatches.find(x => x.id === matchId);
   if (!m) return matchId;
-  const hId = m.ko ? resolveSlot(m.h) : m.h;
-  const aId = m.ko ? resolveSlot(m.a) : m.a;
+  const hId = resolveSlot(m.h);
+  const aId = resolveSlot(m.a);
   return `${teamNameOnly(hId)} — ${teamNameOnly(aId)}`;
 }
 
@@ -3352,8 +3352,8 @@ function openMatchEvents(matchId) {
   const m = allMatches.find(x => x.id === matchId);
   if (!m) return;
 
-  const hId = m.ko ? resolveSlot(m.h) : m.h;
-  const aId = m.ko ? resolveSlot(m.a) : m.a;
+  const hId = resolveSlot(m.h);
+  const aId = resolveSlot(m.a);
 
   document.getElementById('eventsHomeTeam').textContent = teamNameOnly(hId);
   document.getElementById('eventsAwayTeam').textContent = teamNameOnly(aId);
@@ -3440,7 +3440,7 @@ function renderMatchEventsList() {
     const minStr = ev.minute ? ` (${ev.minute}')` : '';
     const allMatches = [...GROUP_MATCHES, ...KO];
     const match = allMatches.find(x => x.id === currentEventsMatchId);
-    const teamId = ev.side === 'h' ? (match.ko ? resolveSlot(match.h) : match.h) : (match.ko ? resolveSlot(match.a) : match.a);
+    const teamId = ev.side === 'h' ? resolveSlot(match.h) : resolveSlot(match.a);
     const displayName = getPlayerTranslatedName(ev.playerName, teamId);
 
     let videoInput = '';
@@ -3706,7 +3706,7 @@ function renderMatchGoals(matchId) {
   h += '<div class="goal-dropdown-content">';
 
   goals.forEach(ev => {
-    const teamId = ev.side === 'h' ? (match.ko ? resolveSlot(match.h) : match.h) : (match.ko ? resolveSlot(match.a) : match.a);
+    const teamId = ev.side === 'h' ? resolveSlot(match.h) : resolveSlot(match.a);
     const displayName = getPlayerTranslatedName(ev.playerName, teamId);
     const minStr = ev.minute ? ` (${ev.minute}')` : '';
     h += `<div class="goal-item" onclick="playVideo('${ev.video}'); toggleGoalDropdown(null); event.stopPropagation();">`;
@@ -3804,8 +3804,8 @@ function tCity(s){
 function renderMatchBlock(m,isKo){
   const T = TRANSLATIONS[currentLang];
   const sc=getScore(m.id);
-  const hId=isKo?resolveSlot(m.h):m.h;
-  const aId=isKo?resolveSlot(m.a):m.a;
+  const hId=resolveSlot(m.h);
+  const aId=resolveSlot(m.a);
   const hName=hId?teamLabel(hId):'<span class="muted">'+slotLabel(m.h)+'</span>';
   const aName=aId?teamLabel(aId):'<span class="muted">'+slotLabel(m.a)+'</span>';
   const pen=sc.pen||'';
