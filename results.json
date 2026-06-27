@@ -23,7 +23,8 @@
           "side": "h",
           "type": "goal",
           "playerName": "Julián Quiñones",
-          "minute": "9"
+          "minute": "9",
+          "video": "goal_test.mp4"
         },
         {
           "side": "h",
@@ -821,7 +822,7 @@
       ]
     },
     "A6": {
-      "h": 1,
+      "h": 0,
       "a": 1,
       "pen": null,
       "events": [
@@ -854,6 +855,13 @@
           "type": "goal",
           "playerName": "Teboho Mokoena",
           "minute": "83"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Test Player",
+          "minute": "90",
+          "video": "goal_test.mp4"
         }
       ]
     },
