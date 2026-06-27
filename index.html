@@ -3695,6 +3695,7 @@ function renderMatchGoals(matchId) {
   const sc = getScore(matchId);
   const events = sc.events || [];
   const goals = events.filter(e => e.type === 'goal' && e.video);
+  goals.sort((a, b) => (parseInt(a.minute) || 999) - (parseInt(b.minute) || 999));
   if (goals.length === 0) return '';
 
   const allMatches = [...GROUP_MATCHES, ...KO];
