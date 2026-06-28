@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-06-27T07:27:47.142Z",
+  "updatedAt": "2026-06-28T11:53:10.657Z",
   "scores": {
     "A1": {
       "h": 2,
@@ -2617,6 +2617,265 @@
           "playerName": "Ramin Rezaeian",
           "minute": "14",
           "video": "image/184.mp4"
+        }
+      ]
+    },
+    "L5": {
+      "h": 0,
+      "a": 2,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Andres Andrade",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Jarell Quansah",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Jude Bellingham",
+          "minute": "62",
+          "video": "image/185.mp4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Harry Kane",
+          "minute": "67",
+          "video": "image/186.mp4"
+        }
+      ]
+    },
+    "L6": {
+      "h": 2,
+      "a": 1,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Ivan Perišić",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Luka Sučić",
+          "minute": "31",
+          "video": "image/187.mp4"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Nikola Vlašić",
+          "minute": "83",
+          "video": "image/187.mp4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Derrick Luckassen",
+          "minute": "73",
+          "video": "image/188.mp4"
+        }
+      ]
+    },
+    "K5": {
+      "h": 0,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Gustavo Puerta",
+          "minute": "",
+          "video": ""
+        }
+      ]
+    },
+    "K6": {
+      "h": 3,
+      "a": 1,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Noah Sadiki",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Samuel Moutoussamy",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Nathanael Mbuku",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Sherzod Nasrullaev",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Abdukodir Khusanov",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Eldor Shomurodov",
+          "minute": "10",
+          "video": "image/190.mp4"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Yoane Wissa",
+          "minute": "68",
+          "video": "image/191.mp4"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Fiston Mayele",
+          "minute": "78",
+          "video": "image/192.mp4"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Yoane Wissa",
+          "minute": "90+",
+          "video": "image/193.mp4"
+        }
+      ]
+    },
+    "J5": {
+      "h": 3,
+      "a": 3,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Marko Arnautović",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Rafik Belghali",
+          "minute": "45",
+          "video": "image/199.mp4"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Riyad Mahrez",
+          "minute": "60",
+          "video": "image/201.mp4"
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Riyad Mahrez",
+          "minute": "90+",
+          "video": "image/202.mp4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Marko Arnautović",
+          "minute": "28",
+          "video": "image/198.mp4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Marcel Sabitzer",
+          "minute": "55",
+          "video": "image/200.mp4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Sasa Kalajdzic",
+          "minute": "90+",
+          "video": "image/203.mp4"
+        }
+      ]
+    },
+    "J6": {
+      "h": 1,
+      "a": 3,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Yazan Al-Arab",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Mohannad Abutaha",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Mousa Altamari",
+          "minute": "55",
+          "video": "image/196.mp4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Giovani Lo Celso",
+          "minute": "19",
+          "video": "image/194.mp4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Lisandro Martínez",
+          "minute": "31",
+          "video": "image/195.mp4"
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Lionel Messi",
+          "minute": "80",
+          "video": "image/197.mp4"
         }
       ]
     }
