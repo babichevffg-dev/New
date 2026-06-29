@@ -1008,8 +1008,8 @@ body.admin-active .toolbar { display: flex; }
 
 
 /* Playoff Map Styles */
-.map-container { width: 100%; height: auto; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-x: auto; min-height: 1000px; }
-.map-svg { width: 1000px; height: 1000px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); }
+.map-container { width: 100%; height: auto; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-x: auto; min-height: 1000px; position:relative; overflow:hidden; border-radius:12px; }
+.map-svg { width: 1000px; height: 1000px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); position: relative; z-index: 1; }
 .map-path { stroke: rgba(255, 255, 255, 0.1); stroke-width: 2; fill: none; transition: all 0.5s ease; }
 .map-path.active { stroke: var(--primary, #00d4ff); stroke-width: 4; filter: drop-shadow(0 0 8px var(--primary, #00d4ff)); }
 .map-path.final-path { stroke: var(--gold, #ffd700); stroke-width: 5; filter: drop-shadow(0 0 12px var(--gold, #ffd700)); }
@@ -1017,7 +1017,7 @@ body.admin-active .toolbar { display: flex; }
 .map-node circle { transition: all 0.3s ease; fill: rgba(16, 33, 61, 0.9); stroke: rgba(255,255,255,0.2); stroke-width: 2; }
 .map-node:hover circle { stroke: var(--primary); stroke-width: 3; fill: rgba(34, 211, 238, 0.2); }
 .map-team-label { fill: #fff; font-size: 11px; font-weight: 600; text-anchor: middle; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
-.stellar-nebula-bg {
+.stellar-nebula-bg { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; pointer-events: none;
     background: radial-gradient(circle at 20% 30%, rgba(75, 0, 130, 0.4) 0%, transparent 40%),
                 radial-gradient(circle at 80% 70%, rgba(0, 212, 255, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.2) 0%, transparent 60%), #0c0e12;
@@ -42585,174 +42585,31 @@ let SQUADS = {
 
 
 
-
-
-,
-    { id: 'r16', r: 340, ids: ['M89','M90','M93','M94','M91','M92','M95','M96'] },
-    { id: 'qf',  r: 240, ids: ['M97','M98','M99','M100'] },
-    { id: 'sf',  r: 150, ids: ['M101','M102'] },
-    { id: 'f',   r: 70,  ids: ['M104'] }
-  ];
-
-  const getPos = (r, angleDeg) => {
-    const rad = (angleDeg - 90) * Math.PI / 180;
-    return { x: center + r * Math.cos(rad), y: center + r * Math.sin(rad) };
-  };
-
-  let h = '<div class="map-container" style="position:relative; overflow:hidden; border-radius:12px;">';
-  h += '<div class="stellar-nebula-bg" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; pointer-events: none;"></div>';
-  h += `<svg viewBox="0 0 ${size} ${size}" class="map-svg" xmlns="http://www.w3.org/2000/svg" style="position: relative; z-index: 1;">`;
-
-  h += `<defs>
-    <radialGradient id="trophyGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#FFD700" stop-opacity="0.4" />
-      <stop offset="100%" stop-color="transparent" />
-    </radialGradient>
-    <filter id="nodeGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
-  </defs>`;
-
-  h += `<circle cx="${center}" cy="${center}" r="100" fill="url(#trophyGlow)" />`;
-  h += `<g transform="translate(${center}, ${center})">` + trophy_svg + `</g>`;
-
-  for (let ri = 0; ri < structure.length - 1; ri++) {
-    const curr = structure[ri];
-    const next = structure[ri + 1];
-    const step = 360 / curr.ids.length;
-    const nextStep = 360 / next.ids.length;
-
-    curr.ids.forEach((mid, mi) => {
-      const p1 = getPos(curr.r, (mi + 0.5) * step);
-      const nextIdx = Math.floor(mi / 2);
-      const p2 = getPos(next.r, (nextIdx + 0.5) * nextStep);
-      const w = getWinner(mid);
-      h += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="map-path ${w ? 'active' : ''}" />`;
-    });
-  }
-
-  const champ = getWinner('M104');
-  if (champ) {
-     const pF = getPos(structure[4].r, (0 + 0.5) * 360);
-     h += `<line x1="${pF.x}" y1="${pF.y}" x2="${center}" y2="${center}" class="map-path active final-path" />`;
-  }
-
-  structure.forEach((round, ri) => {
-    const step = 360 / round.ids.length;
-    round.ids.forEach((mid, mi) => {
-      const angle = (mi + 0.5) * step;
-      const pos = getPos(round.r, angle);
-      const m = KO.find(x => x.id === mid);
-      const w = getWinner(mid);
-      const hId = resolveSlot(m.h), aId = resolveSlot(m.a);
-
-      let nodeContent = '';
-      if (w) {
-        nodeContent = `<image href="${TEAMS[w].f}" x="-20" y="-20" width="40" height="40" clip-path="inset(0% round 20px)" />`;
-      } else if (hId && aId) {
-        nodeContent = `<image href="${TEAMS[hId].f}" x="-22" y="-15" width="22" height="30" opacity="0.6" />
-                       <image href="${TEAMS[aId].f}" x="0" y="-15" width="22" height="30" opacity="0.6" />`;
-      } else {
-        nodeContent = `<text y="5" font-size="10" fill="var(--muted)" text-anchor="middle" opacity="0.5">${mid}</text>`;
-      }
-
-      h += `<g class="map-node" transform="translate(${pos.x}, ${pos.y})" onclick="viewMatchEvents('${mid}')">
-        <circle r="28" filter="${w ? 'url(#nodeGlow)' : ''}" />
-        ${nodeContent}
-        <text y="45" class="map-team-label" style="display:${round.ids.length > 8 ? 'none' : 'block'}">${w ? (typeof TEAMS[w].n === 'object' ? TEAMS[w].n[currentLang] : TEAMS[w].n) : ''}</text>
-      </g>`;
-    });
-  });
-
-  h += '</svg></div>';
-  panel.innerHTML = h;
-}
-
-
-const TROPHY_SVG = `
-<g id="trophy-group" transform="scale(0.35) translate(-200, -300)">
-  <defs>
-    <linearGradient id="gold_grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
-      <stop offset="20%" style="stop-color:#FFF8DC;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#DAA520;stop-opacity:1" />
-      <stop offset="80%" style="stop-color:#B8860B;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="shine_grad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.8" />
-      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0" />
-    </linearGradient>
-    <filter id="trophy_glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="15" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-  </defs>
-  <circle cx="200" cy="250" r="120" fill="url(#gold_grad)" opacity="0.15" filter="url(#trophy_glow)" />
-  <path d="M120 550 Q200 570 280 550 L290 520 Q200 540 110 520 Z" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="1"/>
-  <path d="M130 520 Q200 535 270 520 L275 490 Q200 505 125 490 Z" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="1"/>
-  <rect x="135" y="500" width="130" height="8" rx="2" fill="#004D40" />
-  <rect x="125" y="530" width="150" height="8" rx="2" fill="#004D40" />
-  <path d="M160 490 Q200 480 240 490 C260 400 280 350 290 280 Q200 300 110 280 C120 350 140 400 160 490 Z" fill="url(#gold_grad)" />
-  <circle cx="200" cy="180" r="85" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="0.5" />
-  <path d="M160 140 Q180 130 200 145 T240 140 M140 180 Q170 190 200 170 T260 190" stroke="#B8860B" stroke-width="2" fill="none" opacity="0.4"/>
-</g>
-`;
+const TROPHY_SVG = `<g id="trophy-group" transform="scale(0.35) translate(-200, -300)"><defs><linearGradient id="gold_grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" /><stop offset="20%" style="stop-color:#FFF8DC;stop-opacity:1" /><stop offset="50%" style="stop-color:#DAA520;stop-opacity:1" /><stop offset="80%" style="stop-color:#B8860B;stop-opacity:1" /><stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" /></linearGradient><linearGradient id="shine_grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.8" /><stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0" /></linearGradient><filter id="trophy_glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="15" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter></defs><circle cx="200" cy="250" r="120" fill="url(#gold_grad)" opacity="0.15" filter="url(#trophy_glow)" /><path d="M120 550 Q200 570 280 550 L290 520 Q200 540 110 520 Z" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="1"/><path d="M130 520 Q200 535 270 520 L275 490 Q200 505 125 490 Z" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="1"/><rect x="135" y="500" width="130" height="8" rx="2" fill="#004D40" /><rect x="125" y="530" width="150" height="8" rx="2" fill="#004D40" /><path d="M160 490 Q200 480 240 490 C260 400 280 350 290 280 Q200 300 110 280 C120 350 140 400 160 490 Z" fill="url(#gold_grad)" /><circle cx="200" cy="180" r="85" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="0.5" /><path d="M160 140 Q180 130 200 145 T240 140 M140 180 Q170 190 200 170 T260 190" stroke="#B8860B" stroke-width="2" fill="none" opacity="0.4"/></g>`;
 
 function viewMatchEvents(matchId) {
   const m = [...GROUP_MATCHES, ...KO].find(x => x.id === matchId);
   if (!m) return;
-  const sc = getScore(matchId);
-  const events = sc.events || [];
-  const hId = resolveSlot(m.h), aId = resolveSlot(m.a);
-  const T = TRANSLATIONS[currentLang];
-
-  let h = `<div style="text-align:center; margin-bottom:20px;">
-    <div style="display:flex; justify-content:center; align-items:center; gap:15px; font-size:1.2rem; font-weight:bold;">
-      ${teamLabel(hId)} <span>${sc.h ?? '-'} : ${sc.a ?? '-'}</span> ${teamLabel(aId)}
-    </div>
-    <div style="color:var(--muted); font-size:0.9rem; margin-top:5px;">${tCity(m.v)} | ${formatKickoff(m.t)}</div>
-  </div>`;
-
-  if (events.length === 0) {
-    h += `<div style="text-align:center; padding:20px; color:var(--muted);">${T.info_unavailable}</div>`;
-  } else {
+  const sc = getScore(matchId), events = sc.events || [], hId = resolveSlot(m.h), aId = resolveSlot(m.a), T = TRANSLATIONS[currentLang];
+  let h = `<div style="text-align:center; margin-bottom:20px;"><div style="display:flex; justify-content:center; align-items:center; gap:15px; font-size:1.2rem; font-weight:bold;">${teamLabel(hId)} <span>${sc.h ?? '-'} : ${sc.a ?? '-'}</span> ${teamLabel(aId)}</div><div style="color:var(--muted); font-size:0.9rem; margin-top:5px;">${tCity(m.v)} | ${formatKickoff(m.t)}</div></div>`;
+  if (events.length === 0) { h += `<div style="text-align:center; padding:20px; color:var(--muted);">${T.info_unavailable}</div>`; }
+  else {
     h += '<div class="events-list-simple" style="max-height:300px; overflow-y:auto; padding-right:10px;">';
     events.sort((a, b) => (parseInt(a.minute) || 0) - (parseInt(b.minute) || 0)).forEach(ev => {
-      const isHome = ev.side === 'h';
-      const icon = { goal: '⚽', yellow: '🟨', red: '🟥' }[ev.type] || '';
-      const tId = isHome ? hId : aId;
-      const pName = getPlayerTranslatedName(ev.playerName, tId);
-      h += `<div style="display:flex; justify-content:${isHome ? 'flex-start' : 'flex-end'}; margin-bottom:8px; align-items:center; gap:10px;">
-        ${isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}
-        <span style="background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
-          ${isHome ? icon + ' ' + pName : pName + ' ' + icon}
-        </span>
-        ${!isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}
-      </div>`;
+      const isHome = ev.side === 'h', icon = { goal: '⚽', yellow: '🟨', red: '🟥' }[ev.type] || '', tId = isHome ? hId : aId, pName = getPlayerTranslatedName(ev.playerName, tId);
+      h += `<div style="display:flex; justify-content:${isHome ? 'flex-start' : 'flex-end'}; margin-bottom:8px; align-items:center; gap:10px;">${isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}<span style="background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">${isHome ? icon + ' ' + pName : pName + ' ' + icon}</span>${!isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}</div>`;
     });
     h += '</div>';
   }
-
-  const modal = document.getElementById('eventsModal');
-  const content = modal.querySelector('.events-modal-content');
-  content.innerHTML = `
-    <div class="modal-header">
-      <h3 style="margin:0;">${T.match_events}</h3>
-      <button class="modal-close" onclick="closeEventsModal()">×</button>
-    </div>
-    <div style="padding:20px;">${h}</div>
-  `;
-  window.closeEventsModal = function() {
-    modal.classList.remove('show');
-  };
+  const modal = document.getElementById('eventsModal'), content = modal.querySelector('.events-modal-content');
+  content.innerHTML = `<div class="modal-header"><h3>${T.match_events}</h3><button class="modal-close" onclick="closeEventsModal()">✕</button></div><div style="padding:20px;">${h}</div>`;
   modal.classList.add('show');
 }
 
 function renderMap() {
-  const T = TRANSLATIONS[currentLang];
-  const panel = document.getElementById('panel8');
+  const T = TRANSLATIONS[currentLang], panel = document.getElementById('panel8');
   if (!panel) return;
-  const size = 1000;
-  const center = size / 2;
+  const size = 1000, center = size / 2;
   const structure = [
     { id: 'r32', r: 440, ids: ['M74','M77','M73','M75','M83','M84','M81','M82','M76','M78','M79','M80','M86','M88','M85','M87'] },
     { id: 'r16', r: 340, ids: ['M89','M90','M93','M94','M91','M92','M95','M96'] },
@@ -42760,66 +42617,31 @@ function renderMap() {
     { id: 'sf',  r: 150, ids: ['M101','M102'] },
     { id: 'f',   r: 70,  ids: ['M104'] }
   ];
-  const getPos = (r, angleDeg) => {
-    const rad = (angleDeg - 90) * Math.PI / 180;
-    return { x: center + r * Math.cos(rad), y: center + r * Math.sin(rad) };
-  };
-  let h = '<div class="map-container" style="position:relative; overflow:hidden; border-radius:12px;">';
-  h += '<div class="stellar-nebula-bg" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; pointer-events: none;"></div>';
-  h += `<svg viewBox="0 0 ${size} ${size}" class="map-svg" xmlns="http://www.w3.org/2000/svg" style="position: relative; z-index: 1;">`;
-  h += `<defs>
-    <radialGradient id="trophyGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#FFD700" stop-opacity="0.4" />
-      <stop offset="100%" stop-color="transparent" />
-    </radialGradient>
-    <filter id="nodeGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
-  </defs>`;
-  h += `<circle cx="${center}" cy="${center}" r="100" fill="url(#trophyGlow)" />`;
-  h += `<g transform="translate(${center}, ${center})">` + TROPHY_SVG + `</g>`;
+  const getPos = (r, angleDeg) => { const rad = (angleDeg - 90) * Math.PI / 180; return { x: center + r * Math.cos(rad), y: center + r * Math.sin(rad) }; };
+  let h = '<div class="map-container"><div class="stellar-nebula-bg"></div>';
+  h += `<svg viewBox="0 0 ${size} ${size}" class="map-svg" xmlns="http://www.w3.org/2000/svg">`;
+  h += `<defs><radialGradient id="trophyGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.4" /><stop offset="100%" stop-color="transparent" /></radialGradient><filter id="nodeGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter></defs>`;
+  h += `<circle cx="${center}" cy="${center}" r="100" fill="url(#trophyGlow)" /><g transform="translate(${center}, ${center})">${TROPHY_SVG}</g>`;
   for (let ri = 0; ri < structure.length - 1; ri++) {
-    const curr = structure[ri];
-    const next = structure[ri + 1];
-    const step = 360 / curr.ids.length;
-    const nextStep = 360 / next.ids.length;
+    const curr = structure[ri], next = structure[ri + 1], step = 360 / curr.ids.length, nextStep = 360 / next.ids.length;
     curr.ids.forEach((mid, mi) => {
-      const p1 = getPos(curr.r, (mi + 0.5) * step);
-      const nextIdx = Math.floor(mi / 2);
-      const p2 = getPos(next.r, (nextIdx + 0.5) * nextStep);
-      const w = getWinner(mid);
-      h += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="map-path ${w ? 'active' : ''}" />`;
+      const p1 = getPos(curr.r, (mi + 0.5) * step), p2 = getPos(next.r, (Math.floor(mi / 2) + 0.5) * nextStep);
+      h += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="map-path ${getWinner(mid) ? 'active' : ''}" />`;
     });
   }
-  const champ = getWinner('M104');
-  if (champ) {
-     const pF = getPos(structure[4].r, 180);
-     h += `<line x1="${pF.x}" y1="${pF.y}" x2="${center}" y2="${center}" class="map-path active final-path" />`;
-  }
+  const winnerFinal = getWinner('M104');
+  if (winnerFinal) h += `<line x1="${getPos(structure[4].r, 180).x}" y1="${getPos(structure[4].r, 180).y}" x2="${center}" y2="${center}" class="map-path active final-path" />`;
   structure.forEach((round, ri) => {
     const step = 360 / round.ids.length;
     round.ids.forEach((mid, mi) => {
-      const angle = (mi + 0.5) * step;
-      const pos = getPos(round.r, angle);
-      const m = KO.find(x => x.id === mid);
-      const w = getWinner(mid);
-      const hId = resolveSlot(m.h), aId = resolveSlot(m.a);
-      let nodeContent = '';
-      if (w) {
-        nodeContent = `<image href="${TEAMS[w].f}" x="-20" y="-20" width="40" height="40" clip-path="inset(0% round 20px)" />`;
-      } else if (hId && aId) {
-        nodeContent = `<image href="${TEAMS[hId].f}" x="-22" y="-15" width="22" height="30" opacity="0.6" />
-                       <image href="${TEAMS[aId].f}" x="0" y="-15" width="22" height="30" opacity="0.6" />`;
-      } else {
-        nodeContent = `<text y="5" font-size="10" fill="var(--muted)" text-anchor="middle" opacity="0.5">${mid}</text>`;
-      }
-      h += `<g class="map-node" transform="translate(${pos.x}, ${pos.y})" onclick="viewMatchEvents('${mid}')">
-        <circle r="28" filter="${w ? 'url(#nodeGlow)' : ''}" />
-        ${nodeContent}
-        <text y="45" class="map-team-label" style="display:${round.ids.length > 8 ? 'none' : 'block'}">${w ? (typeof TEAMS[w].n === 'object' ? TEAMS[w].n[currentLang] : TEAMS[w].n) : ''}</text>
-      </g>`;
+      const pos = getPos(round.r, (mi + 0.5) * step), m = KO.find(x => x.id === mid), w = getWinner(mid), hId = resolveSlot(m.h), aId = resolveSlot(m.a);
+      let nodeContent = w ? `<image href="${TEAMS[w].f}" x="-20" y="-20" width="40" height="40" clip-path="inset(0% round 20px)" />` :
+                        (hId && aId ? `<image href="${TEAMS[hId].f}" x="-22" y="-15" width="22" height="30" opacity="0.6" /><image href="${TEAMS[aId].f}" x="0" y="-15" width="22" height="30" opacity="0.6" />` :
+                        `<text y="5" font-size="10" fill="var(--muted)" text-anchor="middle" opacity="0.5">${mid}</text>`);
+      h += `<g class="map-node" transform="translate(${pos.x}, ${pos.y})" onclick="viewMatchEvents('${mid}')"><circle r="28" filter="${w ? 'url(#nodeGlow)' : ''}" />${nodeContent}<text y="45" class="map-team-label" style="display:${round.ids.length > 8 ? 'none' : 'block'}">${w ? (typeof TEAMS[w].n === 'object' ? TEAMS[w].n[currentLang] : TEAMS[w].n) : ''}</text></g>`;
     });
   });
-  h += '</svg></div>';
-  panel.innerHTML = h;
+  h += '</svg></div>'; panel.innerHTML = h;
 }
 
 function renderTeams(){
