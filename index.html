@@ -1010,9 +1010,9 @@ body.admin-active .toolbar { display: flex; }
 /* Playoff Map Styles */
 .map-container { width: 100%; height: auto; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-x: auto; min-height: 1000px; position:relative; overflow:hidden; border-radius:12px; }
 .map-svg { width: 1000px; height: 1000px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); position: relative; z-index: 1; }
-.map-path { stroke: rgba(255, 255, 255, 0.1); stroke-width: 2; fill: none; transition: all 0.5s ease; }
-.map-path.active { stroke: var(--primary, #00d4ff); stroke-width: 4; filter: drop-shadow(0 0 8px var(--primary, #00d4ff)); }
-.map-path.final-path { stroke: var(--gold, #ffd700); stroke-width: 5; filter: drop-shadow(0 0 12px var(--gold, #ffd700)); }
+.map-path { stroke: rgba(255, 255, 255, 0.4); stroke-width: 4; fill: none; transition: all 0.5s ease; }
+.map-path.active { stroke: var(--primary, #00d4ff); stroke-width: 7; filter: drop-shadow(0 0 12px var(--primary, #00d4ff)); }
+.map-path.final-path { stroke: var(--gold, #ffd700); stroke-width: 9; filter: drop-shadow(0 0 18px var(--gold, #ffd700)); }
 .map-node { cursor: pointer; }
 .map-node circle { transition: all 0.3s ease; fill: rgba(16, 33, 61, 0.9); stroke: rgba(255,255,255,0.2); stroke-width: 2; }
 .map-node:hover circle { stroke: var(--primary); stroke-width: 3; fill: rgba(34, 211, 238, 0.2); }
@@ -42612,7 +42612,7 @@ function renderMap() {
   let h = '<div class="map-container">';
   h += `<svg viewBox="0 0 ${size} ${size}" class="map-svg" xmlns="http://www.w3.org/2000/svg">`;
   h += `<defs><radialGradient id="trophyGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.4" /><stop offset="100%" stop-color="transparent" /></radialGradient><filter id="nodeGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter></defs>`;
-  h += `<circle cx="${center}" cy="${center}" r="100" fill="url(#trophyGlow)" />`; h += `<image href="Кубок.jpg" x="${center-80}" y="${center-80}" width="160" height="160" />`;
+  h += `<circle cx="${center}" cy="${center}" r="250" fill="url(#trophyGlow)" />`; h += `<image href="Кубок.jpg" x="${center-200}" y="${center-200}" width="400" height="400" />`;
   for (let ri = 0; ri < structure.length - 1; ri++) {
     const curr = structure[ri], next = structure[ri + 1], step = 360 / curr.ids.length, nextStep = 360 / next.ids.length;
     curr.ids.forEach((mid, mi) => {
