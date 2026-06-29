@@ -1008,18 +1008,21 @@ body.admin-active .toolbar { display: flex; }
 
 
 /* Playoff Map Styles */
+.map-node circle { transition: all 0.3s ease; fill: rgba(16, 33, 61, 0.9); stroke: rgba(255,255,255,0.2); stroke-width: 2; filter: drop-shadow(0 0 5px rgba(255,255,255,0.1)); }
+.map-node:hover circle { stroke: var(--primary, #00d4ff); stroke-width: 4; fill: rgba(34, 211, 238, 0.2); filter: drop-shadow(0 0 15px var(--primary, #00d4ff)); }
+.map-team-label { fill: #fff; font-size: 11px; font-weight: 600; text-anchor: middle; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.8); opacity: 0; transition: opacity 0.3s ease; }
+.map-node:hover .map-team-label { opacity: 1; }
+
 .map-container { width: 100%; height: auto; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-x: auto; min-height: 1000px; position:relative; overflow:hidden; border-radius:12px; }
 .map-svg { width: 1000px; height: 1000px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); position: relative; z-index: 1; }
 .map-path { stroke: rgba(255, 255, 255, 0.4); stroke-width: 4; fill: none; transition: all 0.5s ease; }
 .map-path.active { stroke: var(--primary, #00d4ff); stroke-width: 7; filter: drop-shadow(0 0 12px var(--primary, #00d4ff)); }
 .map-path.final-path { stroke: var(--gold, #ffd700); stroke-width: 9; filter: drop-shadow(0 0 18px var(--gold, #ffd700)); }
 .map-node { cursor: pointer; }
-.map-node circle { transition: all 0.3s ease; fill: rgba(16, 33, 61, 0.9); stroke: rgba(255,255,255,0.2); stroke-width: 2; }
-.map-node:hover circle { stroke: var(--primary); stroke-width: 3; fill: rgba(34, 211, 238, 0.2); }
-.map-team-label { fill: #fff; font-size: 11px; font-weight: 600; text-anchor: middle; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
 
- to { transform: rotate(360deg); } }
+
+
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1702,7 +1705,7 @@ const TRANSLATIONS = {
     to_short: "(al 1",
     combo_3rd: "Combinación de 3.os",
     formation: "Formación",
-    "map": "Mapa", roadmap: "Ruta de la selección",
+    "map": "Final", roadmap: "Ruta de la selección",
     stadiums: "Estadios",
     place_3rd: "3er puesto",
     final: "Final",
@@ -1805,7 +1808,7 @@ const TRANSLATIONS = {
     to_short: "(vers 1",
     combo_3rd: "Combinaison des 3èmes",
     formation: "Formation",
-    "map": "Carte", roadmap: "Feuille de route",
+    "map": "Finale", roadmap: "Feuille de route",
     stadiums: "Stades",
     place_3rd: "3ème place",
     final: "Finale",
@@ -1908,7 +1911,7 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Harita", "roadmap": "Takım Yol Haritası",
+    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2012,7 +2015,7 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "الخريطة", "roadmap": "مسار الفريق",
+    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2116,7 +2119,7 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Harita", "roadmap": "Takım Yol Haritası",
+    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2222,7 +2225,7 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "الخريطة", "roadmap": "مسار الفريق",
+    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2328,7 +2331,7 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Harita", "roadmap": "Takım Yol Haritası",
+    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2434,7 +2437,7 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "الخريطة", "roadmap": "مسار الفريق",
+    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2540,7 +2543,7 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Harita", "roadmap": "Takım Yol Haritası",
+    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2646,7 +2649,7 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "الخريطة", "roadmap": "مسار الفريق",
+    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2752,7 +2755,7 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Harita", "roadmap": "Takım Yol Haritası",
+    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2857,7 +2860,7 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "الخريطة", "roadmap": "مسار الفريق",
+    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2962,7 +2965,7 @@ const TRANSLATIONS = {
     to_short: "(к 1",
     combo_3rd: "Комбинация третьих",
     formation: "Схема",
-    "map": "Карта", roadmap: "Путь команды",
+    "map": "Финал", roadmap: "Путь команды",
     stadiums: "Стадионы",
     place_3rd: "3-е место",
     final: "Финал",
@@ -3065,7 +3068,7 @@ const TRANSLATIONS = {
     to_short: "(to 1",
     combo_3rd: "3rd combo",
     formation: "Formation",
-    "map": "Map", roadmap: "Team Road Map",
+    "map": "Final", roadmap: "Team Road Map",
     stadiums: "Stadiums",
     place_3rd: "3rd Place",
     final: "Final",
@@ -3168,7 +3171,7 @@ const TRANSLATIONS = {
     to_short: "(对 1",
     combo_3rd: "第三名组合",
     formation: "阵型",
-    "map": "地图", roadmap: "球队路线图",
+    "map": "决赛", roadmap: "球队路线图",
     stadiums: "场馆",
     place_3rd: "季军赛",
     final: "决赛",
@@ -42627,7 +42630,7 @@ function renderMap() {
     round.ids.forEach((mid, mi) => {
       const pos = getPos(round.r, (mi + 0.5) * step), m = KO.find(x => x.id === mid), w = getWinner(mid), hId = resolveSlot(m.h), aId = resolveSlot(m.a);
       let nodeContent = w ? `<image href="${TEAMS[w].f}" x="-20" y="-20" width="40" height="40" clip-path="inset(0% round 20px)" />` :
-                        (hId && aId ? `<image href="${TEAMS[hId].f}" x="-22" y="-15" width="22" height="30" opacity="0.85" /><image href="${TEAMS[aId].f}" x="0" y="-15" width="22" height="30" opacity="0.85" />` :
+                        (hId && aId ? `<image href="${TEAMS[hId].f}" x="-22" y="-15" width="22" height="30" opacity="1.0" /><image href="${TEAMS[aId].f}" x="0" y="-15" width="22" height="30" opacity="1.0" />` :
                         `<text y="5" font-size="10" fill="var(--muted)" text-anchor="middle" opacity="0.5">${mid}</text>`);
       h += `<g class="map-node" transform="translate(${pos.x}, ${pos.y})" onclick="viewMatchEvents('${mid}')"><circle r="28" filter="${w ? 'url(#nodeGlow)' : ''}" />${nodeContent}<text y="45" class="map-team-label" style="display:${round.ids.length > 8 ? 'none' : 'block'}">${w ? (typeof TEAMS[w].n === 'object' ? TEAMS[w].n[currentLang] : TEAMS[w].n) : ''}</text></g>`;
     });
