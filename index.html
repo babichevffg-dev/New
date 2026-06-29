@@ -662,352 +662,33 @@ body.admin-active .toolbar { display: flex; }
   display: inline-block;
 }
 .squad-container { display: grid; grid-template-columns: 1fr 300px; gap: 24px; margin-top: 20px; }
-@media (max-width: 900px) { .squad-container { grid-template-columns: 1fr; } }
-.team-header { text-align: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-.team-header .big-flag { width: 120px; height: 80px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 16px; }
-.team-header h2 { font-size: 2.2rem; color: var(--gold); margin-bottom: 12px; text-shadow: -2px -2px 0 var(--pitch), 2px -2px 0 var(--pitch), -2px 2px 0 var(--pitch), 2px 2px 0 var(--pitch); }
-.team-desc { font-size: 1.05rem; line-height: 1.6; color: var(--text); max-width: 800px; margin: 0 auto; }
-.section-title { font-size: 1.2rem; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-.coach-list { display: flex; flex-direction: column; gap: 12px; }
-.coach-card { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer; transition: 0.2s; }
-.coach-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.1); }
-.coach-info h4 { color: var(--text); margin-bottom: 4px; }
-.coach-info span { font-size: 0.85rem; color: var(--muted); }
-.modal-photo-link { display: block; width: 150px; height: 150px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 3px solid var(--gold); cursor: pointer; transition: 0.3s; }
-.modal-photo-link:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--gold); }
-.modal-photo { width: 100%; height: 100%; object-fit: cover; }
-.photo-slider-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; }
-.slider-btn { background: var(--blue); color: #fff; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-.slider-btn:hover { background: #2980b9; }
-.photo-counter { color: var(--text); font-weight: bold; min-width: 60px; text-align: center; }
-.btn-set-profile { background: #27ae60; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 10px; }
-.btn-set-profile:hover { background: #2ecc71; }
-.social-hint { display: block; text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: -15px; margin-bottom: 20px; }
-.modal-extra { text-align: center; margin-bottom: 20px; font-size: 0.9rem; color: var(--text); }
-.modal-extra div { margin-bottom: 4px; }
-.modal-extra span { color: var(--muted); margin-right: 5px; }
-
-/* Formation Selector */
-.formation-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-.form-btn { padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text); cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-.form-btn.active { background: var(--team-accent, var(--accent)); border-color: #fff; font-weight: 700; }
-
-/* Heritage Badges */
-.heritage-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-.heritage-badge { padding: 4px 8px; background: rgba(241,196,15,0.15); border: 1px solid var(--gold); border-radius: 4px; color: var(--gold); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.3s; }
-.heritage-badge:hover { background: rgba(241,196,15,0.3); transform: scale(1.05); }
-
-/* Radar Chart */
-.radar-container { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
-#playerRadar { background: rgba(0,0,0,0.2); border-radius: 50%; }
-
-/* Kit Toggle */
-
-/* Road Map */
-.road-map { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px; border-left: 3px solid var(--team-accent, var(--accent)); }
-.road-map h4 { font-size: 0.9rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-.road-list { display: flex; flex-wrap: wrap; gap: 12px; }
-.road-item { font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); text-decoration: none; }
-.road-item:hover { color: var(--gold); }
-.road-item i { color: var(--gold); }
-
-/* Pitch Animation */
-.pitch-player { position: absolute; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-/* Tactical Mode Styles */
-.tactical-layout {
-  position: relative;
-  width: 100%;
-  margin: 20px 0;
-}
-.tactical-sidebar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: var(--card);
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  width: 240px;
-  z-index: 100;
-  max-height: 100%;
-  overflow-y: auto;
-}
-@media (max-width: 1024px) {
-  .tactical-sidebar { position: static; width: 100%; margin-bottom: 20px; }
-}
-.tactical-tool-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-.tactical-canvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 1;
-  pointer-events: none;
-}
-.pitch-container.tactical-active .tactical-canvas {
-  pointer-events: auto;
-  cursor: crosshair;
-}
-.pitch-container.tactical-active .pitch-player {
-  z-index: 10;
-  transition: none; /* Disable animation when dragging */
-  touch-action: none;
-}
-
-.pitch-container.tactical-active {
-  touch-action: none;
-}
-.pitch-container.tactical-active .pitch-player:hover {
-  transform: scale(1.1);
-}
-.pitch-player.opponent {
-  width: 24px;
-  height: 24px;
-  background: #e74c3c;
-  font-size: 0.6rem;
-  border-width: 1px;
-}
-.pitch-player.opponent .p-name {
-  font-size: 0.55rem;
-}
-.tactical-select-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  z-index: 100001;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.tactical-select-overlay.show { display: flex; }
-.tactical-select-content {
-  background: var(--bg);
-  border: 1px solid var(--gold);
-  border-radius: 16px;
-  width: min(500px, 100%);
-  max-height: 80vh;
-  overflow-y: auto;
-  padding: 20px;
-}
-.tactical-select-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
-  margin-top: 15px;
-}
-.tactical-select-item {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  padding: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: center;
-  transition: 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-.tactical-select-item:hover { border-color: var(--gold); background: rgba(255,255,255,0.1); }
-.tool-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: 0.2s;
-}
-.tool-btn:hover { background: rgba(255,255,255,0.1); }
-.tool-btn.active {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
-#toggleTacticalMode.active {
-  background: rgba(255,255,255,0.05);
-  border-color: var(--border);
-  color: var(--text);
-}
-.color-picker-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.85rem;
-  margin-top: 5px;
-}
-.color-picker {
-  -webkit-appearance: none;
-  border: none;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  background: none;
-}
-.color-picker::-webkit-color-swatch-wrapper { padding: 0; }
-.color-picker::-webkit-color-swatch { border: 2px solid #fff; border-radius: 50%; }
-
-/* Admin and Squad Styles */
-.admin-edit-row {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.2) !important;
-  margin-bottom: 4px;
-}
-.admin-name-input, .admin-no-input, .admin-pos-select {
-  background: #1b263b;
-  color: #fff;
-  border: 1px solid #f1c40f;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-family: inherit;
-}
-.admin-no-input { width: 50px; text-align: center; margin: 0 5px; }
-.admin-name-input { width: 180px; }
-.admin-pos-select { padding: 3px 6px; }
-
-.admin-del-btn, .admin-info-btn, .admin-add-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 4px 8px;
-  margin-left: 4px;
-  transition: 0.2s;
-  font-family: inherit;
-}
-.admin-del-btn:hover { background: #e74c3c; border-color: #c0392b; }
-.admin-info-btn:hover { background: #3498db; border-color: #2980b9; }
-.admin-add-btn { background: #27ae60; border-color: #2ecc71; font-weight: bold; padding: 2px 10px; font-size: 1.2rem; }
-
-.first-xi-icon {
-  width: 28px;
-  height: 28px;
-  vertical-align: middle;
-  margin-left: 8px;
-  fill: var(--team-accent, #f1c40f);
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
-  transition: transform 0.2s;
-}
-.first-xi-icon:hover {
-  transform: scale(1.1);
-}
-
-@keyframes flagWave {
-  0% { transform: perspective(1000px) rotateY(0deg) rotateZ(0deg) skewY(0deg); filter: brightness(1) contrast(1); box-shadow: -5px 5px 15px rgba(0,0,0,0.3); }
-  25% { transform: perspective(1000px) rotateY(15deg) rotateZ(1deg) skewY(2deg); filter: brightness(1.1) contrast(1.1); box-shadow: -10px 10px 25px rgba(0,0,0,0.2); }
-  50% { transform: perspective(1000px) rotateY(-10deg) rotateZ(-1deg) skewY(-1deg); filter: brightness(0.85) contrast(1.2); box-shadow: -2px 5px 10px rgba(0,0,0,0.4); }
-  75% { transform: perspective(1000px) rotateY(8deg) rotateZ(0.5deg) skewY(1deg); filter: brightness(1.05) contrast(1.05); box-shadow: -8px 8px 20px rgba(0,0,0,0.25); }
-  100% { transform: perspective(1000px) rotateY(0deg) rotateZ(0deg) skewY(0deg); filter: brightness(1) contrast(1); box-shadow: -5px 5px 15px rgba(0,0,0,0.3); }
-}
-.flag, .big-flag, .team-logo-wrapper img, .team-flag {
-  transform-origin: left center;
-  backface-visibility: hidden;
-  transition: transform 0.3s ease;
-}
-/* Big flag: Auto on mobile, Hover on desktop */
-@media (min-width: 901px) {
-  .big-flag:hover {
-    animation: flagWave 3s ease-in-out infinite;
-  }
-}
-@media (max-width: 900px) {
-  .big-flag {
-    animation: flagWave 3s ease-in-out infinite;
-  }
-}
-
-/* Animation on hover/active for different containers */
-.team-card-btn:hover .flag, .team-card-btn:active .flag,
-.team-tip:hover .flag, .team-tip:active .flag,
-.flag:hover, .flag:active,
-.team-flag:hover, .team-flag:active,
-.team-logo-wrapper:hover img, .team-logo-wrapper:active img {
-  animation: flagWave 2s ease-in-out infinite;
-}
-
-/* Slower animation for team-flag specifically on hover */
-.team-flag:hover, .team-flag:active {
-  animation-duration: 2.5s;
-}
-
-[data-theme="stellar"] {
-  --bg: #050505;
-  --card: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.15);
-  --accent: #22d3ee;
-  --gold: #f1c40f;
-  --text: #e5e2e1;
-  --muted: #94a3b8;
-  --pitch: #0f172a;
-}
-[data-theme="stellar"] body {
-  font-family: 'Space Grotesk', sans-serif;
-  background: var(--bg);
-}
-[data-theme="stellar"] .card,
-[data-theme="stellar"] .tab,
-[data-theme="stellar"] .btn {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
-}
-[data-theme="stellar"] .tab.active {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
-  text-shadow: none;
-}
-[data-theme="stellar"] .bg-trophy {
-  display: none;
-}
-#stellar-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  display: none;
-  pointer-events: none;
-}
-[data-theme="stellar"] #stellar-bg {
-  display: block;
-}
 
 
-[data-theme="stellar"]::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-  z-index: 10000;
-  background-size: 100% 4px, 4px 100%;
-  pointer-events: none;
-  opacity: 0.4;
+
+
+    .map-svg {
+        width: 800px; /* Large enough to see details */
+        height: 800px;
+        flex-shrink: 0;
+    }
+    .map-tooltip {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
 }
 
+    .map-svg {
+        width: 160%; /* Make it larger than screen width to allow scrolling/scaling */
+        height: auto;
+        transform-origin: top left;
+        margin: 0 auto;
+    }
+    .map-tooltip {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}
 
-/* Playoff Map Styles */
 .map-tooltip {
     position: fixed;
     display: none;
@@ -1041,6 +722,56 @@ body.admin-active .toolbar { display: flex; }
 
 
 
+
+
+
+/* Playoff Map Styles */
+.map-container {
+    width: 100%; height: auto; display: flex; justify-content: center; align-items: center;
+    padding: 20px; overflow-x: auto; min-height: 1000px; position:relative; overflow:hidden; border-radius:12px;
+}
+.map-svg { width: 1000px; height: 1000px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); position: relative; z-index: 1; }
+.map-path { stroke: rgba(255, 255, 255, 0.4); stroke-width: 4; fill: none; transition: all 0.5s ease; }
+.map-path.active { stroke: var(--primary, #00d4ff); stroke-width: 7; filter: drop-shadow(0 0 12px var(--primary, #00d4ff)); }
+.map-path.final-path { stroke: var(--gold, #ffd700); stroke-width: 9; filter: drop-shadow(0 0 18px var(--gold, #ffd700)); }
+.map-node { cursor: pointer; }
+.map-node circle { transition: all 0.3s ease; fill: rgba(16, 33, 61, 0.9); stroke: rgba(255,255,255,0.2); stroke-width: 2; filter: drop-shadow(0 0 5px rgba(255,255,255,0.1)); }
+.map-node:hover circle { stroke: var(--primary, #00d4ff); stroke-width: 4; fill: rgba(34, 211, 238, 0.2); filter: drop-shadow(0 0 15px var(--primary, #00d4ff)); }
+.map-team-label { fill: #fff; font-size: 11px; font-weight: 600; text-anchor: middle; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.8); opacity: 0; transition: opacity 0.3s ease; }
+.map-node:hover .map-team-label { opacity: 1; }
+
+.map-tooltip {
+    position: fixed; display: none; background: rgba(10, 25, 49, 0.85); backdrop-filter: blur(12px);
+    border: 1px solid var(--primary, #00d4ff); border-radius: 8px; padding: 10px 15px; color: #fff;
+    z-index: 200000; pointer-events: none; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 212, 255, 0.2);
+    font-weight: 600; font-size: 14px; white-space: nowrap;
+}
+.map-tooltip-team { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+
+
+@media (max-width: 900px) {
+    .map-container {
+        padding: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
+        max-height: 80vh !important;
+        margin-top: -15px !important; /* Pull it up towards the tabs */
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
+        overflow: auto !important;
+        background: transparent !important;
+    }
+    .map-svg {
+        width: 900px !important; /* 2-3x bigger feeling than standard mobile width */
+        height: 900px !important;
+        flex-shrink: 0;
+        margin: 0 !important;
+    }
+    .map-tooltip {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}
 
 
 </style>
@@ -42662,6 +42393,26 @@ function hideMapTooltip() {
   tooltip.style.display = 'none';
 }
 
+
+
+
+let lastTap = 0;
+function handleMapNodeClick(mid, e) {
+  const currentTime = new Date().getTime();
+  const tapLength = currentTime - lastTap;
+  const isMobile = window.innerWidth <= 900;
+  if (tapLength < 300 && tapLength > 0) {
+    const m = KO.find(x => x.id === mid), w = getWinner(mid), hId = resolveSlot(m.h), aId = resolveSlot(m.a);
+    const targetTeam = w || hId || aId;
+    if (targetTeam) goToTeam(targetTeam);
+    hideMapTooltip(); e.preventDefault();
+  } else {
+    if (isMobile) { showMapTooltip(mid, e); setTimeout(hideMapTooltip, 5000); }
+    else { viewMatchEvents(mid); }
+  }
+  lastTap = currentTime;
+}
+
 function renderMap() {
   const T = TRANSLATIONS[currentLang], panel = document.getElementById('panel8');
   if (!panel) return;
@@ -42694,7 +42445,7 @@ function renderMap() {
       let nodeContent = w ? `<image href="${TEAMS[w].f}" x="-20" y="-20" width="40" height="40" clip-path="inset(0% round 20px)" />` :
                         (hId && aId ? `<image href="${TEAMS[hId].f}" x="-22" y="-15" width="22" height="30" opacity="1.0" /><image href="${TEAMS[aId].f}" x="0" y="-15" width="22" height="30" opacity="1.0" />` :
                         `<text y="5" font-size="10" fill="var(--muted)" text-anchor="middle" opacity="0.5">${mid}</text>`);
-      h += `<g class="map-node" transform="translate(${pos.x}, ${pos.y})" onclick="viewMatchEvents('${mid}')" onmouseenter="showMapTooltip('${mid}', event)" onmouseleave="hideMapTooltip()"><circle r="28" filter="${w ? 'url(#nodeGlow)' : ''}" />${nodeContent}<text y="45" class="map-team-label" style="display:${round.ids.length > 8 ? 'none' : 'block'}">${w ? (typeof TEAMS[w].n === 'object' ? TEAMS[w].n[currentLang] : TEAMS[w].n) : ''}</text></g>`;
+      h += `<g class="map-node" transform="translate(${pos.x}, ${pos.y})" onclick="handleMapNodeClick('${mid}', event)" onmouseenter="if(window.innerWidth > 900) showMapTooltip('${mid}', event)" onmouseleave="if(window.innerWidth > 900) hideMapTooltip()"><circle r="28" filter="${w ? 'url(#nodeGlow)' : ''}" />${nodeContent}<text y="45" class="map-team-label" style="display:${round.ids.length > 8 ? 'none' : 'block'}">${w ? (typeof TEAMS[w].n === 'object' ? TEAMS[w].n[currentLang] : TEAMS[w].n) : ''}</text></g>`;
     });
   });
   h += '</svg></div>'; panel.innerHTML = h;
