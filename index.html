@@ -666,45 +666,15 @@ body.admin-active .toolbar { display: flex; }
 
 
 
-    .map-svg {
-        width: 800px; /* Large enough to see details */
-        height: 800px;
-        flex-shrink: 0;
-    }
-    .map-tooltip {
-        padding: 8px 10px;
-        font-size: 12px;
-    }
+
+
 }
 
-    .map-svg {
-        width: 160%; /* Make it larger than screen width to allow scrolling/scaling */
-        height: auto;
-        transform-origin: top left;
-        margin: 0 auto;
-    }
-    .map-tooltip {
-        padding: 8px 10px;
-        font-size: 12px;
-    }
+
+
 }
 
-.map-tooltip {
-    position: fixed;
-    display: none;
-    background: rgba(10, 25, 49, 0.85);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--primary, #00d4ff);
-    border-radius: 8px;
-    padding: 10px 15px;
-    color: #fff;
-    z-index: 200000;
-    pointer-events: none;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 212, 255, 0.2);
-    font-weight: 600;
-    font-size: 14px;
-    white-space: nowrap;
-}
+
 .map-tooltip-team { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .map-tooltip-team:last-child { margin-bottom: 0; }
 
@@ -713,8 +683,8 @@ body.admin-active .toolbar { display: flex; }
 .map-team-label { fill: #fff; font-size: 11px; font-weight: 600; text-anchor: middle; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.8); opacity: 0; transition: opacity 0.3s ease; }
 .map-node:hover .map-team-label { opacity: 1; }
 
-.map-container { width: 100%; height: auto; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-x: auto; min-height: 1000px; position:relative; overflow:hidden; border-radius:12px; }
-.map-svg { width: 1000px; height: 1000px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); position: relative; z-index: 1; }
+
+
 .map-path { stroke: rgba(255, 255, 255, 0.4); stroke-width: 4; fill: none; transition: all 0.5s ease; }
 .map-path.active { stroke: var(--primary, #00d4ff); stroke-width: 7; filter: drop-shadow(0 0 12px var(--primary, #00d4ff)); }
 .map-path.final-path { stroke: var(--gold, #ffd700); stroke-width: 9; filter: drop-shadow(0 0 18px var(--gold, #ffd700)); }
@@ -726,54 +696,149 @@ body.admin-active .toolbar { display: flex; }
 
 
 /* Playoff Map Styles */
-.map-container {
-    width: 100%; height: auto; display: flex; justify-content: center; align-items: center;
-    padding: 20px; overflow-x: auto; min-height: 1000px; position:relative; overflow:hidden; border-radius:12px;
+/* Playoff Map Styles (Exact Bracket Style) */
+.map-outer-container {
+  width: 100%;
+  overflow-x: auto;
+  padding: 40px 0;
+  background: #000;
+  min-height: 1000px;
+  display: flex;
+  justify-content: center;
+  position: relative;
 }
-.map-svg { width: 1000px; height: 1000px; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); position: relative; z-index: 1; }
-.map-path { stroke: rgba(255, 255, 255, 0.4); stroke-width: 4; fill: none; transition: all 0.5s ease; }
-.map-path.active { stroke: var(--primary, #00d4ff); stroke-width: 7; filter: drop-shadow(0 0 12px var(--primary, #00d4ff)); }
-.map-path.final-path { stroke: var(--gold, #ffd700); stroke-width: 9; filter: drop-shadow(0 0 18px var(--gold, #ffd700)); }
-.map-node { cursor: pointer; }
-.map-node circle { transition: all 0.3s ease; fill: rgba(16, 33, 61, 0.9); stroke: rgba(255,255,255,0.2); stroke-width: 2; filter: drop-shadow(0 0 5px rgba(255,255,255,0.1)); }
-.map-node:hover circle { stroke: var(--primary, #00d4ff); stroke-width: 4; fill: rgba(34, 211, 238, 0.2); filter: drop-shadow(0 0 15px var(--primary, #00d4ff)); }
-.map-team-label { fill: #fff; font-size: 11px; font-weight: 600; text-anchor: middle; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.8); opacity: 0; transition: opacity 0.3s ease; }
-.map-node:hover .map-team-label { opacity: 1; }
-
-.map-tooltip {
-    position: fixed; display: none; background: rgba(10, 25, 49, 0.85); backdrop-filter: blur(12px);
-    border: 1px solid var(--primary, #00d4ff); border-radius: 8px; padding: 10px 15px; color: #fff;
-    z-index: 200000; pointer-events: none; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 212, 255, 0.2);
-    font-weight: 600; font-size: 14px; white-space: nowrap;
+.bracket-wrapper {
+  position: relative;
+  width: 1600px;
+  height: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
 }
-.map-tooltip-team { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.bracket-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  z-index: 2;
+}
+.bracket-node {
+  width: 130px;
+  height: 38px;
+  background: #000;
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+.bracket-node:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+  transform: scale(1.08);
+  border-width: 3px;
+}
+.bracket-node.empty {
+  border-color: rgba(0, 255, 0, 0.15);
+  box-shadow: none;
+  background: rgba(255,255,255,0.02);
+}
+.bracket-flag {
+  width: 26px;
+  height: 18px;
+  object-fit: cover;
+  margin-right: 8px;
+  border-radius: 3px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+.bracket-name {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 5px rgba(0,0,0,0.8);
+}
+.bracket-score {
+  margin-left: auto;
+  color: #00ff00;
+  font-weight: 900;
+  font-size: 15px;
+  text-shadow: 0 0 10px rgba(0,255,0,0.5);
+}
 
+.bracket-center {
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -60px;
+}
+.bracket-logo-container {
+  margin-bottom: 25px;
+  text-align: center;
+}
+.bracket-logo-container img {
+    height: 130px;
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.6));
+}
+.bracket-title-main {
+  color: #00ff00;
+  font-size: 48px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  text-shadow: 0 0 25px rgba(0, 255, 0, 1);
+  font-family: 'Impact', sans-serif;
+}
+.bracket-title-sub {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 800;
+  margin: -5px 0 30px;
+  letter-spacing: 1px;
+}
+.bracket-trophy-img {
+  width: 350px;
+  filter: drop-shadow(0 0 50px rgba(0, 255, 0, 0.5));
+}
 
+.bracket-svg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.bracket-line {
+  fill: none;
+  stroke: rgba(0, 255, 0, 0.25);
+  stroke-width: 3;
+}
+.bracket-line.active {
+  stroke: #00ff00;
+  stroke-width: 5;
+  filter: drop-shadow(0 0 12px #00ff00);
+}
+
+@media (max-width: 1200px) {
+  .bracket-wrapper { transform: scale(0.75); transform-origin: center center; }
+}
 @media (max-width: 900px) {
-    .map-container {
-        padding: 0 !important;
-        min-height: auto !important;
-        height: auto !important;
-        max-height: 80vh !important;
-        margin-top: -15px !important; /* Pull it up towards the tabs */
-        justify-content: flex-start !important;
-        align-items: flex-start !important;
-        overflow: auto !important;
-        background: transparent !important;
-    }
-    .map-svg {
-        width: 900px !important; /* 2-3x bigger feeling than standard mobile width */
-        height: 900px !important;
-        flex-shrink: 0;
-        margin: 0 !important;
-    }
-    .map-tooltip {
-        padding: 8px 10px;
-        font-size: 12px;
-    }
+  .bracket-wrapper { transform: scale(0.55); transform-origin: top left; width: 1600px; }
+  .map-outer-container { justify-content: flex-start; }
 }
-
-
+/* END Playoff Map Styles */
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1393,6 +1458,7 @@ let currentTacticalTool = 'brush';
 let currentTacticalColor = '#f1c40f';
 const TRANSLATIONS = {
   es: {
+    "map": "Mapa", "roadmap": "Ruta de la selección",
     born: "Nacido:",
     club: "Club:",
     title: "Copa Mundial de la FIFA 2026",
@@ -1456,7 +1522,6 @@ const TRANSLATIONS = {
     to_short: "(al 1",
     combo_3rd: "Combinación de 3.os",
     formation: "Formación",
-    "map": "Final", roadmap: "Ruta de la selección",
     stadiums: "Estadios",
     place_3rd: "3er puesto",
     final: "Final",
@@ -1496,6 +1561,7 @@ const TRANSLATIONS = {
     social_hint: "Haz clic en la foto para redes sociales"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
+    "map": "Carte", "roadmap": "Feuille de route",
     born: "Né le:",
     club: "Club:",
     title: "Coupe du Monde de la FIFA 2026",
@@ -1559,7 +1625,6 @@ const TRANSLATIONS = {
     to_short: "(vers 1",
     combo_3rd: "Combinaison des 3èmes",
     formation: "Formation",
-    "map": "Finale", roadmap: "Feuille de route",
     stadiums: "Stades",
     place_3rd: "3ème place",
     final: "Finale",
@@ -1599,6 +1664,7 @@ const TRANSLATIONS = {
     social_hint: "Cliquez sur la photo pour les réseaux sociaux"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   tr: {
+    "map": "Harita", "roadmap": "Takım Yol Haritası",
     "born": "Doğum:",
     "club": "Kulüp:",
     "title": "FIFA Dünya Kupası 2026",
@@ -1662,7 +1728,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -1703,6 +1768,7 @@ const TRANSLATIONS = {
     "coaches": "Teknik Ekip",
     "description": "Takım Hakkında", coaches: "Teknik Ekip"},
   ar: {
+    "map": "الخريطة", "roadmap": "مسار الفريق",
     "born": "ولد في:",
     "club": "النادي:",
     "title": "كأس العالم فيفا 2026",
@@ -1766,7 +1832,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -1870,7 +1935,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -1976,7 +2040,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2082,7 +2145,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2188,7 +2250,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2294,7 +2355,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2400,7 +2460,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2506,7 +2565,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "map": "Final", "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2611,7 +2669,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "map": "النهائي", "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2653,6 +2710,7 @@ const TRANSLATIONS = {
     "description": "عن الفريق", coaches: "الجهاز الفني"
 },
   ru: {
+    "map": "Карта", "roadmap": "Путь команды",
     born: "Родился:",
     club: "Клуб:",
     title: "Чемпионат мира FIFA 2026",
@@ -2716,7 +2774,6 @@ const TRANSLATIONS = {
     to_short: "(к 1",
     combo_3rd: "Комбинация третьих",
     formation: "Схема",
-    "map": "Финал", roadmap: "Путь команды",
     stadiums: "Стадионы",
     place_3rd: "3-е место",
     final: "Финал",
@@ -2756,6 +2813,7 @@ const TRANSLATIONS = {
     social_hint: "Нажмите на фото для соцсетей"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
+    "map": "Map", "roadmap": "Team Road Map",
     born: "Born:",
     club: "Club:",
     title: "FIFA World Cup 2026",
@@ -2819,7 +2877,6 @@ const TRANSLATIONS = {
     to_short: "(to 1",
     combo_3rd: "3rd combo",
     formation: "Formation",
-    "map": "Final", roadmap: "Team Road Map",
     stadiums: "Stadiums",
     place_3rd: "3rd Place",
     final: "Final",
@@ -2859,6 +2916,7 @@ const TRANSLATIONS = {
     social_hint: "Click photo for Social Media"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
+    "map": "地图", "roadmap": "球队路线图",
     born: "出生日期:",
     club: "俱乐部:",
     title: "2026年国际足联世界杯",
@@ -2922,7 +2980,6 @@ const TRANSLATIONS = {
     to_short: "(对 1",
     combo_3rd: "第三名组合",
     formation: "阵型",
-    "map": "决赛", roadmap: "球队路线图",
     stadiums: "场馆",
     place_3rd: "季军赛",
     final: "决赛",
@@ -2973,7 +3030,7 @@ async function load(){
         if (d.squads) SQUADS = d.squads; scores = d.scores;
         showStatus(TRANSLATIONS[currentLang].loaded + ' (DB) ' + (d.updatedAt ? new Date(d.updatedAt).toLocaleString(currentLang) : ''), true);
         return;
-      }
+  }
     }
   } catch(e) {}
 
@@ -3597,6 +3654,16 @@ function renderMatchBlock(m,isKo){
   return h;
 }
 
+
+let mapLastTap = 0;
+
+
+
+
+
+
+
+
 function buildUI(){
   const T = TRANSLATIONS[currentLang];
 
@@ -3620,7 +3687,7 @@ function buildUI(){
     const b=document.createElement('button');
     b.className='tab'+(i===activeTab?' active':'');
     b.textContent=t;b.dataset.tab=i;
-    b.onclick=()=>{activeTab=i;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('panel'+i).classList.add('active')};
+    b.onclick=()=>{activeTab=i;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('panel'+i).classList.add('active'); if(i===8) setTimeout(drawBracketLines, 100);};
     tabEl.appendChild(b);
     const p=document.createElement('div');
     p.className='panel'+(i===activeTab?' active':'');
@@ -42330,63 +42397,12 @@ let SQUADS = {
 
 
 
-const TROPHY_SVG = `<g id="trophy-group" transform="scale(0.35) translate(-200, -300)"><defs><linearGradient id="gold_grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" /><stop offset="20%" style="stop-color:#FFF8DC;stop-opacity:1" /><stop offset="50%" style="stop-color:#DAA520;stop-opacity:1" /><stop offset="80%" style="stop-color:#B8860B;stop-opacity:1" /><stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" /></linearGradient><linearGradient id="shine_grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.8" /><stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0" /></linearGradient><filter id="trophy_glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="15" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter></defs><circle cx="200" cy="250" r="120" fill="url(#gold_grad)" opacity="0.15" filter="url(#trophy_glow)" /><path d="M120 550 Q200 570 280 550 L290 520 Q200 540 110 520 Z" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="1"/><path d="M130 520 Q200 535 270 520 L275 490 Q200 505 125 490 Z" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="1"/><rect x="135" y="500" width="130" height="8" rx="2" fill="#004D40" /><rect x="125" y="530" width="150" height="8" rx="2" fill="#004D40" /><path d="M160 490 Q200 480 240 490 C260 400 280 350 290 280 Q200 300 110 280 C120 350 140 400 160 490 Z" fill="url(#gold_grad)" /><circle cx="200" cy="180" r="85" fill="url(#gold_grad)" stroke="#B8860B" stroke-width="0.5" /><path d="M160 140 Q180 130 200 145 T240 140 M140 180 Q170 190 200 170 T260 190" stroke="#B8860B" stroke-width="2" fill="none" opacity="0.4"/></g>`;
-
-function viewMatchEvents(matchId) {
-  const m = [...GROUP_MATCHES, ...KO].find(x => x.id === matchId);
-  if (!m) return;
-  const sc = getScore(matchId), events = sc.events || [], hId = resolveSlot(m.h), aId = resolveSlot(m.a), T = TRANSLATIONS[currentLang];
-  let h = `<div style="text-align:center; margin-bottom:20px;"><div style="display:flex; justify-content:center; align-items:center; gap:15px; font-size:1.2rem; font-weight:bold;">${teamLabel(hId)} <span>${sc.h ?? '-'} : ${sc.a ?? '-'}</span> ${teamLabel(aId)}</div><div style="color:var(--muted); font-size:0.9rem; margin-top:5px;">${tCity(m.v)} | ${formatKickoff(m.t)}</div></div>`;
-  if (events.length === 0) { h += `<div style="text-align:center; padding:20px; color:var(--muted);">${T.info_unavailable}</div>`; }
-  else {
-    h += '<div class="events-list-simple" style="max-height:300px; overflow-y:auto; padding-right:10px;">';
-    events.sort((a, b) => (parseInt(a.minute) || 0) - (parseInt(b.minute) || 0)).forEach(ev => {
-      const isHome = ev.side === 'h', icon = { goal: '⚽', yellow: '🟨', red: '🟥' }[ev.type] || '', tId = isHome ? hId : aId, pName = getPlayerTranslatedName(ev.playerName, tId);
-      h += `<div style="display:flex; justify-content:${isHome ? 'flex-start' : 'flex-end'}; margin-bottom:8px; align-items:center; gap:10px;">${isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}<span style="background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">${isHome ? icon + ' ' + pName : pName + ' ' + icon}</span>${!isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}</div>`;
-    });
-    h += '</div>';
-  }
-  const modal = document.getElementById('eventsModal'), content = modal.querySelector('.events-modal-content');
-  content.innerHTML = `<div class="modal-header"><h3>${T.match_events}</h3><button class="modal-close" onclick="closeEventsModal()">✕</button></div><div style="padding:20px;">${h}</div>`;
-  modal.classList.add('show');
-}
 
 
-function showMapTooltip(mid, e) {
-  const m = KO.find(x => x.id === mid);
-  if (!m) return;
-  const w = getWinner(mid);
-  const hId = resolveSlot(m.h), aId = resolveSlot(m.a);
-  const tooltip = document.getElementById('mapTooltip');
 
-  let h = '';
-  if (w) {
-    const name = typeof TEAMS[w].n === 'object' ? TEAMS[w].n[currentLang] : TEAMS[w].n;
-    h = `<div class="map-tooltip-team">${flagImg(w, 20)} ${name}</div>`;
-  } else if (hId || aId) {
-    if (hId) {
-      const nH = typeof TEAMS[hId].n === 'object' ? TEAMS[hId].n[currentLang] : TEAMS[hId].n;
-      h += `<div class="map-tooltip-team">${flagImg(hId, 20)} ${nH}</div>`;
-    }
-    if (aId) {
-      const nA = typeof TEAMS[aId].n === 'object' ? TEAMS[aId].n[currentLang] : TEAMS[aId].n;
-      h += `<div class="map-tooltip-team">${flagImg(aId, 20)} ${nA}</div>`;
-    }
-  } else {
-    h = `<div style="opacity:0.6;">${mid}</div>`;
-  }
 
-  tooltip.innerHTML = h;
-  tooltip.style.display = 'block';
 
-  const moveTooltip = (ev) => {
-    tooltip.style.left = (ev.clientX + 15) + 'px';
-    tooltip.style.top = (ev.clientY + 15) + 'px';
-  };
 
-  moveTooltip(e);
-  e.target.onmousemove = moveTooltip;
-}
 
 function hideMapTooltip() {
   const tooltip = document.getElementById('mapTooltip');
@@ -42397,59 +42413,8 @@ function hideMapTooltip() {
 
 
 let lastTap = 0;
-function handleMapNodeClick(mid, e) {
-  const currentTime = new Date().getTime();
-  const tapLength = currentTime - lastTap;
-  const isMobile = window.innerWidth <= 900;
-  if (tapLength < 300 && tapLength > 0) {
-    const m = KO.find(x => x.id === mid), w = getWinner(mid), hId = resolveSlot(m.h), aId = resolveSlot(m.a);
-    const targetTeam = w || hId || aId;
-    if (targetTeam) goToTeam(targetTeam);
-    hideMapTooltip(); e.preventDefault();
-  } else {
-    if (isMobile) { showMapTooltip(mid, e); setTimeout(hideMapTooltip, 5000); }
-    else { viewMatchEvents(mid); }
-  }
-  lastTap = currentTime;
-}
 
-function renderMap() {
-  const T = TRANSLATIONS[currentLang], panel = document.getElementById('panel8');
-  if (!panel) return;
-  const size = 1000, center = size / 2;
-  const structure = [
-    { id: 'r32', r: 440, ids: ['M74','M77','M73','M75','M83','M84','M81','M82','M76','M78','M79','M80','M86','M88','M85','M87'] },
-    { id: 'r16', r: 340, ids: ['M89','M90','M93','M94','M91','M92','M95','M96'] },
-    { id: 'qf',  r: 240, ids: ['M97','M98','M99','M100'] },
-    { id: 'sf',  r: 150, ids: ['M101','M102'] },
-    { id: 'f',   r: 70,  ids: ['M104'] }
-  ];
-  const getPos = (r, angleDeg) => { const rad = (angleDeg - 90) * Math.PI / 180; return { x: center + r * Math.cos(rad), y: center + r * Math.sin(rad) }; };
-  let h = '<div class="map-container">';
-  h += `<svg viewBox="0 0 ${size} ${size}" class="map-svg" xmlns="http://www.w3.org/2000/svg">`;
-  h += `<defs><radialGradient id="trophyGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.4" /><stop offset="100%" stop-color="transparent" /></radialGradient><filter id="nodeGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter></defs>`;
-  h += `<circle cx="${center}" cy="${center}" r="250" fill="url(#trophyGlow)" />`; h += `<image href="Кубок.jpg" x="${center-200}" y="${center-200}" width="400" height="400" />`;
-  for (let ri = 0; ri < structure.length - 1; ri++) {
-    const curr = structure[ri], next = structure[ri + 1], step = 360 / curr.ids.length, nextStep = 360 / next.ids.length;
-    curr.ids.forEach((mid, mi) => {
-      const p1 = getPos(curr.r, (mi + 0.5) * step), p2 = getPos(next.r, (Math.floor(mi / 2) + 0.5) * nextStep);
-      h += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="map-path ${getWinner(mid) ? 'active' : ''}" />`;
-    });
-  }
-  const winnerFinal = getWinner('M104');
-  if (winnerFinal) h += `<line x1="${getPos(structure[4].r, 180).x}" y1="${getPos(structure[4].r, 180).y}" x2="${center}" y2="${center}" class="map-path active final-path" />`;
-  structure.forEach((round, ri) => {
-    const step = 360 / round.ids.length;
-    round.ids.forEach((mid, mi) => {
-      const pos = getPos(round.r, (mi + 0.5) * step), m = KO.find(x => x.id === mid), w = getWinner(mid), hId = resolveSlot(m.h), aId = resolveSlot(m.a);
-      let nodeContent = w ? `<image href="${TEAMS[w].f}" x="-20" y="-20" width="40" height="40" clip-path="inset(0% round 20px)" />` :
-                        (hId && aId ? `<image href="${TEAMS[hId].f}" x="-22" y="-15" width="22" height="30" opacity="1.0" /><image href="${TEAMS[aId].f}" x="0" y="-15" width="22" height="30" opacity="1.0" />` :
-                        `<text y="5" font-size="10" fill="var(--muted)" text-anchor="middle" opacity="0.5">${mid}</text>`);
-      h += `<g class="map-node" transform="translate(${pos.x}, ${pos.y})" onclick="handleMapNodeClick('${mid}', event)" onmouseenter="if(window.innerWidth > 900) showMapTooltip('${mid}', event)" onmouseleave="if(window.innerWidth > 900) hideMapTooltip()"><circle r="28" filter="${w ? 'url(#nodeGlow)' : ''}" />${nodeContent}<text y="45" class="map-team-label" style="display:${round.ids.length > 8 ? 'none' : 'block'}">${w ? (typeof TEAMS[w].n === 'object' ? TEAMS[w].n[currentLang] : TEAMS[w].n) : ''}</text></g>`;
-    });
-  });
-  h += '</svg></div>'; panel.innerHTML = h;
-}
+
 
 function renderTeams(){
   if(selectedTeamId) {
@@ -44233,5 +44198,267 @@ document.addEventListener('click', function startMusicOnFirstClick() {
 })();
 </script>
 
+
+<script>
+let mapLastTap = 0;
+
+function viewMatchEvents(matchId) {
+  const m = [...GROUP_MATCHES, ...KO].find(x => x.id === matchId);
+  if (!m) return;
+  const sc = getScore(matchId), events = sc.events || [], hId = resolveSlot(m.h), aId = resolveSlot(m.a), T = TRANSLATIONS[currentLang];
+  let h = `<div style="text-align:center; margin-bottom:20px;"><div style="display:flex; justify-content:center; align-items:center; gap:15px; font-size:1.2rem; font-weight:bold;">${teamLabel(hId)} <span>${sc.h ?? '-'} : ${sc.a ?? '-'}</span> ${teamLabel(aId)}</div><div style="color:var(--muted); font-size:0.9rem; margin-top:5px;">${tCity(m.v)} | ${formatKickoff(m.t)}</div></div>`;
+  if (events.length === 0) { h += `<div style="text-align:center; padding:20px; color:var(--muted);">${T.info_unavailable}</div>`; }
+  else {
+    h += '<div class="events-list-simple" style="max-height:300px; overflow-y:auto; padding-right:10px;">';
+    events.sort((a, b) => (parseInt(a.minute) || 0) - (parseInt(b.minute) || 0)).forEach(ev => {
+      const isHome = ev.side === 'h', icon = { goal: '⚽', yellow: '🟨', red: '🟥' }[ev.type] || '', tId = isHome ? hId : aId, pName = getPlayerTranslatedName(ev.playerName, tId);
+      h += `<div style="display:flex; justify-content:${isHome ? 'flex-start' : 'flex-end'}; margin-bottom:8px; align-items:center; gap:10px;">${isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}<span style="background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">${isHome ? icon + ' ' + pName : pName + ' ' + icon}</span>${!isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}</div>`;
+    });
+    h += '</div>';
+  }
+  const modal = document.getElementById('eventsModal'), contentM = modal.querySelector('.events-modal-content');
+  contentM.innerHTML = `<div class="modal-header"><h3>${T.match_events}</h3><button class="modal-close" onclick="closeEventsModal()">✕</button></div><div style="padding:20px;">${h}</div>`;
+  modal.classList.add('show');
+}
+
+
+
+
+
+
+function renderMap() {
+  const container = document.getElementById('panel8');
+  if (!container) return;
+  const T = TRANSLATIONS[currentLang];
+
+  container.innerHTML = `
+    <div class="map-outer-container">
+      <div class="map-hint-text">${T.map_hint || 'Double click team to go to squad'}</div>
+      <div class="bracket-wrapper" id="bracketWrapper">
+        <svg class="bracket-svg-layer" id="bracketSvg"></svg>
+
+        <div class="bracket-column" id="col-L1"></div>
+        <div class="bracket-column" id="col-L2"></div>
+        <div class="bracket-column" id="col-L3"></div>
+        <div class="bracket-column" id="col-L4"></div>
+
+        <div class="bracket-center">
+            <img class="bracket-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/2026_FIFA_World_Cup_logo.svg/1200px-2026_FIFA_World_Cup_logo.svg.png" alt="FIFA 2026">
+            <h1 class="bracket-title-neon">ПЛЕЙ-ОФФ</h1>
+            <h2 class="bracket-title-year">ЧМ 2026</h2>
+
+            <div id="node-M101-box" style="margin-bottom: 20px;"></div>
+
+            <img src="https://img.freepik.com/premium-vector/gold-trophy-cup-with-garland-victory-champion-winner-concept-hand-drawn-vector-illustration_501069-1383.jpg" class="bracket-trophy-main" alt="Trophy">
+
+            <div id="node-M104-box" style="margin-top: 30px;"></div>
+            <div id="node-M102-box" style="margin-top: 30px;"></div>
+        </div>
+
+        <div class="bracket-column" id="col-R4"></div>
+        <div class="bracket-column" id="col-R3"></div>
+        <div class="bracket-column" id="col-R2"></div>
+        <div class="bracket-column" id="col-R1"></div>
+      </div>
+    </div>
+    <div id="mapTooltip" class="map-tooltip"></div>
+  `;
+
+  const createNode = (id, teamId, type, containerId, mIdNum) => {
+    const node = document.createElement('div');
+    node.className = 'bracket-node' + (teamId ? '' : ' empty');
+    if (mIdNum === 104) node.classList.add('final-node');
+    node.id = 'node-' + id;
+
+    const mId = 'M' + mIdNum;
+    const m = KO.find(x => x.id === mId) || { h: '?', a: '?', id: mId, v: '', d: '', t: '' };
+    const sc = scores[mId];
+
+    node.onclick = (e) => {
+        if(teamId) goToTeam(teamId);
+        else openMatchEvents(mId);
+    };
+
+    node.onmouseenter = (e) => {
+        const tt = document.getElementById('mapTooltip');
+        if (teamId) {
+            const team = TEAMS[teamId];
+            const name = typeof team.n === 'object' ? team.n[currentLang] : team.n;
+            const desc = typeof team.d === 'object' ? team.d[currentLang] : team.d;
+            tt.innerHTML = `<div class="map-tooltip-team">${flagImg(teamId, 20)} ${name}</div><div style="font-size:11px; opacity:0.7; margin-top:5px;">${desc}</div>`;
+        } else {
+            const hId = resolveSlot(m.h), aId = resolveSlot(m.a);
+            const hN = hId ? (typeof TEAMS[hId].n === 'object' ? TEAMS[hId].n[currentLang] : TEAMS[hId].n) : slotLabel(m.h);
+            const aN = aId ? (typeof TEAMS[aId].n === 'object' ? TEAMS[aId].n[currentLang] : TEAMS[aId].n) : slotLabel(m.a);
+            tt.innerHTML = `<b>Match ${mId}</b><br>${hN} vs ${aN}<br><div style="font-size:11px; opacity:0.7; margin-top:5px;">${tCity(m.v)}<br>${m.d} ${m.t}</div>`;
+        }
+        tt.style.display = 'block';
+    };
+    node.onmousemove = (e) => {
+        const tt = document.getElementById('mapTooltip');
+        tt.style.left = (e.clientX + 15) + 'px';
+        tt.style.top = (e.clientY + 15) + 'px';
+    };
+    node.onmouseleave = () => { document.getElementById('mapTooltip').style.display='none'; };
+
+    if (teamId) {
+        const team = TEAMS[teamId];
+        const name = typeof team.n === 'object' ? team.n[currentLang] : team.n;
+        const scoreHtml = (sc && type === 'winner') ? `<span class="bracket-score">${sc.h}:${sc.a}</span>` : '';
+        node.innerHTML = `<img src="${team.f}" class="bracket-flag" alt=""><span class="bracket-name">${name}</span>${scoreHtml}`;
+    } else {
+        node.innerHTML = `<span class="bracket-name" style="opacity:0.3; margin:auto;">${(type === 'slot' ? id.split('-')[2] : ('M' + mIdNum))}</span>`;
+    }
+
+    const target = document.getElementById(containerId);
+    if(target) target.appendChild(node);
+  };
+
+  const leftR32 = [74, 77, 73, 75, 79, 80, 76, 78];
+  const rightR32 = [81, 82, 85, 87, 86, 88, 83, 84];
+
+  // L1: Teams in R32
+  leftR32.forEach(mId => {
+      const m = KO.find(x => x.id === 'M'+mId);
+      createNode('M'+mId+'-H', resolveSlot(m.h), 'slot', 'col-L1', mId);
+      createNode('M'+mId+'-A', resolveSlot(m.a), 'slot', 'col-L1', mId);
+  });
+  rightR32.forEach(mId => {
+      const m = KO.find(x => x.id === 'M'+mId);
+      createNode('M'+mId+'-H', resolveSlot(m.h), 'slot', 'col-R1', mId);
+      createNode('M'+mId+'-A', resolveSlot(m.a), 'slot', 'col-R1', mId);
+  });
+
+  // L2: R32 Winners (R16 participants)
+  leftR32.forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-L2', mId));
+  rightR32.forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-R2', mId));
+
+  // L3: R16 Winners (QF participants)
+  [89, 90, 92, 91].forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-L3', mId));
+  [94, 96, 95, 93].forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-R3', mId));
+
+  // L4: QF Winners (SF participants)
+  [97, 99].forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-L4', mId));
+  [98, 100].forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-R4', mId));
+
+  // Center nodes (SF and Final)
+  createNode('W101', getWinner('M101'), 'winner', 'node-M101-box', 101);
+  createNode('W102', getWinner('M102'), 'winner', 'node-M102-box', 102);
+  createNode('W104', getWinner('M104'), 'winner', 'node-M104-box', 104);
+
+  const fNode = document.getElementById('node-W104');
+  if(fNode) {
+      fNode.style.width = '300px'; fNode.style.height = '70px';
+      if(getWinner('M104')) {
+          fNode.querySelector('.bracket-name').style.fontSize = '24px';
+          fNode.querySelector('.bracket-flag').style.width = '50px';
+          fNode.querySelector('.bracket-flag').style.height = '34px';
+      }
+  }
+
+  setTimeout(drawBracketLines, 100);
+}
+
+function drawBracketLines() {
+    const svg = document.getElementById('bracketSvg');
+    if(!svg) return;
+    svg.innerHTML = '';
+    const wrapper = document.getElementById('bracketWrapper').getBoundingClientRect();
+
+    const connect = (id1, id2, side) => {
+        const el1 = document.getElementById('node-' + id1);
+        const el2 = document.getElementById('node-' + id2);
+        if(!el1 || !el2) return;
+        const r1 = el1.getBoundingClientRect(), r2 = el2.getBoundingClientRect();
+        let x1, x2;
+        if (side === 'left') { x1 = r1.right; x2 = r2.left; }
+        else if (side === 'right') { x1 = r1.left; x2 = r2.right; }
+        else { x1 = (r1.left + r1.right)/2; x2 = (r2.left + r2.right)/2; }
+
+        x1 -= wrapper.left; x2 -= wrapper.left;
+        const y1 = (r1.top + r1.bottom) / 2 - wrapper.top;
+        const y2 = (r2.top + r2.bottom) / 2 - wrapper.top;
+
+        const midX = (x1 + x2) / 2;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const d = `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}`;
+        path.setAttribute("d", d);
+        path.setAttribute("class", "bracket-line");
+
+        if (!el1.classList.contains('empty') && !el2.classList.contains('empty')) path.classList.add('active');
+        svg.appendChild(path);
+    };
+
+    const leftR32 = [74, 77, 73, 75, 79, 80, 76, 78];
+    const rightR32 = [81, 82, 85, 87, 86, 88, 83, 84];
+
+    leftR32.forEach(m => {
+        connect('M'+m+'-H', 'W'+m, 'left');
+        connect('M'+m+'-A', 'W'+m, 'left');
+    });
+    rightR32.forEach(m => {
+        connect('M'+m+'-H', 'W'+m, 'right');
+        connect('M'+m+'-A', 'W'+m, 'right');
+    });
+
+    [ ['W74','W89'],['W77','W89'], ['W73','W90'],['W75','W90'], ['W79','W92'],['W80','W92'], ['W76','W91'],['W78','W91'] ].forEach(p => connect(p[0], p[1], 'left'));
+    [ ['W81','W94'],['W82','W94'], ['W85','W96'],['W87','W96'], ['W86','W95'],['W88','W95'], ['W83','W93'],['W84','W93'] ].forEach(p => connect(p[0], p[1], 'right'));
+
+    [ ['W89','W97'],['W90','W97'], ['W92','W99'],['W91','W99'] ].forEach(p => connect(p[0], p[1], 'left'));
+    [ ['W94','W98'],['W96','W98'], ['W95','W100'],['W93','W100'] ].forEach(p => connect(p[0], p[1], 'right'));
+
+    connect('W97', 'W101', 'left'); connect('W98', 'W101', 'right');
+    connect('W99', 'W102', 'left'); connect('W100', 'W102', 'right');
+
+    connect('W101', 'W104', 'center'); connect('W102', 'W104', 'center');
+}
+
+
+function showMapTooltip(mid, e) {
+  const m = KO.find(x => x.id === mid);
+  if (!m) return;
+  const tt = document.getElementById('mapTooltip');
+  const hId = resolveSlot(m.h), aId = resolveSlot(m.a);
+
+  let html = `<b>Match ${mid} - ${m.s || ''}</b>`;
+  if (hId) {
+      const n = TEAMS[hId].n[currentLang] || TEAMS[hId].n.en;
+      html += `<div class="map-tooltip-team">${flagImg(hId, 20)} ${n}</div>`;
+  }
+  if (aId) {
+      const n = TEAMS[aId].n[currentLang] || TEAMS[aId].n.en;
+      html += `<div class="map-tooltip-team">${flagImg(aId, 20)} ${n}</div>`;
+  }
+
+  const sc = scores[mid];
+  if (sc) html += `<div style="color:#f1c40f; font-size:18px; margin:5px 0;">${sc.h}:${sc.a}</div>`;
+  else html += `<div style="margin:5px 0; opacity:0.6;">vs</div>`;
+
+  html += `<div style="font-size:11px; opacity:0.7;">${tCity(m.v)}<br>${m.d} ${m.t}</div>`;
+
+  tt.innerHTML = html;
+  tt.style.display = 'block';
+
+  const move = (ev) => {
+    tt.style.left = (ev.clientX + 15) + 'px';
+    tt.style.top = (ev.clientY + 15) + 'px';
+  };
+  move(e);
+  e.target.onmousemove = move;
+}
+
+function handleMapNodeClick(mid, e) {
+  const now = Date.now();
+  if (now - mapLastTap < 300) {
+    const m = KO.find(x => x.id === mid);
+    const win = getWinner(mid) || resolveSlot(m.h) || resolveSlot(m.a);
+    if (win) goToTeam(win);
+    e.preventDefault();
+  } else {
+    viewMatchEvents(mid);
+  }
+  mapLastTap = now;
+}
+</script>
 </body>
 </html>
