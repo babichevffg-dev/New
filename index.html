@@ -662,350 +662,183 @@ body.admin-active .toolbar { display: flex; }
   display: inline-block;
 }
 .squad-container { display: grid; grid-template-columns: 1fr 300px; gap: 24px; margin-top: 20px; }
-@media (max-width: 900px) { .squad-container { grid-template-columns: 1fr; } }
-.team-header { text-align: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-.team-header .big-flag { width: 120px; height: 80px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 16px; }
-.team-header h2 { font-size: 2.2rem; color: var(--gold); margin-bottom: 12px; text-shadow: -2px -2px 0 var(--pitch), 2px -2px 0 var(--pitch), -2px 2px 0 var(--pitch), 2px 2px 0 var(--pitch); }
-.team-desc { font-size: 1.05rem; line-height: 1.6; color: var(--text); max-width: 800px; margin: 0 auto; }
-.section-title { font-size: 1.2rem; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-.coach-list { display: flex; flex-direction: column; gap: 12px; }
-.coach-card { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer; transition: 0.2s; }
-.coach-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.1); }
-.coach-info h4 { color: var(--text); margin-bottom: 4px; }
-.coach-info span { font-size: 0.85rem; color: var(--muted); }
-.modal-photo-link { display: block; width: 150px; height: 150px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 3px solid var(--gold); cursor: pointer; transition: 0.3s; }
-.modal-photo-link:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--gold); }
-.modal-photo { width: 100%; height: 100%; object-fit: cover; }
-.photo-slider-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; }
-.slider-btn { background: var(--blue); color: #fff; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-.slider-btn:hover { background: #2980b9; }
-.photo-counter { color: var(--text); font-weight: bold; min-width: 60px; text-align: center; }
-.btn-set-profile { background: #27ae60; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 10px; }
-.btn-set-profile:hover { background: #2ecc71; }
-.social-hint { display: block; text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: -15px; margin-bottom: 20px; }
-.modal-extra { text-align: center; margin-bottom: 20px; font-size: 0.9rem; color: var(--text); }
-.modal-extra div { margin-bottom: 4px; }
-.modal-extra span { color: var(--muted); margin-right: 5px; }
 
-/* Formation Selector */
-.formation-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-.form-btn { padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text); cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-.form-btn.active { background: var(--team-accent, var(--accent)); border-color: #fff; font-weight: 700; }
 
-/* Heritage Badges */
-.heritage-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-.heritage-badge { padding: 4px 8px; background: rgba(241,196,15,0.15); border: 1px solid var(--gold); border-radius: 4px; color: var(--gold); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.3s; }
-.heritage-badge:hover { background: rgba(241,196,15,0.3); transform: scale(1.05); }
 
-/* Radar Chart */
-.radar-container { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
-#playerRadar { background: rgba(0,0,0,0.2); border-radius: 50%; }
 
-/* Kit Toggle */
 
-/* Road Map */
-.road-map { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px; border-left: 3px solid var(--team-accent, var(--accent)); }
-.road-map h4 { font-size: 0.9rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-.road-list { display: flex; flex-wrap: wrap; gap: 12px; }
-.road-item { font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); text-decoration: none; }
-.road-item:hover { color: var(--gold); }
-.road-item i { color: var(--gold); }
 
-/* Pitch Animation */
-.pitch-player { position: absolute; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+}
 
-/* Tactical Mode Styles */
-.tactical-layout {
-  position: relative;
+
+
+}
+
+
+.map-tooltip-team { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.map-tooltip-team:last-child { margin-bottom: 0; }
+
+.map-node circle { transition: all 0.3s ease; fill: rgba(16, 33, 61, 0.9); stroke: rgba(255,255,255,0.2); stroke-width: 2; filter: drop-shadow(0 0 5px rgba(255,255,255,0.1)); }
+.map-node:hover circle { stroke: var(--primary, #00d4ff); stroke-width: 4; fill: rgba(34, 211, 238, 0.2); filter: drop-shadow(0 0 15px var(--primary, #00d4ff)); }
+.map-team-label { fill: #fff; font-size: 11px; font-weight: 600; text-anchor: middle; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.8); opacity: 0; transition: opacity 0.3s ease; }
+.map-node:hover .map-team-label { opacity: 1; }
+
+
+
+.map-path { stroke: rgba(255, 255, 255, 0.4); stroke-width: 4; fill: none; transition: all 0.5s ease; }
+.map-path.active { stroke: var(--primary, #00d4ff); stroke-width: 7; filter: drop-shadow(0 0 12px var(--primary, #00d4ff)); }
+.map-path.final-path { stroke: var(--gold, #ffd700); stroke-width: 9; filter: drop-shadow(0 0 18px var(--gold, #ffd700)); }
+.map-node { cursor: pointer; }
+
+
+
+
+
+
+/* Playoff Map Styles */
+/* Playoff Map Styles (Exact Bracket Style) */
+.map-outer-container {
   width: 100%;
-  margin: 20px 0;
+  overflow-x: auto;
+  padding: 40px 0;
+  background: #000;
+  min-height: 1000px;
+  display: flex;
+  justify-content: center;
+  position: relative;
 }
-.tactical-sidebar {
-  position: absolute;
-  left: 0;
-  top: 0;
+.bracket-wrapper {
+  position: relative;
+  width: 1600px;
+  height: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+}
+.bracket-column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background: var(--card);
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  width: 240px;
-  z-index: 100;
-  max-height: 100%;
-  overflow-y: auto;
+  justify-content: space-around;
+  height: 100%;
+  z-index: 2;
 }
-@media (max-width: 1024px) {
-  .tactical-sidebar { position: static; width: 100%; margin-bottom: 20px; }
-}
-.tactical-tool-group {
+.bracket-node {
+  width: 130px;
+  height: 38px;
+  background: #000;
+  border: 2px solid #00ff00;
+  border-radius: 8px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
+  align-items: center;
+  padding: 0 8px;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
 }
-.tactical-canvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 1;
-  pointer-events: none;
+.bracket-node:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+  transform: scale(1.08);
+  border-width: 3px;
 }
-.pitch-container.tactical-active .tactical-canvas {
-  pointer-events: auto;
-  cursor: crosshair;
+.bracket-node.empty {
+  border-color: rgba(0, 255, 0, 0.15);
+  box-shadow: none;
+  background: rgba(255,255,255,0.02);
 }
-.pitch-container.tactical-active .pitch-player {
-  z-index: 10;
-  transition: none; /* Disable animation when dragging */
-  touch-action: none;
+.bracket-flag {
+  width: 26px;
+  height: 18px;
+  object-fit: cover;
+  margin-right: 8px;
+  border-radius: 3px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+.bracket-name {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 5px rgba(0,0,0,0.8);
+}
+.bracket-score {
+  margin-left: auto;
+  color: #00ff00;
+  font-weight: 900;
+  font-size: 15px;
+  text-shadow: 0 0 10px rgba(0,255,0,0.5);
 }
 
-.pitch-container.tactical-active {
-  touch-action: none;
-}
-.pitch-container.tactical-active .pitch-player:hover {
-  transform: scale(1.1);
-}
-.pitch-player.opponent {
-  width: 24px;
-  height: 24px;
-  background: #e74c3c;
-  font-size: 0.6rem;
-  border-width: 1px;
-}
-.pitch-player.opponent .p-name {
-  font-size: 0.55rem;
-}
-.tactical-select-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  z-index: 100001;
-  display: none;
+.bracket-center {
+  width: 450px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  margin-top: -60px;
 }
-.tactical-select-overlay.show { display: flex; }
-.tactical-select-content {
-  background: var(--bg);
-  border: 1px solid var(--gold);
-  border-radius: 16px;
-  width: min(500px, 100%);
-  max-height: 80vh;
-  overflow-y: auto;
-  padding: 20px;
-}
-.tactical-select-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
-  margin-top: 15px;
-}
-.tactical-select-item {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  padding: 8px;
-  border-radius: 8px;
-  cursor: pointer;
+.bracket-logo-container {
+  margin-bottom: 25px;
   text-align: center;
-  transition: 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
 }
-.tactical-select-item:hover { border-color: var(--gold); background: rgba(255,255,255,0.1); }
-.tool-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: 0.2s;
+.bracket-logo-container img {
+    height: 130px;
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.6));
 }
-.tool-btn:hover { background: rgba(255,255,255,0.1); }
-.tool-btn.active {
-  background: var(--accent);
+.bracket-title-main {
+  color: #00ff00;
+  font-size: 48px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  text-shadow: 0 0 25px rgba(0, 255, 0, 1);
+  font-family: 'Impact', sans-serif;
+}
+.bracket-title-sub {
   color: #fff;
-  border-color: var(--accent);
+  font-size: 32px;
+  font-weight: 800;
+  margin: -5px 0 30px;
+  letter-spacing: 1px;
 }
-#toggleTacticalMode.active {
-  background: rgba(255,255,255,0.05);
-  border-color: var(--border);
-  color: var(--text);
-}
-.color-picker-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.85rem;
-  margin-top: 5px;
-}
-.color-picker {
-  -webkit-appearance: none;
-  border: none;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  background: none;
-}
-.color-picker::-webkit-color-swatch-wrapper { padding: 0; }
-.color-picker::-webkit-color-swatch { border: 2px solid #fff; border-radius: 50%; }
-
-/* Admin and Squad Styles */
-.admin-edit-row {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.2) !important;
-  margin-bottom: 4px;
-}
-.admin-name-input, .admin-no-input, .admin-pos-select {
-  background: #1b263b;
-  color: #fff;
-  border: 1px solid #f1c40f;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-family: inherit;
-}
-.admin-no-input { width: 50px; text-align: center; margin: 0 5px; }
-.admin-name-input { width: 180px; }
-.admin-pos-select { padding: 3px 6px; }
-
-.admin-del-btn, .admin-info-btn, .admin-add-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 4px 8px;
-  margin-left: 4px;
-  transition: 0.2s;
-  font-family: inherit;
-}
-.admin-del-btn:hover { background: #e74c3c; border-color: #c0392b; }
-.admin-info-btn:hover { background: #3498db; border-color: #2980b9; }
-.admin-add-btn { background: #27ae60; border-color: #2ecc71; font-weight: bold; padding: 2px 10px; font-size: 1.2rem; }
-
-.first-xi-icon {
-  width: 28px;
-  height: 28px;
-  vertical-align: middle;
-  margin-left: 8px;
-  fill: var(--team-accent, #f1c40f);
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
-  transition: transform 0.2s;
-}
-.first-xi-icon:hover {
-  transform: scale(1.1);
+.bracket-trophy-img {
+  width: 350px;
+  filter: drop-shadow(0 0 50px rgba(0, 255, 0, 0.5));
 }
 
-@keyframes flagWave {
-  0% { transform: perspective(1000px) rotateY(0deg) rotateZ(0deg) skewY(0deg); filter: brightness(1) contrast(1); box-shadow: -5px 5px 15px rgba(0,0,0,0.3); }
-  25% { transform: perspective(1000px) rotateY(15deg) rotateZ(1deg) skewY(2deg); filter: brightness(1.1) contrast(1.1); box-shadow: -10px 10px 25px rgba(0,0,0,0.2); }
-  50% { transform: perspective(1000px) rotateY(-10deg) rotateZ(-1deg) skewY(-1deg); filter: brightness(0.85) contrast(1.2); box-shadow: -2px 5px 10px rgba(0,0,0,0.4); }
-  75% { transform: perspective(1000px) rotateY(8deg) rotateZ(0.5deg) skewY(1deg); filter: brightness(1.05) contrast(1.05); box-shadow: -8px 8px 20px rgba(0,0,0,0.25); }
-  100% { transform: perspective(1000px) rotateY(0deg) rotateZ(0deg) skewY(0deg); filter: brightness(1) contrast(1); box-shadow: -5px 5px 15px rgba(0,0,0,0.3); }
+.bracket-svg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
-.flag, .big-flag, .team-logo-wrapper img, .team-flag {
-  transform-origin: left center;
-  backface-visibility: hidden;
-  transition: transform 0.3s ease;
+.bracket-line {
+  fill: none;
+  stroke: rgba(0, 255, 0, 0.25);
+  stroke-width: 3;
 }
-/* Big flag: Auto on mobile, Hover on desktop */
-@media (min-width: 901px) {
-  .big-flag:hover {
-    animation: flagWave 3s ease-in-out infinite;
-  }
+.bracket-line.active {
+  stroke: #00ff00;
+  stroke-width: 5;
+  filter: drop-shadow(0 0 12px #00ff00);
+}
+
+@media (max-width: 1200px) {
+  .bracket-wrapper { transform: scale(0.75); transform-origin: center center; }
 }
 @media (max-width: 900px) {
-  .big-flag {
-    animation: flagWave 3s ease-in-out infinite;
-  }
+  .bracket-wrapper { transform: scale(0.55); transform-origin: top left; width: 1600px; }
+  .map-outer-container { justify-content: flex-start; }
 }
-
-/* Animation on hover/active for different containers */
-.team-card-btn:hover .flag, .team-card-btn:active .flag,
-.team-tip:hover .flag, .team-tip:active .flag,
-.flag:hover, .flag:active,
-.team-flag:hover, .team-flag:active,
-.team-logo-wrapper:hover img, .team-logo-wrapper:active img {
-  animation: flagWave 2s ease-in-out infinite;
-}
-
-/* Slower animation for team-flag specifically on hover */
-.team-flag:hover, .team-flag:active {
-  animation-duration: 2.5s;
-}
-
-[data-theme="stellar"] {
-  --bg: #050505;
-  --card: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.15);
-  --accent: #22d3ee;
-  --gold: #f1c40f;
-  --text: #e5e2e1;
-  --muted: #94a3b8;
-  --pitch: #0f172a;
-}
-[data-theme="stellar"] body {
-  font-family: 'Space Grotesk', sans-serif;
-  background: var(--bg);
-}
-[data-theme="stellar"] .card,
-[data-theme="stellar"] .tab,
-[data-theme="stellar"] .btn {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
-}
-[data-theme="stellar"] .tab.active {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
-  text-shadow: none;
-}
-[data-theme="stellar"] .bg-trophy {
-  display: none;
-}
-#stellar-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  display: none;
-  pointer-events: none;
-}
-[data-theme="stellar"] #stellar-bg {
-  display: block;
-}
-
-
-[data-theme="stellar"]::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-  z-index: 10000;
-  background-size: 100% 4px, 4px 100%;
-  pointer-events: none;
-  opacity: 0.4;
-}
-
+/* END Playoff Map Styles */
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1013,6 +846,7 @@ body.admin-active .toolbar { display: flex; }
 <canvas id="stellar-bg"></canvas>
 <div class="bg-trophy" aria-hidden="true"></div>
 <div id="teamPopover" class="team-popover" role="tooltip" aria-hidden="true"></div>
+<div id="mapTooltip" class="map-tooltip"></div>
 
 <div class="lang-switcher">
   <button id="theme-toggle" class="lang-btn">☀</button>
@@ -1615,6 +1449,7 @@ const VICTORY_STORIES = {
 
 let isAdmin = false;
 let activeTab=0;
+let mapLastTap = 0;
 let saveTimer=null;
 let currentLang='ru';
 let selectedTeamId=null;
@@ -1624,6 +1459,7 @@ let currentTacticalTool = 'brush';
 let currentTacticalColor = '#f1c40f';
 const TRANSLATIONS = {
   es: {
+    "map": "Mapa", "roadmap": "Ruta de la selección",
     born: "Nacido:",
     club: "Club:",
     title: "Copa Mundial de la FIFA 2026",
@@ -1687,7 +1523,6 @@ const TRANSLATIONS = {
     to_short: "(al 1",
     combo_3rd: "Combinación de 3.os",
     formation: "Formación",
-    roadmap: "Ruta de la selección",
     stadiums: "Estadios",
     place_3rd: "3er puesto",
     final: "Final",
@@ -1727,6 +1562,7 @@ const TRANSLATIONS = {
     social_hint: "Haz clic en la foto para redes sociales"
   , coaches: "Cuerpo técnico", description: "Sobre el equipo"},
   fr: {
+    "map": "Carte", "roadmap": "Feuille de route",
     born: "Né le:",
     club: "Club:",
     title: "Coupe du Monde de la FIFA 2026",
@@ -1790,7 +1626,6 @@ const TRANSLATIONS = {
     to_short: "(vers 1",
     combo_3rd: "Combinaison des 3èmes",
     formation: "Formation",
-    roadmap: "Feuille de route",
     stadiums: "Stades",
     place_3rd: "3ème place",
     final: "Finale",
@@ -1830,6 +1665,7 @@ const TRANSLATIONS = {
     social_hint: "Cliquez sur la photo pour les réseaux sociaux"
   , coaches: "Staff technique", description: "À propos de l'équipe"},
   tr: {
+    "map": "Harita", "roadmap": "Takım Yol Haritası",
     "born": "Doğum:",
     "club": "Kulüp:",
     "title": "FIFA Dünya Kupası 2026",
@@ -1893,7 +1729,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -1934,6 +1769,7 @@ const TRANSLATIONS = {
     "coaches": "Teknik Ekip",
     "description": "Takım Hakkında", coaches: "Teknik Ekip"},
   ar: {
+    "map": "الخريطة", "roadmap": "مسار الفريق",
     "born": "ولد في:",
     "club": "النادي:",
     "title": "كأس العالم فيفا 2026",
@@ -1997,7 +1833,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2101,7 +1936,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2207,7 +2041,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2313,7 +2146,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2419,7 +2251,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2525,7 +2356,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2631,7 +2461,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2737,7 +2566,6 @@ const TRANSLATIONS = {
     "to_short": "(1/16'ya",
     "combo_3rd": "3.lük kombinasyonu",
     "formation": "Diziliş",
-    "roadmap": "Takım Yol Haritası",
     "stadiums": "Stadyumlar",
     "place_3rd": "3.lük Maçı",
     "final": "Final",
@@ -2842,7 +2670,6 @@ const TRANSLATIONS = {
     "to_short": "(إلى 1",
     "combo_3rd": "مزيج المركز الثالث",
     "formation": "التشكيلة",
-    "roadmap": "مسار الفريق",
     "stadiums": "الملاعب",
     "place_3rd": "المركز الثالث",
     "final": "النهائي",
@@ -2884,6 +2711,7 @@ const TRANSLATIONS = {
     "description": "عن الفريق", coaches: "الجهاز الفني"
 },
   ru: {
+    "map": "Карта", "roadmap": "Путь команды",
     born: "Родился:",
     club: "Клуб:",
     title: "Чемпионат мира FIFA 2026",
@@ -2947,7 +2775,6 @@ const TRANSLATIONS = {
     to_short: "(к 1",
     combo_3rd: "Комбинация третьих",
     formation: "Схема",
-    roadmap: "Путь команды",
     stadiums: "Стадионы",
     place_3rd: "3-е место",
     final: "Финал",
@@ -2987,6 +2814,7 @@ const TRANSLATIONS = {
     social_hint: "Нажмите на фото для соцсетей"
   , coaches: "Тренерский штаб", description: "О сборной"},
   en: {
+    "map": "Map", "roadmap": "Team Road Map",
     born: "Born:",
     club: "Club:",
     title: "FIFA World Cup 2026",
@@ -3050,7 +2878,6 @@ const TRANSLATIONS = {
     to_short: "(to 1",
     combo_3rd: "3rd combo",
     formation: "Formation",
-    roadmap: "Team Road Map",
     stadiums: "Stadiums",
     place_3rd: "3rd Place",
     final: "Final",
@@ -3090,6 +2917,7 @@ const TRANSLATIONS = {
     social_hint: "Click photo for Social Media"
   , coaches: "Coaching Staff", description: "About the Team"},
   zh: {
+    "map": "地图", "roadmap": "球队路线图",
     born: "出生日期:",
     club: "俱乐部:",
     title: "2026年国际足联世界杯",
@@ -3153,7 +2981,6 @@ const TRANSLATIONS = {
     to_short: "(对 1",
     combo_3rd: "第三名组合",
     formation: "阵型",
-    roadmap: "球队路线图",
     stadiums: "场馆",
     place_3rd: "季军赛",
     final: "决赛",
@@ -3204,7 +3031,7 @@ async function load(){
         if (d.squads) SQUADS = d.squads; scores = d.scores;
         showStatus(TRANSLATIONS[currentLang].loaded + ' (DB) ' + (d.updatedAt ? new Date(d.updatedAt).toLocaleString(currentLang) : ''), true);
         return;
-      }
+  }
     }
   } catch(e) {}
 
@@ -3828,9 +3655,19 @@ function renderMatchBlock(m,isKo){
   return h;
 }
 
+
+
+
+
+
+
+
+
+
+
+
 function buildUI(){
   const T = TRANSLATIONS[currentLang];
-
   document.getElementById('txt-title').textContent = T.title;
   document.getElementById('txt-subtitle').textContent = T.subtitle;
   document.getElementById('txt-design').textContent = T.design;
@@ -3843,15 +3680,35 @@ function buildUI(){
   const evTitle = document.getElementById('eventsModalTitle');
   if (evTitle) evTitle.textContent = T.match_events || 'Match Events';
 
-  const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.teams, T.stadiums];
+  const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.teams, T.stadiums, T.map];
   const tabEl=document.getElementById('tabs');
   const panels=document.getElementById('panels');
-  tabEl.innerHTML='';panels.innerHTML='';
+  tabEl.innerHTML=''; panels.innerHTML='';
+
   tabs.forEach((t,i)=>{
     const b=document.createElement('button');
-    b.className='tab'+(i===activeTab?' active':'');
-    b.textContent=t;b.dataset.tab=i;
-    b.onclick=()=>{activeTab=i;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('panel'+i).classList.add('active')};
+    b.className='tab' + (i === activeTab ? ' active' : '');
+    b.textContent=t; b.dataset.tab=i;
+    b.onclick=()=>{
+      activeTab=i;
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      const p=document.getElementById('panel'+i);
+      if(p) {
+        p.classList.add('active');
+        if(i===8) { renderMap(); setTimeout(drawBracketLines, 100); }
+      }
+    };
+    tabEl.appendChild(b);
+
+    const p=document.createElement('div');
+    p.className='panel' + (i === activeTab ? ' active' : '');
+    p.id='panel'+i;
+    panels.appendChild(p);
+  });
+}
+;
     tabEl.appendChild(b);
     const p=document.createElement('div');
     p.className='panel'+(i===activeTab?' active':'');
@@ -42560,6 +42417,26 @@ let SQUADS = {
     const PLAYER_PATH_MAP = {"ALG":{"_f":"Algeria","abadaachref":"Achref_ABADA","adilboulbina":"Adil_BOULBINA","aissamandi":"Aissa_MANDI","aminegouiri":"Amine_GOUIRI","anishadjmoussa":"Anis_HADJ_MOUSSA","chaibifares":"Fares_CHAIBI","faresghedjemis":"Fares_GHEDJEMIS","boudaouihicham":"Hicham_BOUDAOUI","aouarhoussem":"Houssem_Aouar","ibrahimmaza":"Ibrahim_MAZA","hadjamjaouen":"Jaouen_HADJAM","lucazidane":"Luca_ZIDANE","mastilmelvin":"Melvin_MASTIL","amouramohamed":"Mohamed_AMOURA","aminemohamedtougai":"Mohamed_Amine_TOUGAI","bentalebnabil":"Nabil_Bentaleb","benboualinadhir":"Nadhir_BENBOUALI","benbotoussama":"Oussama_BENBOT","belghalirafik":"Rafik_BELGHALI","ramizzerrouki":"Ramiz_ZERROUKI","bensebainiramy":"Ramy_BENSEBAINI","aitnourirayan":"Rayan_AIT-NOURI","mahrezriyad":"Riyad_Mahrez","cherguisamir":"Samir_CHERGUI","titraouiyassine":"Yassine_TITRAOUI","belaidzineddine":"Zineddine_BELAID"},"ARG":{"_f":"Argentina","alexisallistermac":"Alexis_MAC_ALLISTER","cristianromero":"Cristian_ROMERO","emilianomartinez":"Emiliano_MARTINEZ","enzofernandez":"Enzo_FERNANDEZ","exequielpalacios":"Exequiel_PALACIOS","facundomedina":"Facundo_MEDINA","geronimorulli":"Geronimo_RULLI","celsogiovanilo":"Giovani_Lo_Celso","giulianosimeone":"Giuliano_SIMEONE","gonzalomontiel":"Gonzalo_MONTIEL","joselopezmanuel":"Jose_Manuel_LOPEZ","juanmusso":"Juan_MUSSO","alvarezjulian":"Julian_ALVAREZ","lautaromartinez":"Lautaro_MARTINEZ","leandroparedes":"Leandro_PAREDES","balerdileonardo":"Leonardo_BALERDI","lionelmessi":"Lionel_MESSI","lisandromartinez":"Lisandro_MARTINEZ","molinanahuel":"Nahuel_MOLINA","gonzaleznico":"Nico_GONZALEZ","nicopaz":"Nico_PAZ","nicolasotamendi":"Nicolas_OTAMENDI","nicolastagliafico":"Nicolas_TAGLIAFICO","depaulrodrigo":"Rodrigo_DE_PAUL","almadathiago":"Thiago_ALMADA","barcovalentin":"Valentin_BARCO"},"AUS":{"_f":"Australia","aidenoneill":"Aiden_ONEILL","ajdinhrustic":"Ajdin_HRUSTIC","alessandrocircati":"Alessandro_CIRCATI","awermabil":"Awer_MABIL","azizbehich":"Aziz_BEHICH","burgesscameron":"Cameron_BURGESS","camerondevlin":"Cameron_DEVLIN","connormetcalfe":"Connor_METCALFE","cristianvolpato":"Cristian_VOLPATO","harrysouttar":"Harry_SOUTTAR","irvinejackson":"Jackson_IRVINE","italianojacob":"Jacob_ITALIANO","geriajason":"Jason_GERIA","bosjordan":"Jordan_BOS","kaitrewin":"Kai_TREWIN","herringtonlucas":"Lucas_HERRINGTON","leckiemathew":"Mathew_LECKIE","mathewryan":"Mathew_RYAN","degenekmilos":"Milos_DEGENEK","mohamedtoure":"Mohamed_TOURE","irankundanestory":"Nestory_IRANKUNDA","nishanvelupillay":"Nishan_VELUPILLAY","beachpatrick":"Patrick_BEACH","izzopaul":"Paul_Izzo","engstlerokonpaul":"Paul_OKON-ENGSTLER","teteyengi":"Tete_YENGI"},"AUT":{"_f":"Austria","alessandroschoepf":"Alessandro_SCHOEPF","alexanderprass":"Alexander_PRASS","alexanderschlager":"Alexander_SCHLAGER","carneychukwuemeka":"Carney_CHUKWUEMEKA","baumgartnerchristoph":"Christoph_BAUMGARTNER","affengruberdavid":"David_AFFENGRUBER","alabadavid":"David_ALABA","floriangrillitsch":"Florian_GRILLITSCH","florianwiegele":"Florian_WIEGELE","dansokevin":"Kevin_Danso","konradlaimer":"Konrad_LAIMER","marcelsabitzer":"Marcel_SABITZER","friedlmarco":"Marco_FRIEDL","arnautovicmarko":"Marko_ARNAUTOVIC","gregoritschmichael":"Michael_Gregoritsch","michaelsvoboda":"Michael_SVOBODA","nicolasseiwald":"Nicolas_SEIWALD","patrickpentz":"Patrick_PENTZ","patrickwimmer":"Patrick_WIMMER","paulwanner":"Paul_WANNER","lienhartphilipp":"Philipp_Lienhart","mwenephillip":"Phillip_MWENE","romanoschmid":"Romano_SCHMID","kalajdzicsasa":"Sasa_KALAJDZIC","poschstefan":"Stefan_POSCH","schlagerxaver":"Xaver_Schlager"},"BEL":{"_f":"Belgium","alexissaelemaekers":"Alexis_SAELEMAEKERS","amadouonana":"Amadou_Onana","arthurtheate":"Arthur_THEATE","axelwitsel":"Axel_WITSEL","brandonmechele":"Brandon_MECHELE","charlesdeketelaere":"Charles_DE_KETELAERE","diegomoreira":"Diego_MOREIRA","dodilukebakio":"Dodi_LUKEBAKIO","hansvanaken":"Hans_VANAKEN","dokujeremy":"Jeremy_DOKU","joaquinseys":"Joaquin_SEYS","bruynedekevin":"Kevin_DE_BRUYNE","dekoniwinter":"Koni_DE_WINTER","leandrotrossard":"Leandro_TROSSARD","fernandezmatiaspardo":"Matias_FERNANDEZ-PARDO","cuyperdemaxim":"Maxim_DE_CUYPER","mikependers":"Mike_PENDERS","nathanngoy":"Nathan_NGOY","nicolasraskin":"Nicolas_RASKIN","lukakuromelu":"Romelu_LUKAKU","lammenssenne":"Senne_LAMMENS","courtoisthibaut":"Thibaut_COURTOIS","meunierthomas":"Thomas_MEUNIER","castagnetimothy":"Timothy_CASTAGNE","tielemansyouri":"Youri_TIELEMANS","debastzeno":"Zeno_DEBAST"},"BIH":{"_f":"Bosnia_and_Herzegovina","amardedic":"Amar_DEDIC","amarmemic":"Amar_MEMIC","amirhadziahmetovic":"Amir_HADZIAHMETOVIC","armingigovic":"Armin_GIGOVIC","benjamintahirovic":"Benjamin_TAHIROVIC","dennishadzikadunic":"Dennis_HADZIKADUNIC","burnicdzenis":"Dzenis_BURNIC","dzekoedin":"Edin_DZEKO","demirovicermedin":"Ermedin_DEMIROVIC","erminmahmic":"Ermin_MAHMIC","bajraktarevicesmir":"Esmir_BAJRAKTAREVIC","haristabakovic":"Haris_TABAKOVIC","basicivan":"Ivan_BASIC","ivansunjic":"Ivan_SUNJIC","jovolukic":"Jovo_LUKIC","alajbegovickerim":"Kerim_ALAJBEGOVIC","martinzlomislic":"Martin_ZLOMISLIC","jurkasmladen":"Mladen_JURKAS","celiknidal":"Nidal_CELIK","mujakicnihad":"Nihad_MUJAKIC","katicnikola":"Nikola_KATIC","nikolavasilj":"Nikola_VASILJ","bazdarsamed":"Samed_BAZDAR","kolasinacsead":"Sead_KOLASINAC","radeljicstjepan":"Stjepan_RADELJIC","muharemovictarik":"Tarik_MUHAREMOVIC"},"BRA":{"_f":"Brazil","alexsandro":"ALEX_SANDRO","alisson":"ALISSON","bremer":"BREMER","brunoguimaraes":"BRUNO_GUIMARAES","casemiro":"CASEMIRO","danilo":"DANILO","danilosantos":"DANILO_SANTOS","douglassantos":"DOUGLAS_SANTOS","ederson":"EDERSON","edersonsilva":"EDERSON_SILVA","endrick":"ENDRICK","fabinho":"FABINHO","gabrielmagalhaes":"GABRIEL_MAGALHAES","gabrielmartinelli":"GABRIEL_MARTINELLI","igorthiago":"IGOR_THIAGO","leopereira":"LEO_PEREIRA","lucaspaqueta":"LUCAS_PAQUETA","henriqueluiz":"LUIZ_HENRIQUE","marquinhos":"MARQUINHOS","cunhamatheus":"MATHEUS_CUNHA","jrneymar":"NEYMAR_JR","raphinha":"RAPHINHA","rayan":"RAYAN","ibanezroger":"ROGER_IBANEZ","juniorvinicius":"VINICIUS_JUNIOR","weverton":"WEVERTON"},"CPV":{"_f":"Cabo_Verde","cjdossantos":"CJ_DOS_SANTOS","dailonlivramento":"DAILON_LIVRAMENTO","deroyduarte":"DEROY_DUARTE","borgesdiney":"DINEY_BORGES","garryrodrigues":"GARRY_RODRIGUES","benchimolgilson":"GILSON_BENCHIMOL","heliovarela":"HELIO_VARELA","jamiromonteiro":"JAMIRO_MONTEIRO","joaopaulo":"JOAO_PAULO","cabraljovane":"JOVANE_CABRAL","kelvinpires":"KELVIN_PIRES","kevinpina":"KEVIN_PINA","duartelaros":"LAROS_DUARTE","costalogan":"LOGAN_COSTA","marciorosa":"MARCIO_ROSA","costadanuno":"NUNO_DA_COSTA","lopespico":"PICO_LOPES","mendesryan":"RYAN_MENDES","cabrallopessidny":"SIDNY_LOPES_CABRAL","moreirasteven":"STEVEN_MOREIRA","stopira":"STOPIRA","arcanjotelmo":"TELMO_ARCANJO","vozinha":"VOZINHA","pinawagner":"WAGNER_PINA","semedowilly":"WILLY_SEMEDO","semedoyannick":"YANNICK_SEMEDO"},"CAN":{"_f":"Canada","alfiejones":"Alfie_JONES","ahmedali":"Ali_AHMED","alistairjohnston":"Alistair_JOHNSTON","alphonsodavies":"Alphonso_DAVIES","cylelarin":"Cyle_LARIN","clairdaynest":"Dayne_ST._CLAIR","corneliusderek":"Derek_CORNELIUS","ismaelkone":"Ismael_KONE","jacobshaffelburg":"Jacob_SHAFFELBURG","joelwaterman":"Joel_WATERMAN","davidjonathan":"Jonathan_DAVID","jonathanosorio":"Jonathan_OSORIO","liammillar":"Liam_MILLAR","defougerollesluc":"Luc_DE_FOUGEROLLES","floresmarcelo":"Marcelo_FLORES","choinieremathieu":"Mathieu_CHOINIERE","crepeaumaxime":"Maxime_CREPEAU","bombitomoise":"Moise_BOMBITO","nathansaliba":"Nathan_SALIBA","nikosigur":"Niko_SIGUR","goodmanowen":"Owen_GOODMAN","davidpromise":"Promise_DAVID","laryearichie":"Richie_LARYEA","eustaquiostephen":"Stephen_EUSTAQUIO","buchanantajon":"Tajon_BUCHANAN","oluwaseyitani":"Tani_OLUWASEYI"},"COL":{"_f":"Colombia","alvaromontero":"Alvaro_MONTERO","andresgomez":"Andres_GOMEZ","camilovargas":"Camilo_VARGAS","cuchohernandez":"Cucho_HERNANDEZ","danielmunoz":"Daniel_MUNOZ","davidospina":"David_OSPINA","davinsonsanchez":"Davinson_SANCHEZ","deivermachado":"Deiver_MACHADO","gustavopuerta":"Gustavo_PUERTA","jamesrodriguez":"James_RODRIGUEZ","campazjaminton":"Jaminton_CAMPAZ","jeffersonlerma":"Jefferson_LERMA","ariasjhon":"Jhon_ARIAS","cordobajhon":"Jhon_CORDOBA","jhonlucumi":"Jhon_LUCUMI","johanmojica":"Johan_MOJICA","carrascaljorge":"Jorge_CARRASCAL","juanportilla":"Juan_PORTILLA","juanquintero":"Juan_QUINTERO","castanokevin":"Kevin_CASTANO","diazluis":"Luis_DIAZ","luissuarez":"Luis_SUAREZ","richardrios":"Richard_RIOS","ariassantiago":"Santiago_ARIAS","dittawiller":"Willer_DITTA","minayerry":"Yerry_MINA"},"COD":{"_f":"Congo_DR","aarontshibola":"Aaron_TSHIBOLA","aaronbissakawan":"Aaron_WAN-BISSAKA","arthurmasuaku":"Arthur_MASUAKU","axeltuanzebe":"Axel_Tuanzebe","briancipenga":"Brian_CIPENGA","bakambucedric":"Cedric_BAKAMBU","chancelmbemba":"Chancel_MBEMBA","charlespickel":"Charles_PICKEL","batubinsikadylan":"Dylan_BATUBINSIKA","edokayembe":"Edo_Kayembe","fistonmayele":"Fiston_MAYELE","gaelkakuta":"Gael_KAKUTA","gedeonkalulu":"Gedeon_KALULU","joriskayembe":"Joris_KAYEMBE","lionelmpasi":"Lionel_MPASI","epolomatthieu":"Matthieu_EPOLO","eliameschack":"Meschack_ELIA","mbukunathanael":"Nathanael_MBUKU","mukaungalayel":"Ngalayel_MUKAU","noahsadiki":"Noah_SADIKI","moutoussamysamuel":"Samuel_Moutoussamy","banzasimon":"Simon_BANZA","kapuadisteve":"Steve_KAPUADI","bongondatheo":"Theo_BONGONDA","fayulutimothy":"Timothy_FAYULU","wissayoane":"Yoane_WISSA"},"CRO":{"_f":"Croatia","andrejkramaric":"Andrej_KRAMARIC","antebudimir":"Ante_BUDIMIR","dominikkotarski":"Dominik_KOTARSKI","dominiklivakovic":"Dominik_LIVAKOVIC","caletacarduje":"Duje_CALETA-CAR","igormatanovic":"Igor_MATANOVIC","ivanperisic":"Ivan_PERISIC","ivorpandur":"Ivor_PANDUR","josipstanisic":"Josip_STANISIC","josipsutalo":"Josip_SUTALO","gvardioljosko":"Josko_GVARDIOL","jakickristijan":"Kristijan_JAKIC","lukamodric":"Luka_MODRIC","lukasucic":"Luka_SUCIC","lukavuskovic":"Luka_VUSKOVIC","marcopasalic":"Marco_PASALIC","marinpongracic":"Marin_PONGRACIC","mariopasalic":"Mario_PASALIC","baturinamartin":"Martin_BATURINA","erlicmartin":"Martin_ERLIC","kovacicmateo":"Mateo_KOVACIC","moronikola":"Nikola_Moro","nikolavlasic":"Nikola_VLASIC","musapetar":"Petar_Musa","petarsucic":"Petar_SUCIC","fruktoni":"Toni_FRUK"},"CUW":{"_f":"Curaçao","arjanymartha":"Arjany_MARTHA","armandoobispo":"Armando_OBISPO","brandleykuwas":"Brandley_KUWAS","deveronfonville":"Deveron_FONVILLE","eloyroom":"Eloy_ROOM","gervanekastaneer":"Gervane_KASTANEER","godfriedroemeratoe":"Godfried_ROEMERATOE","jearlmargaritha":"Jearl_MARGARITHA","antonissejeremy":"Jeremy_Antonisse","brenetjoshua":"Joshua_BRENET","juergenlocadia":"Juergen_LOCADIA","bacunajuninho":"Juninho_BACUNA","gaarijurien":"Jurien_GAARI","gorrekenji":"Kenji_GORRE","felidakevin":"Kevin_FELIDA","bacunaleandro":"Leandro_BACUNA","comenencialivano":"Livano_COMENENCIA","bazoerriechedly":"Riechedly_Bazoer","eijmaroshonvan":"Roshon_VAN_EIJMA","floranussherel":"Sherel_FLORANUS","samboshurandy":"Shurandy_SAMBO","hansensontje":"Sontje_HANSEN","chongtahith":"Tahith_CHONG","doornbuschtrevor":"Trevor_DOORNBUSCH","noslintyrese":"Tyrese_NOSLIN","bodaktyrick":"Tyrick_BODAK"},"CZE":{"_f":"Czechia","adamhlozek":"Adam_HLOZEK","alexandrsojka":"Alexandr_SOJKA","daviddoudera":"David_DOUDERA","davidjurasek":"David_JURASEK","davidzima":"David_Zima","denisvisinsky":"Denis_VISINSKY","hugosochurek":"Hugo_SOCHUREK","jankuchta":"Jan_KUCHTA","jaroslavzeleny":"Jaroslav_ZELENY","jindrichstanek":"Jindrich_STANEK","krejciladislav":"Ladislav_KREJCI","cervlukas":"Lukas_CERV","horniceklukas":"Lukas_HORNICEK","lukasprovod":"Lukas_PROVOD","kovarmatej":"Matej_KOVAR","michalsadilek":"Michal_SADILEK","chytilmojmir":"Mojmir_CHYTIL","patrikschick":"Patrik_Schick","pavelsulc":"Pavel_SULC","hranacrobin":"Robin_HRANAC","chaloupekstepan":"Stepan_CHALOUPEK","chorytomas":"Tomas_CHORY","holestomas":"Tomas_HOLES","soucektomas":"Tomas_SOUCEK","coufalvladimir":"Vladimir_COUFAL","daridavladimir":"Vladimir_DARIDA"},"CIV":{"_f":"Côte_d'Ivoire","albanlafont":"Alban_Lafont","amaddiallo":"Amad_DIALLO","angebonnyyoan":"Ange-Yoan_BONNY","bazoumanatoure":"Bazoumana_TOURE","christinaooulai":"Christ_Inao_OULAI","christopheroperi":"Christopher_OPERI","elyewahi":"Elye_WAHI","agbadouemmanuel":"Emmanuel_AGBADOU","evanndicka":"Evan_NDICKA","evannguessand":"Evann_GUESSAND","franckkessie":"Franck_KESSIE","ghislainkonan":"Ghislain_KONAN","doueguela":"Guela_DOUE","ibrahimsangare":"Ibrahim_SANGARE","jeanmichaelseri":"Jean_Michael_SERI","konemohamed":"Mohamed_KONE","nicolaspepe":"Nicolas_PEPE","kossounouodilon":"Odilon_KOSSOUNOU","diakiteoumar":"Oumar_DIAKITE","diomandeousmane":"Ousmane_DIOMANDE","guiagonparfait":"Parfait_GUIAGON","fofanaseko":"Seko_Fofana","adingrasimon":"Simon_ADINGRA","singowilfried":"Wilfried_SINGO","fofanayahia":"Yahia_Fofana","diomandeyan":"Yan_DIOMANDE"},"ECU":{"_f":"Ecuador","alanfranco":"Alan_FRANCO","alanminda":"Alan_MINDA","angelopreciado":"Angelo_PRECIADO","anthonyvalencia":"Anthony_VALENCIA","castillodenil":"Denil_CASTILLO","ennervalencia":"Enner_VALENCIA","felixtorres":"Felix_TORRES","gonzaloplata":"Gonzalo_PLATA","gonzalovalle":"Gonzalo_VALLE","galindezhernan":"Hernan_GALINDEZ","jacksonporozo":"Jackson_POROZO","arevalojeremy":"Jeremy_AREVALO","joelordonez":"Joel_ORDONEZ","johnyeboah":"John_YEBOAH","alcivarjordy":"Jordy_ALCIVAR","caicedojordy":"Jordy_CAICEDO","kendrypaez":"Kendry_PAEZ","kevinrodriguez":"Kevin_RODRIGUEZ","caicedomoises":"Moises_CAICEDO","moisesramirez":"Moises_RAMIREZ","angulonilson":"Nilson_ANGULO","pedrovite":"Pedro_VITE","estupinanpervis":"Pervis_ESTUPINAN","hincapiepiero":"Piero_HINCAPIE","pachowillian":"Willian_PACHO","medinayaimar":"Yaimar_MEDINA"},"EGY":{"_f":"Egypt","ahmedfatouh":"AHMED_FATOUH","ashouremam":"EMAM_ASHOUR","fathyhamdy":"HAMDY_FATHY","abdelkarimhamza":"HAMZA_ABDELKARIM","abdelmaguidhossam":"HOSSAM_ABDELMAGUID","haissemhassan":"Haissem_HASSAN","adelibrahim":"IBRAHIM_ADEL","hafezkarim":"KARIM_HAFEZ","mahdysoliman":"MAHDY_SOLIMAN","mahmoudsaber":"MAHMOUD_SABER","attiamarawan":"MARAWAN_ATTIA","abdelmoneimmohamed":"MOHAMED_ABDELMONEIM","alaamohamed":"MOHAMED_ALAA","elshenawymohamed":"MOHAMED_ELSHENAWY","hanymohamed":"MOHAMED_HANY","mohamedsalah":"MOHAMED_SALAH","lashinmohanad":"MOHANAD_LASHIN","mostafashoubir":"MOSTAFA_SHOUBIR","mostafazico":"MOSTAFA_ZICO","donganabil":"NABIL_DONGA","marmoushomar":"OMAR_MARMOUSH","rabiaramy":"RAMY_RABIA","alaatarek":"TAREK_ALAA","trezeguet":"TREZEGUET","ibrahimyasser":"YASSER_IBRAHIM","zizo":"ZIZO"},"ENG":{"_f":"England","anthonygordon":"Anthony_GORDON","bukayosaka":"Bukayo_SAKA","burndan":"Dan_BURN","deanhenderson":"Dean_Henderson","declanrice":"Declan_RICE","djedspence":"Djed_SPENCE","eberechieze":"Eberechi_EZE","andersonelliot":"Elliot_ANDERSON","ezrikonsa":"Ezri_KONSA","harrykane":"Harry_KANE","ivantoney":"Ivan_TONEY","jamestrafford":"James_TRAFFORD","jarellquansah":"Jarell_QUANSAH","johnstones":"John_STONES","hendersonjordan":"Jordan_HENDERSON","jordanpickford":"Jordan_PICKFORD","bellinghamjude":"Jude_BELLINGHAM","kobbiemainoo":"Kobbie_MAINOO","guehimarc":"Marc_GUEHI","marcusrashford":"Marcus_RASHFORD","morganrogers":"Morgan_ROGERS","nicooreilly":"Nico_OREILLY","maduekenoni":"Noni_MADUEKE","olliewatkins":"Ollie_WATKINS","jamesreece":"Reece_JAMES","livramentotino":"Tino_LIVRAMENTO"},"FRA":{"_f":"France","adrienrabiot":"Adrien_RABIOT","aurelientchouameni":"Aurelien_TCHOUAMENI","barcolabradley":"Bradley_BARCOLA","bricesamba":"Brice_SAMBA","dayotupamecano":"Dayot_UPAMECANO","desiredoue":"Desire_DOUE","ibrahimakonate":"Ibrahima_KONATE","jeanmatetaphilippe":"Jean-Philippe_MATETA","juleskounde":"Jules_KOUNDE","kylianmbappe":"Kylian_MBAPPE","dignelucas":"Lucas_Digne","hernandezlucas":"Lucas_HERNANDEZ","akliouchemaghnes":"Maghnes_AKLIOUCHE","gustomalo":"Malo_GUSTO","konemanu":"Manu_KONE","marcusthuram":"Marcus_THURAM","lacroixmaxence":"Maxence_Lacroix","michaelolise":"Michael_OLISE","maignanmike":"Mike_MAIGNAN","kantengolo":"Ngolo_KANTE","dembeleousmane":"Ousmane_DEMBELE","cherkirayan":"Rayan_CHERKI","risserrobin":"Robin_RISSER","hernandeztheo":"Theo_HERNANDEZ","emerywarrenzaire":"Warren_ZAIRE-EMERY","salibawilliam":"William_SALIBA"},"GER":{"_f":"Germany","aleksandarpavlovic":"Aleksandar_PAVLOVIC","alexandernuebel":"Alexander_NUEBEL","angelostiller":"Angelo_Stiller","antonioruediger":"Antonio_RUEDIGER","assanouedraogo":"Assan_OUEDRAOGO","davidraum":"David_RAUM","denizundav":"Deniz_UNDAV","felixnmecha":"Felix_NMECHA","florianwirtz":"Florian_WIRTZ","jamalmusiala":"Jamal_MUSIALA","jamieleweling":"Jamie_LEWELING","jonathantah":"Jonathan_TAH","joshuakimmich":"Joshua_KIMMICH","havertzkai":"Kai_HAVERTZ","goretzkaleon":"Leon_GORETZKA","leroysane":"Leroy_SANE","malickthiaw":"Malick_THIAW","manuelneuer":"Manuel_NEUER","beiermaximilian":"Maximilian_BEIER","amirinadiem":"Nadiem_Amiri","brownnathaniel":"Nathaniel_BROWN","nickwoltemade":"Nick_WOLTEMADE","nicoschlotterbeck":"Nico_SCHLOTTERBECK","baumannoliver":"Oliver_Baumann","grosspascal":"Pascal_GROSS","antonwaldemar":"Waldemar_ANTON"},"GHA":{"_f":"Ghana","abdulfatawu":"Abdul_FATAWU","abdulmumin":"Abdul_MUMIN","aliduseidu":"Alidu_SEIDU","antoinesemenyo":"Antoine_SEMENYO","augustineboakye":"Augustine_BOAKYE","babarahman":"Baba_RAHMAN","asarebenjamin":"Benjamin_ASARE","asantebrandonthomas":"Brandon_THOMAS-ASANTE","calebyirenkyi":"Caleb_YIRENKYI","baahbonsuchristopher":"Christopher_Bonsu_BAAH","derrickluckassen":"Derrick_LUCKASSEN","elishaowusu":"Elisha_OWUSU","ernestnuamah":"Ernest_NUAMAH","gideonmensah":"Gideon_MENSAH","inakiwilliams":"Inaki_WILLIAMS","jeromeopoku":"Jerome_OPOKU","adjeteyjonas":"Jonas_ADJETEY","ayewjordan":"Jordan_AYEW","anangjoseph":"Joseph_ANANG","kamaldeensulemana":"Kamaldeen_SULEMANA","kojooppongpeprah":"Kojo_Peprah_OPPONG","kwasisibo":"Kwasi_SIBO","atilawrencezigi":"Lawrence_Ati_ZIGI","marvinsenaya":"Marvin_SENAYA","aduprince":"Prince_ADU","parteythomas":"Thomas_PARTEY"},"HAI":{"_f":"Haiti","alexandrepierre":"Alexandre_PIERRE","carlsainte":"Carl_SAINTE","arcuscarlens":"Carlens_ARCUS","danleyjacquesjean":"Danley_JEAN_JACQUES","derricketienne":"Derrick_ETIENNE","dominiquesimon":"Dominique_SIMON","duckensnazon":"Duckens_NAZON","frantzdypierrot":"Frantzdy_Pierrot","delcroixhannes":"Hannes_DELCROIX","duvernejeankevin":"Jean-Kevin_DUVERNE","bellegardejeanricner":"Jean-Ricner_Bellegarde","johnyplacide":"Johny_Placide","casimirjosue":"Josue_CASIMIR","duvergerjosue":"Josue_DUVERGER","keetothermoncy":"Keeto_THERMONCY","josephlenny":"Lenny_JOSEPH","levertonpierre":"Leverton_PIERRE","deedsonlouicius":"Louicius_DEEDSON","lacroixmarkhus":"Markhus_LACROIX","experiencemartin":"Martin_EXPERIENCE","adericardo":"Ricardo_Ade","providenceruben":"Ruben_PROVIDENCE","paugainwilguens":"Wilguens_PAUGAIN","isidorwilson":"Wilson_Isidor","pierrewoodensky":"Woodensky_PIERRE","fortuneyassin":"Yassin_FORTUNE"},"IRN":{"_f":"IR_Iran","alialipour":"Ali_Alipour","alinemati":"Ali_NEMATI","alirezabeiranvand":"Alireza_BEIRANVAND","alirezajahanbakhsh":"Alireza_JAHANBAKHSH","amirhosseinhosseinzadeh":"Amirhossein_Hosseinzadeh","amirmohammadrazaghinia":"Amirmohammad_RAZAGHINIA","aryayousefi":"Arya_YOUSEFI","danialiri":"Danial_IRI","dargahidennis":"Dennis_DARGAHI","ehsanhajisafi":"Ehsan_HAJISAFI","hosseinhosseini":"Hossein_HOSSEINI","hosseinkanani":"Hossein_KANANI","ghayedimehdi":"Mehdi_GHAYEDI","mehditaremi":"Mehdi_TAREMI","mehditorabi":"Mehdi_TORABI","miladmohammadi":"Milad_MOHAMMADI","ghorbanimohammad":"Mohammad_GHORBANI","mohammadmohebbi":"Mohammad_MOHEBBI","niazmandpayam":"Payam_NIAZMAND","raminrezaeian":"Ramin_REZAEIAN","cheshmiroozbeh":"Roozbeh_CHESHMI","ezatolahisaeid":"Saeid_EZATOLAHI","hardanisaleh":"Saleh_HARDANI","ghoddossaman":"Saman_GHODDOS","moghanlooshahriyar":"Shahriyar_MOGHANLOO","khalilzadehshoja":"Shoja_KHALILZADEH"},"IRQ":{"_f":"Iraq","ahmedbasil":"AHMED_BASIL","ahmedmaknazi":"AHMED_MAKNAZI","ahmedqasim":"AHMED_QASIM","aimarsher":"AIMAR_SHER","akamhashim":"AKAM_HASHIM","alhamadiali":"ALI_ALHAMADI","alijasim":"ALI_JASIM","aliyousif":"ALI_YOUSIF","alammariamir":"AMIR_ALAMMARI","aymenhussein":"AYMEN_HUSSEIN","fahadtalib":"FAHAD_TALIB","fransputros":"FRANS_PUTROS","alihussein":"HUSSEIN_ALI","bayeshibrahim":"IBRAHIM_BAYESH","hassanjalal":"JALAL_HASSAN","kevinyakob":"KEVIN_YAKOB","farjimarko":"MARKO_FARJI","doskimerchas":"MERCHAS_DOSKI","alimohanad":"MOHANAD_ALI","munafyounus":"MUNAF_YOUNUS","mustafasaadoon":"MUSTAFA_SAADOON","rebinsulaka":"REBIN_SULAKA","amynyoussef":"YOUSSEF_AMYN","ismaelzaid":"ZAID_ISMAEL","tahseenzaid":"ZAID_TAHSEEN","iqbalzidane":"ZIDANE_IQBAL"},"JPN":{"_f":"Japan","aotanaka":"Ao_TANAKA","ayaseueda":"Ayase_UEDA","ayumuseko":"Ayumu_SEKO","daichikamada":"Daichi_KAMADA","daizenmaeda":"Daizen_MAEDA","hirokiito":"Hiroki_ITO","junnosukesuzuki":"Junnosuke_SUZUKI","itojunya":"Junya_ITO","kaishusano":"Kaishu_SANO","gotokeisuke":"Keisuke_GOTO","keisukeosako":"Keisuke_OSAKO","keitonakamura":"Keito_Nakamura","kentoshiogai":"Kento_SHIOGAI","kokiogawa":"Koki_OGAWA","itakurakou":"Kou_ITAKURA","doanritsu":"Ritsu_DOAN","shogotaniguchi":"Shogo_TANIGUCHI","kubotakefusa":"Takefusa_KUBO","takehirotomiyasu":"Takehiro_TOMIYASU","hayakawatomoki":"Tomoki_HAYAKAWA","tsuyoshiwatanabe":"Tsuyoshi_Watanabe","endowataru":"Wataru_ENDO","suzukiyuito":"Yuito_SUZUKI","sugawarayukinari":"Yukinari_Sugawara","nagatomoyuto":"Yuto_NAGATOMO","suzukizion":"Zion_Suzuki"},"JOR":{"_f":"Jordan","abdallahalfakhori":"ABDALLAH_ALFAKHORI","abdallahnasib":"ABDALLAH_NASIB","aliazaizeh":"ALI_AZAIZEH","aliolwan":"ALI_OLWAN","amerjamous":"AMER_JAMOUS","anasbadawi":"ANAS_BADAWI","ehsanhaddad":"EHSAN_HADDAD","abudahabhusam":"HUSAM_ABUDAHAB","ibrahimsadeh":"IBRAHIM_SADEH","almardimahmoud":"MAHMOUD_ALMARDI","abualnadimohammad":"MOHAMMAD_ABUALNADI","abughoushmohammad":"MOHAMMAD_ABUGHOUSH","abuhasheeshmohammad":"MOHAMMAD_ABUHASHEESH","abuzraiqmohammad":"MOHAMMAD_ABUZRAIQ","aldaoudmohammad":"MOHAMMAD_ALDAOUD","abutahamohannad":"MOHANNAD_ABUTAHA","altamarimousa":"MOUSA_ALTAMARI","alrashdannizar":"NIZAR_ALRASHDAN","alrawabdehnoor":"NOOR_ALRAWABDEH","baniateyahnour":"NOUR_BANIATEYAH","fakhouryodeh":"ODEH_FAKHOURY","ayedrajaei":"RAJAEI_AYED","alrosansaed":"SAED_ALROSAN","obaidsaleem":"SALEEM_OBAID","alarabyazan":"YAZAN_ALARAB","abulailayazeed":"YAZEED_ABULAILA"},"KOR":{"_f":"Korea_Republic","baejunho":"BAE_Junho","castropjens":"CASTROP_Jens","choguesung":"CHO_Guesung","chowije":"CHO_Wije","eomjisung":"EOM_Jisung","heechanhwang":"HWANG_Heechan","hwanginbeom":"HWANG_Inbeom","hyeonwoojo":"JO_Hyeonwoo","jingyukim":"KIM_Jingyu","kimminjae":"KIM_Minjae","kimmoonhwan":"KIM_Moonhwan","kimseunggyu":"KIM_Seunggyu","kimtaehyeon":"KIM_Taehyeon","donggyeonglee":"LEE_Donggyeong","gihyuklee":"LEE_Gihyuk","hanbeomlee":"LEE_Hanbeom","jaesunglee":"LEE_Jaesung","kanginlee":"LEE_Kangin","leetaeseok":"LEE_Taeseok","hyeongyuoh":"OH_Hyeongyu","paikseungho":"PAIK_Seungho","jinseobpark":"PARK_Jinseob","seolyoungwoo":"SEOL_Youngwoo","bumkeunsong":"SONG_Bumkeun","heungminson":"SON_Heungmin","hyunjunyang":"YANG_Hyunjun"},"MEX":{"_f":"Mexico","alexisvega":"Alexis_VEGA","alvarofidalgo":"Alvaro_FIDALGO","armandogonzalez":"Armando_GONZALEZ","briangutierrez":"Brian_GUTIERREZ","acevedocarlos":"Carlos_ACEVEDO","cesarhuerta":"Cesar_HUERTA","cesarmontes":"Cesar_MONTES","alvarezedson":"Edson_ALVAREZ","eriklira":"Erik_LIRA","gilbertomora":"Gilberto_MORA","guillermomartinez":"Guillermo_MARTINEZ","guillermoochoa":"Guillermo_OCHOA","israelreyes":"Israel_REYES","gallardojesus":"Jesus_GALLARDO","johanvasquez":"Johan_VASQUEZ","jorgesanchez":"Jorge_SANCHEZ","julianquinones":"Julian_QUINONES","chavezluis":"Luis_CHAVEZ","luisromo":"Luis_ROMO","chavezmateo":"Mateo_CHAVEZ","obedvargas":"Obed_VARGAS","orbelinpineda":"Orbelin_PINEDA","jimenezraul":"Raul_JIMENEZ","rangelraul":"Raul_RANGEL","alvaradoroberto":"Roberto_ALVARADO","gimenezsantiago":"Santiago_GIMENEZ"},"MAR":{"_f":"Morocco","abdeezzalzouli":"Abde_EZZALZOULI","achrafhakimi":"Achraf_HAKIMI","ahmedredatagnaouti":"Ahmed_Reda_TAGNAOUTI","anasseddinesalah":"Anass_SALAH_EDDINE","ayoubelkaabi":"Ayoub_El_Kaabi","amaimouniayoube":"Ayoube_AMAIMOUNI","ayyoubbouaddi":"Ayyoub_BOUADDI","azzedineounahi":"Azzedine_OUNAHI","bilalelkhannouss":"Bilal_EL_KHANNOUSS","brahimdiaz":"Brahim_DIAZ","chadiriad":"Chadi_RIAD","chemsdinetalbi":"Chemsdine_TALBI","gessimeyassine":"Gessime_YASSINE","ismaelsaibari":"Ismael_SAIBARI","diopissa":"Issa_Diop","elkajouimunir":"Munir_EL_KAJOUI","aguerdnayef":"Nayef_AGUERD","aynaouielneil":"Neil_EL_AYNAOUI","mazraouinoussair":"Noussair_MAZRAOUI","halhalredouane":"Redouane_HALHAL","elmourabetsamir":"Samir_EL_MOURABET","amrabatsofyan":"Sofyan_AMRABAT","rahimisoufiane":"Soufiane_RAHIMI","bounouyassine":"Yassine_BOUNOU","belammariyoussef":"Youssef_BELAMMARI","elouahdizakaria":"Zakaria_EL_OUAHDI"},"NED":{"_f":"Netherlands","bartverbruggen":"Bart_Verbruggen","brianbrobbey":"Brian_BROBBEY","codygakpo":"Cody_GAKPO","crysenciosummerville":"Crysencio_SUMMERVILLE","denzeldumfries":"Denzel_DUMFRIES","donyellmalen":"Donyell_Malen","defrenkiejong":"Frenkie_DE_JONG","guustil":"Guus_TIL","heckejanpaulvan":"Jan_Paul_VAN_HECKE","hatojorrel":"Jorrel_HATO","justinkluivert":"Justin_KLUIVERT","geertruidalutsharel":"Lutsharel_GEERTRUIDA","flekkenmark":"Mark_FLEKKEN","demartenroon":"Marten_DE_ROON","matswieffer":"Mats_WIEFFER","depaymemphis":"Memphis_DEPAY","demickyvanven":"Micky_VAN_DE_VEN","akenathan":"Nathan_AKE","langnoa":"Noa_LANG","quintentimber":"Quinten_TIMBER","robinroefs":"Robin_ROEFS","gravenberchryan":"Ryan_GRAVENBERCH","koopmeinersteun":"Teun_KOOPMEINERS","reijnderstijjani":"Tijjani_REIJNDERS","dijkvanvirgil":"Virgil_VAN_DIJK","weghorstwout":"Wout_WEGHORST"},"NZL":{"_f":"New_Zealand","alexpaulsen":"Alex_PAULSEN","alexrufer":"Alex_RUFER","benold":"Ben_OLD","benwaine":"Ben_WAINE","callanelliot":"Callan_ELLIOT","callummccowatt":"Callum_McCOWATT","chriswood":"Chris_WOOD","elijahjust":"Elijah_JUST","finnsurman":"Finn_SURMAN","defrancisvries":"Francis_DE_VRIES","jesserandall":"Jesse_RANDALL","belljoe":"Joe_BELL","barbarouseskosta":"Kosta_BARBAROUSES","baylisslachlan":"Lachlan_BAYLISS","cacaceliberato":"Liberato_CACACE","markostamenic":"Marko_STAMENIC","garbettmatthew":"Matthew_GARBETT","crocombemax":"Max_CROCOMBE","boxallmichael":"Michael_BOXALL","michaelwoud":"Michael_WOUD","nandopijnaker":"Nando_PIJNAKER","ryanthomas":"Ryan_THOMAS","sarpreetsingh":"Sarpreet_SINGH","paynetim":"Tim_PAYNE","smithtommy":"Tommy_SMITH","bindontyler":"Tyler_BINDON"},"NOR":{"_f":"Norway","alexandersorloth":"Alexander_SORLOTH","andreasschjelderup":"Andreas_SCHJELDERUP","antonionusa":"Antonio_NUSA","davidmollerwolfe":"David_MOLLER_WOLFE","egilselvik":"Egil_SELVIK","erlinghaaland":"Erling_HAALAND","aursnesfredrik":"Fredrik_AURSNES","andrebjorkanfredrik":"Fredrik_Andre_BJORKAN","falchenerhenrik":"Henrik_FALCHENER","haugejenspetter":"Jens_Petter_HAUGE","jorgenlarsenstrand":"Jorgen_STRAND_LARSEN","julianryerson":"Julian_RYERSON","kristianthorstvedt":"Kristian_Thorstvedt","ajerkristoffer":"Kristoffer_AJER","leoostigard":"Leo_OSTIGARD","holmgrenmarcuspedersen":"Marcus_HOLMGREN_PEDERSEN","martinodegaard":"Martin_ODEGAARD","mortenthorsby":"Morten_Thorsby","nylandorjan":"Orjan_NYLAND","bobboscar":"Oscar_BOBB","bergpatrick":"Patrick_BERG","bergesander":"Sander_BERGE","sandertangvik":"Sander_TANGVIK","langassondre":"Sondre_LANGAS","aasgaardthelo":"Thelo_AASGAARD","heggemtorbjorn":"Torbjorn_HEGGEM"},"PAN":{"_f":"Panama","adalbertocarrasquilla":"Adalberto_CARRASQUILLA","albertoquintero":"Alberto_QUINTERO","amirmurillo":"Amir_MURILLO","andradeandres":"Andres_ANDRADE","anibalgodoy":"Anibal_GODOY","azariaslondono":"Azarias_LONDONO","carlosharvey":"Carlos_HARVEY","ceciliowaterman":"Cecilio_Waterman","blackmancesar":"Cesar_BLACKMAN","cesarsamudio":"Cesar_SAMUDIO","cesaryanis":"Cesar_YANIS","cristianmartinez":"Cristian_MARTINEZ","barcenasedgaryoel":"Edgar_Yoel_BARCENAS","edgardofarina":"Edgardo_FARINA","daviseric":"Eric_DAVIS","escobarfidel":"Fidel_ESCOBAR","diazismael":"Ismael_DIAZ","jiovanyramos":"Jiovany_RAMOS","gutierrezjorge":"Jorge_GUTIERREZ","cordobajose":"Jose_CORDOBA","fajardojose":"Jose_FAJARDO","joseluisrodriguez":"Jose_Luis_RODRIGUEZ","luismejia":"Luis_MEJIA","mosqueraorlando":"Orlando_MOSQUERA","millerroderick":"Roderick_MILLER","rodrigueztomas":"Tomas_RODRIGUEZ"},"PAR":{"_f":"Paraguay","alejandrogamarraromero":"Alejandro_ROMERO_GAMARRA","alexarce":"Alex_ARCE","alexandromaidana":"Alexandro_MAIDANA","andrescubas":"Andres_CUBAS","antoniosanabria":"Antonio_SANABRIA","braianojeda":"Braian_OJEDA","bobadilladamian":"Damian_BOBADILLA","diegogomez":"Diego_GOMEZ","balbuenafabian":"Fabian_BALBUENA","avalosgabriel":"Gabriel_AVALOS","gastonolveira":"Gaston_OLVEIRA","fernandezgatito":"Gatito_FERNANDEZ","caballerogustavo":"Gustavo_CABALLERO","gomezgustavo":"Gustavo_GOMEZ","gustavovelazquez":"Gustavo_VELAZQUEZ","isidropitta":"Isidro_PITTA","canalejose":"Jose_CANALE","caceresjosejuan":"Juan_Jose_CACERES","encisojulio":"Julio_ENCISO","alonsojunior":"Junior_ALONSO","mauricio":"MAURICIO","galarzamatias":"Matias_GALARZA","almironmiguel":"Miguel_ALMIRON","aldereteomar":"Omar_ALDERETE","gillorlando":"Orlando_GILL","ramonsosa":"Ramon_SOSA"},"POR":{"_f":"Portugal","bernardosilva":"BERNARDO_SILVA","brunofernandes":"BRUNO_FERNANDES","cristianoronaldo":"CRISTIANO_RONALDO","costadiogo":"DIOGO_COSTA","dalotdiogo":"DIOGO_DALOT","conceicaofrancisco":"FRANCISCO_CONCEICAO","franciscotrincao":"FRANCISCO_TRINCAO","goncaloguedes":"GONCALO_GUEDES","goncaloinacio":"GONCALO_INACIO","goncaloramos":"GONCALO_RAMOS","cancelojoao":"JOAO_CANCELO","felixjoao":"JOAO_FELIX","joaoneves":"JOAO_NEVES","josesa":"JOSE_SA","matheusnunes":"MATHEUS_NUNES","nelsonsemedo":"NELSON_SEMEDO","mendesnuno":"NUNO_MENDES","netopedro":"PEDRO_NETO","leaorafael":"RAFAEL_LEAO","renatoveiga":"RENATO_VEIGA","diasruben":"RUBEN_DIAS","nevesruben":"RUBEN_NEVES","ruisilva":"RUI_SILVA","costasamu":"SAMU_COSTA","araujotomas":"TOMAS_ARAUJO","vitinha":"VITINHA"},"QAT":{"_f":"Qatar","abdulazizhatem":"ABDULAZIZ_HATEM","ahmedalaaeldin":"AHMED_ALAAELDIN","ahmedalganehi":"AHMED_ALGANEHI","ahmedfathy":"AHMED_FATHY","afifakram":"AKRAM_AFIF","alhashmialhussein":"ALHASHMI_ALHUSSEIN","alialmoez":"ALMOEZ_ALI","assimmadibo":"ASSIM_MADIBO","alouiayoub":"AYOUB_ALOUI","boualemkhoukhi":"BOUALEM_KHOUKHI","edmilsonjunior":"EDMILSON_JUNIOR","alhaydoshassan":"HASSAN_ALHAYDOS","ahmedhomam":"HOMAM_AHMED","issalaye":"ISSA_LAYE","gaberjassem":"JASSEM_GABER","boudiafkarim":"KARIM_BOUDIAF","lucasmendes":"LUCAS_MENDES","abunadamahmoud":"MAHMOUD_ABUNADA","barshammeshaal":"MESHAAL_BARSHAM","manaimohamed":"MOHAMED_MANAI","mohammedmuntari":"MOHAMMED_MUNTARI","miguelpedro":"PEDRO_MIGUEL","salahzakaria":"SALAH_ZAKARIA","albrakesultan":"SULTAN_ALBRAKE","mohammedtahsin":"TAHSIN_MOHAMMED","abdurisagyusuf":"YUSUF_ABDURISAG"},"KSA":{"_f":"Saudi_Arabia","abdullahalhamddan":"ABDULLAH_ALHAMDDAN","abdullahalkhaibari":"ABDULLAH_ALKHAIBARI","ahmedalkassar":"AHMED_ALKASSAR","aimanyahya":"AIMAN_YAHYA","alaalhajji":"ALA_ALHAJJI","alilajami":"ALI_LAJAMI","alimajrashi":"ALI_MAJRASHI","abdulelahalamri":"Abdulelah_ALAMRI","albrikanferas":"FERAS_ALBRIKAN","altambaktihassan":"HASSAN_ALTAMBAKTI","hassankadish":"HASSAN_KADISH","jehadthikri":"JEHAD_THIKRI","alghannamkhalid":"KHALID_ALGHANNAM","kannomohamed":"MOHAMED_KANNO","abualshamatmohammed":"MOHAMMED_ABU_ALSHAMAT","alowaismohammed":"MOHAMMED_ALOWAIS","alharbimoteb":"MOTEB_ALHARBI","aljuwayrmusab":"MUSAB_ALJUWAYR","aldawsarinasser":"NASSER_ALDAWSARI","alaqidinawaf":"NAWAF_ALAQIDI","bunawafwashl":"NAWAF_BU_WASHL","alshehrisaleh":"SALEH_ALSHEHRI","aldawsarisalem":"SALEM_ALDAWSARI","abdulhamidsaud":"SAUD_ABDULHAMID","mandashsultan":"SULTAN_MANDASH","aljohaniziyad":"ZIYAD_ALJOHANI"},"SCO":{"_f":"Scotland","aaronhickey":"Aaron_HICKEY","andyrobertson":"Andy_ROBERTSON","angusgunn":"Angus_Gunn","anthonyralston":"Anthony_RALSTON","bendoakgannon":"Ben_GANNON-DOAK","adamsche":"Che_Adams","craiggordon":"Craig_GORDON","dominichyam":"Dominic_HYAM","curtisfindlay":"Findlay_CURTIS","georgehirst":"George_HIRST","granthanley":"Grant_Hanley","hendryjack":"Jack_Hendry","johnmcginn":"John_McGinn","johnsouttar":"John_SOUTTAR","kennymclean":"Kenny_McLEAN","kierantierney":"Kieran_Tierney","lawrenceshankland":"Lawrence_SHANKLAND","fergusonlewis":"Lewis_FERGUSON","kellyliam":"Liam_KELLY","dykeslyndon":"Lyndon_DYKES","nathanpatterson":"Nathan_PATTERSON","rossstewart":"Ross_STEWART","christieryan":"Ryan_Christie","mckennascott":"Scott_MCKENNA","mctominayscott":"Scott_McTominay","fletchertyler":"Tyler_FLETCHER"},"SEN":{"_f":"Senegal","abdoulayeseck":"Abdoulaye_Seck","antoinemendy":"Antoine_MENDY","assanediao":"Assane_DIAO","bambadieng":"Bamba_DIENG","barandiayesapoko":"Bara_Sapoko_NDIAYE","cherifndiaye":"Cherif_NDIAYE","edouardmendy":"Edouard_MENDY","dioufelhadjimalick":"El_Hadji_Malick_DIOUF","diarrahabib":"Habib_DIARRA","ibrahimmbaye":"Ibrahim_MBAYE","ganagueyeidrissa":"Idrissa_Gana_GUEYE","ilimanndiaye":"Iliman_NDIAYE","ismailjakobs":"Ismail_JAKOBS","ismailasarr":"Ismaila_SARR","kalidoukoulibaly":"Kalidou_KOULIBALY","diattakrepin":"Krepin_DIATTA","camaralamine":"Lamine_CAMARA","mamadousarr":"Mamadou_SARR","diawmory":"Mory_DIAW","moussaniakhate":"Moussa_Niakhate","jacksonnicolas":"Nicolas_JACKSON","gueyepape":"Pape_GUEYE","matarpapesarr":"Pape_Matar_SARR","cisspathe":"Pathe_CISS","manesadio":"Sadio_MANE","dioufyehvann":"Yehvann_DIOUF"},"RSA":{"_f":"South_Africa","aubreymodiba":"Aubrey_MODIBA","bradleycross":"Bradley_Cross","evidencemakgopa":"Evidence_MAKGOPA","imeokon":"Ime_OKON","iqraamrayners":"Iqraam_RAYNERS","adamsjayden":"Jayden_ADAMS","kamogelosebelebele":"Kamogelo_SEBELEBELE","khulisomudau":"Khuliso_MUDAU","khulumanindamane":"Khulumani_NDAMANE","fosterlyle":"Lyle_FOSTER","mbekezelimbokazi":"Mbekezeli_MBOKAZI","nkosinathisibisi":"Nkosinathi_SIBISI","makhanyaolwethu":"Olwethu_MAKHANYA","appollisoswin":"Oswin_APPOLLIS","mofokengrelebohile":"Relebohile_MOFOKENG","gossricardo":"Ricardo_GOSS","ronwenwilliams":"Ronwen_WILLIAMS","kabinisamukele":"Samukele_KABINI","chainesipho":"Sipho_CHAINE","sitholesphephelo":"Sphephelo_SITHOLE","mokoenateboho":"Teboho_MOKOENA","matuludithabang":"Thabang_MATULUDI","mbathathalente":"Thalente_MBATHA","masekothapelo":"Thapelo_MASEKO","thembazwane":"Themba_ZWANE","moremitshepang":"Tshepang_MOREMI"},"ESP":{"_f":"Spain","alexbaena":"Alex_BAENA","alexgrimaldo":"Alex_GRIMALDO","aymericlaporte":"Aymeric_LAPORTE","borjaiglesias":"Borja_IGLESIAS","daniolmo":"Dani_OLMO","davidraya":"David_RAYA","ericgarcia":"Eric_GARCIA","fabianruiz":"Fabian_RUIZ","ferrantorres":"Ferran_TORRES","gavi":"GAVI","garciajoan":"Joan_GARCIA","lamineyamal":"Lamine_YAMAL","cucurellamarc":"Marc_CUCURELLA","marcpubill":"Marc_PUBILL","llorentemarcos":"Marcos_LLORENTE","martinzubimendi":"Martin_ZUBIMENDI","merinomikel":"Mikel_MERINO","mikeloyarzabal":"Mikel_OYARZABAL","nicowilliams":"Nico_WILLIAMS","pedri":"PEDRI","cubarsipau":"Pau_CUBARSI","pedroporro":"Pedro_PORRO","rodri":"RODRI","simonunai":"Unai_SIMON","munozvictor":"Victor_MUNOZ","pinoyeremy":"Yeremy_PINO"},"SWE":{"_f":"Sweden","alexanderbernhardsson":"Alexander_BERNHARDSSON","alexanderisak":"Alexander_Isak","anthonyelanga":"Anthony_ELANGA","benjaminnygren":"Benjamin_NYGREN","besfortzeneli":"Besfort_ZENELI","carlstarfelt":"Carl_STARFELT","danielsvensson":"Daniel_SVENSSON","elliotstroud":"Elliot_STROUD","ericsmith":"Eric_SMITH","gabrielgudmundsson":"Gabriel_GUDMUNDSSON","gustaflagerbielke":"Gustaf_LAGERBIELKE","gustafnilsson":"Gustaf_NILSSON","hermanjohansson":"Herman_JOHANSSON","ekdalhjalmar":"Hjalmar_EKDAL","hienisak":"Isak_HIEN","jacobwidellzetterstrom":"Jacob_WIDELL_ZETTERSTROM","jesperkarlstrom":"Jesper_KARLSTROM","kensema":"Ken_SEMA","kristoffernordfeldt":"Kristoffer_NORDFELDT","bergvalllucas":"Lucas_BERGVALL","mattiassvanberg":"Mattias_SVANBERG","alitaha":"Taha_ALI","lindelofvictor":"Victor_LINDELOF","gyokeresviktor":"Viktor_GYOKERES","johanssonviktor":"Viktor_JOHANSSON","ayariyasin":"Yasin_AYARI"},"SUI":{"_f":"Switzerland","ardonjashari":"Ardon_JASHARI","amendaaurele":"Aurele_AMENDA","breelembolo":"Breel_EMBOLO","cedricitten":"Cedric_ITTEN","christianfassnacht":"Christian_FASSNACHT","danndoye":"Dan_NDOYE","deniszakaria":"Denis_ZAKARIA","djibrilsow":"Djibril_SOW","coemerteray":"Eray_COEMERT","fabianrieder":"Fabian_RIEDER","granitxhaka":"Granit_XHAKA","gregorkobel":"Gregor_KOBEL","johanmanzambi":"Johan_MANZAMBI","jaquezluca":"Luca_JAQUEZ","akanjimanuel":"Manuel_AKANJI","kellermarvin":"Marvin_KELLER","aebischermichel":"Michel_AEBISCHER","miromuheim":"Miro_MUHEIM","elvedinico":"Nico_ELVEDI","noahokafor":"Noah_OKAFOR","freulerremo":"Remo_FREULER","ricardorodriguez":"Ricardo_RODRIGUEZ","rubenvargas":"Ruben_VARGAS","silvanwidmer":"Silvan_WIDMER","mvogoyvon":"Yvon_MVOGO","amdounizeki":"Zeki_AMDOUNI"},"TUN":{"_f":"Tunisia","adamarous":"Adam_AROUS","abdiali":"Ali_ABDI","anisslimane":"Anis_SLIMANE","aymendahmen":"Aymen_DAHMEN","bronndylan":"Dylan_BRONN","achourielias":"Elias_ACHOURI","eliassaad":"Elias_SAAD","ellyesskhiri":"Ellyes_SKHIRI","chaouatfiras":"Firas_CHAOUAT","hannibalmejbri":"Hannibal_MEJBRI","hazemmastouri":"Hazem_MASTOURI","gharbiismael":"Ismael_GHARBI","ayarikhalil":"Khalil_AYARI","aminebenhmidamohamed":"Mohamed_Amine_BEN_HMIDA","hadjmahmoudmohamed":"Mohamed_HADJ_MAHMOUD","montassartalbi":"Montassar_TALBI","benmortadhaouanes":"Mortadha_BEN_OUANES","chamakhmouhib":"Mouhib_CHAMAKH","moutazneffati":"Moutaz_NEFFATI","omarrekik":"Omar_Rekik","chikhaouiraed":"Raed_CHIKHAOUI","khedirarani":"Rani_Khedira","elloumirayan":"Rayan_ELLOUMI","benhessensabri":"Sabri_BEN_HESSEN","sebastiantounekti":"Sebastian_TOUNEKTI","valeryyan":"Yan_Valery"},"TUR":{"_f":"Türkiye","abdulkerimbardakci":"Abdulkerim_BARDAKCI","altaybayindir":"Altay_BAYINDIR","ardaguler":"Arda_GULER","alperbarisyilmaz":"Baris_Alper_YILMAZ","caglarsoyuncu":"Caglar_SOYUNCU","canuzun":"Can_UZUN","denizgul":"Deniz_GUL","elmalieren":"Eren_ELMALI","ferdikadioglu":"Ferdi_KADIOGLU","calhanogluhakan":"Hakan_CALHANOGLU","canirfankahveci":"Irfan_Can_KAHVECI","ismailyuksek":"Ismail_YUKSEK","ayhankaan":"Kaan_Ayhan","kenanyildiz":"Kenan_YILDIZ","akturkoglukerem":"Kerem_AKTURKOGLU","demiralmerih":"Merih_DEMIRAL","gunokmert":"Mert_GUNOK","mertmuldur":"Mert_MULDUR","aydinoguz":"Oguz_AYDIN","kokcuorkun":"Orkun_KOKCU","kabakozan":"Ozan_KABAK","ozcansalih":"Salih_OZCAN","akaydinsamet":"Samet_AKAYDIN","cakirugurcan":"Ugurcan_CAKIR","akgunyunus":"Yunus_AKGUN","celikzeki":"Zeki_CELIK"},"USA":{"_f":"USA","alexfreeman":"Alex_FREEMAN","alexzendejas":"Alex_ZENDEJAS","antoneerobinson":"Antonee_ROBINSON","austontrusty":"Auston_TRUSTY","aaronsonbrenden":"Brenden_AARONSON","bradychris":"Chris_BRADY","chrisrichards":"Chris_RICHARDS","christianpulisic":"Christian_PULISIC","cristianroldan":"Cristian_ROLDAN","balogunfolarin":"Folarin_BALOGUN","giovannireyna":"Giovanni_REYNA","hajiwright":"Haji_WRIGHT","joescally":"Joe_SCALLY","maliktillman":"Malik_TILLMAN","markmckenzie":"Mark_McKENZIE","freesematt":"Matt_FREESE","mattturner":"Matt_TURNER","arfstenmax":"Max_ARFSTEN","milesrobinson":"Miles_ROBINSON","pepiricardo":"Ricardo_PEPI","berhaltersebastian":"Sebastian_BERHALTER","destsergino":"Sergino_DEST","reamtim":"Tim_REAM","timothyweah":"Timothy_WEAH","adamstyler":"Tyler_ADAMS","mckennieweston":"Weston_McKENNIE"},"URU":{"_f":"Uruguay","agustincanobbio":"Agustin_CANOBBIO","brianrodriguez":"Brian_RODRIGUEZ","darwinnunez":"Darwin_NUNEZ","emilianomartinez":"Emiliano_MARTINEZ","facundopellistri":"Facundo_PELLISTRI","federicovalverde":"Federico_VALVERDE","federicovinas":"Federico_VINAS","fernandomuslera":"Fernando_MUSLERA","arrascaetadegiorgian":"Giorgian_DE_ARRASCAETA","guillermovarela":"Guillermo_VARELA","joaquinpiquerez":"Joaquin_PIQUEREZ","gimenezjosemaria":"Jose_Maria_GIMENEZ","juanmanuelsanabria":"Juan_Manuel_SANABRIA","manuelugarte":"Manuel_UGARTE","mathiasolivera":"Mathias_OLIVERA","matiasvina":"Matias_VINA","araujomaxi":"Maxi_ARAUJO","cruzdelanicolas":"Nicolas_DE_LA_CRUZ","aguirrerodrigo":"Rodrigo_AGUIRRE","bentancurrodrigo":"Rodrigo_BENTANCUR","rodrigozalazar":"Rodrigo_ZALAZAR","araujoronald":"Ronald_ARAUJO","buenosantiago":"Santiago_BUENO","melesantiago":"Santiago_MELE","caceressebastian":"Sebastian_CACERES","rochetsergio":"Sergio_ROCHET"},"UZB":{"_f":"Uzbekistan","abbosbekfayzullaev":"Abbosbek_FAYZULLAEV","abdukodirkhusanov":"Abdukodir_KHUSANOV","abdullaabdullaev":"Abdulla_ABDULLAEV","abduvohidnematov":"Abduvohid_NEMATOV","akmalmozgovoy":"Akmal_MOZGOVOY","avazbekulmasaliyev":"Avazbek_ULMASALIYEV","amonovazizbek":"Azizbek_AMONOV","azizjonganiev":"Azizjon_GANIEV","behruzjonkarimov":"Behruzjon_KARIMOV","botiraliergashev":"Botirali_ERGASHEV","dostonbekkhamdamov":"Dostonbek_Khamdamov","eldorshomurodov":"Eldor_SHOMURODOV","farrukhsayfiev":"Farrukh_SAYFIEV","igorsergeev":"Igor_Sergeev","jakhongirurozov":"Jakhongir_UROZOV","jaloliddinmasharipov":"Jaloliddin_Masharipov","iskanderovjamshid":"Jamshid_ISKANDEROV","alijonovkhojiakbar":"Khojiakbar_ALIJONOV","odiljonxamrobekov":"Odiljon_XAMROBEKOV","ostonurunov":"Oston_URUNOV","otabekshukurov":"Otabek_Shukurov","ashurmatovrustam":"Rustam_ASHURMATOV","esanovsherzod":"Sherzod_ESANOV","nasrullaevsherzod":"Sherzod_NASRULLAEV","eshmurodovumar":"Umar_ESHMURODOV","utkiryusupov":"Utkir_YUSUPOV"}};
 
 
+
+
+
+
+
+
+
+
+function hideMapTooltip() {
+  const tooltip = document.getElementById('mapTooltip');
+  tooltip.style.display = 'none';
+}
+
+
+
+
+let lastTap = 0;
+
+
+
 function renderTeams(){
   if(selectedTeamId) {
     showSquad(selectedTeamId);
@@ -43345,12 +43222,14 @@ function renderStadiums(){
   if(panel) panel.innerHTML = h + '</div>';
 }
 
+
 function renderAll(){
   const ae=document.activeElement;
   const fid=ae&&ae.dataset?ae.dataset.id:null;
   const fside=ae&&ae.dataset?ae.dataset.side:null;
   const selStart=ae&&ae.selectionStart!=null?ae.selectionStart:null;
   renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderTeams();renderStadiums();
+  if(activeTab === 8) renderMap();
   bindInputs();
   if(fid){
     const inp=document.querySelector('input.score-inp[data-id="'+fid+'"][data-side="'+fside+'"]');
@@ -44342,5 +44221,267 @@ document.addEventListener('click', function startMusicOnFirstClick() {
 })();
 </script>
 
+
+<script>
+
+
+function viewMatchEvents(matchId) {
+  const m = [...GROUP_MATCHES, ...KO].find(x => x.id === matchId);
+  if (!m) return;
+  const sc = getScore(matchId), events = sc.events || [], hId = resolveSlot(m.h), aId = resolveSlot(m.a), T = TRANSLATIONS[currentLang];
+  let h = `<div style="text-align:center; margin-bottom:20px;"><div style="display:flex; justify-content:center; align-items:center; gap:15px; font-size:1.2rem; font-weight:bold;">${teamLabel(hId)} <span>${sc.h ?? '-'} : ${sc.a ?? '-'}</span> ${teamLabel(aId)}</div><div style="color:var(--muted); font-size:0.9rem; margin-top:5px;">${tCity(m.v)} | ${formatKickoff(m.t)}</div></div>`;
+  if (events.length === 0) { h += `<div style="text-align:center; padding:20px; color:var(--muted);">${T.info_unavailable}</div>`; }
+  else {
+    h += '<div class="events-list-simple" style="max-height:300px; overflow-y:auto; padding-right:10px;">';
+    events.sort((a, b) => (parseInt(a.minute) || 0) - (parseInt(b.minute) || 0)).forEach(ev => {
+      const isHome = ev.side === 'h', icon = { goal: '⚽', yellow: '🟨', red: '🟥' }[ev.type] || '', tId = isHome ? hId : aId, pName = getPlayerTranslatedName(ev.playerName, tId);
+      h += `<div style="display:flex; justify-content:${isHome ? 'flex-start' : 'flex-end'}; margin-bottom:8px; align-items:center; gap:10px;">${isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}<span style="background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">${isHome ? icon + ' ' + pName : pName + ' ' + icon}</span>${!isHome ? `<span style="font-weight:bold; color:var(--primary);">${ev.minute}'</span>` : ''}</div>`;
+    });
+    h += '</div>';
+  }
+  const modal = document.getElementById('eventsModal'), contentM = modal.querySelector('.events-modal-content');
+  contentM.innerHTML = `<div class="modal-header"><h3>${T.match_events}</h3><button class="modal-close" onclick="closeEventsModal()">✕</button></div><div style="padding:20px;">${h}</div>`;
+  modal.classList.add('show');
+}
+
+
+
+
+
+
+function renderMap() {
+  const container = document.getElementById('panel8');
+  if (!container) return;
+  const T = TRANSLATIONS[currentLang];
+
+  container.innerHTML = `
+    <div class="map-outer-container">
+      <div class="map-hint-text">${T.map_hint || 'Double click team to go to squad'}</div>
+      <div class="bracket-wrapper" id="bracketWrapper">
+        <svg class="bracket-svg-layer" id="bracketSvg"></svg>
+
+        <div class="bracket-column" id="col-L1"></div>
+        <div class="bracket-column" id="col-L2"></div>
+        <div class="bracket-column" id="col-L3"></div>
+        <div class="bracket-column" id="col-L4"></div>
+
+        <div class="bracket-center">
+            <img class="bracket-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/2026_FIFA_World_Cup_logo.svg/1200px-2026_FIFA_World_Cup_logo.svg.png" alt="FIFA 2026">
+            <h1 class="bracket-title-neon">ПЛЕЙ-ОФФ</h1>
+            <h2 class="bracket-title-year">ЧМ 2026</h2>
+
+            <div id="node-M101-box" style="margin-bottom: 20px;"></div>
+
+            <img src="https://img.freepik.com/premium-vector/gold-trophy-cup-with-garland-victory-champion-winner-concept-hand-drawn-vector-illustration_501069-1383.jpg" class="bracket-trophy-main" alt="Trophy">
+
+            <div id="node-M104-box" style="margin-top: 30px;"></div>
+            <div id="node-M102-box" style="margin-top: 30px;"></div>
+        </div>
+
+        <div class="bracket-column" id="col-R4"></div>
+        <div class="bracket-column" id="col-R3"></div>
+        <div class="bracket-column" id="col-R2"></div>
+        <div class="bracket-column" id="col-R1"></div>
+      </div>
+    </div>
+    <div id="mapTooltip" class="map-tooltip"></div>
+  `;
+
+  const createNode = (id, teamId, type, containerId, mIdNum) => {
+    const node = document.createElement('div');
+    node.className = 'bracket-node' + (teamId ? '' : ' empty');
+    if (mIdNum === 104) node.classList.add('final-node');
+    node.id = 'node-' + id;
+
+    const mId = 'M' + mIdNum;
+    const m = KO.find(x => x.id === mId) || { h: '?', a: '?', id: mId, v: '', d: '', t: '' };
+    const sc = scores[mId];
+
+    node.onclick = (e) => {
+        if(teamId) goToTeam(teamId);
+        else openMatchEvents(mId);
+    };
+
+    node.onmouseenter = (e) => {
+        const tt = document.getElementById('mapTooltip');
+        if (teamId) {
+            const team = TEAMS[teamId];
+            const name = typeof team.n === 'object' ? team.n[currentLang] : team.n;
+            const desc = typeof team.d === 'object' ? team.d[currentLang] : team.d;
+            tt.innerHTML = `<div class="map-tooltip-team">${flagImg(teamId, 20)} ${name}</div><div style="font-size:11px; opacity:0.7; margin-top:5px;">${desc}</div>`;
+        } else {
+            const hId = resolveSlot(m.h), aId = resolveSlot(m.a);
+            const hN = hId ? (typeof TEAMS[hId].n === 'object' ? TEAMS[hId].n[currentLang] : TEAMS[hId].n) : slotLabel(m.h);
+            const aN = aId ? (typeof TEAMS[aId].n === 'object' ? TEAMS[aId].n[currentLang] : TEAMS[aId].n) : slotLabel(m.a);
+            tt.innerHTML = `<b>Match ${mId}</b><br>${hN} vs ${aN}<br><div style="font-size:11px; opacity:0.7; margin-top:5px;">${tCity(m.v)}<br>${m.d} ${m.t}</div>`;
+        }
+        tt.style.display = 'block';
+    };
+    node.onmousemove = (e) => {
+        const tt = document.getElementById('mapTooltip');
+        tt.style.left = (e.clientX + 15) + 'px';
+        tt.style.top = (e.clientY + 15) + 'px';
+    };
+    node.onmouseleave = () => { document.getElementById('mapTooltip').style.display='none'; };
+
+    if (teamId) {
+        const team = TEAMS[teamId];
+        const name = typeof team.n === 'object' ? team.n[currentLang] : team.n;
+        const scoreHtml = (sc && type === 'winner') ? `<span class="bracket-score">${sc.h}:${sc.a}</span>` : '';
+        node.innerHTML = `<img src="${team.f}" class="bracket-flag" alt=""><span class="bracket-name">${name}</span>${scoreHtml}`;
+    } else {
+        node.innerHTML = `<span class="bracket-name" style="opacity:0.3; margin:auto;">${(type === 'slot' ? id.split('-')[2] : ('M' + mIdNum))}</span>`;
+    }
+
+    const target = document.getElementById(containerId);
+    if(target) target.appendChild(node);
+  };
+
+  const leftR32 = [74, 77, 73, 75, 79, 80, 76, 78];
+  const rightR32 = [81, 82, 85, 87, 86, 88, 83, 84];
+
+  // L1: Teams in R32
+  leftR32.forEach(mId => {
+      const m = KO.find(x => x.id === 'M'+mId);
+      createNode('M'+mId+'-H', resolveSlot(m.h), 'slot', 'col-L1', mId);
+      createNode('M'+mId+'-A', resolveSlot(m.a), 'slot', 'col-L1', mId);
+  });
+  rightR32.forEach(mId => {
+      const m = KO.find(x => x.id === 'M'+mId);
+      createNode('M'+mId+'-H', resolveSlot(m.h), 'slot', 'col-R1', mId);
+      createNode('M'+mId+'-A', resolveSlot(m.a), 'slot', 'col-R1', mId);
+  });
+
+  // L2: R32 Winners (R16 participants)
+  leftR32.forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-L2', mId));
+  rightR32.forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-R2', mId));
+
+  // L3: R16 Winners (QF participants)
+  [89, 90, 92, 91].forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-L3', mId));
+  [94, 96, 95, 93].forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-R3', mId));
+
+  // L4: QF Winners (SF participants)
+  [97, 99].forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-L4', mId));
+  [98, 100].forEach(mId => createNode('W'+mId, getWinner('M'+mId), 'winner', 'col-R4', mId));
+
+  // Center nodes (SF and Final)
+  createNode('W101', getWinner('M101'), 'winner', 'node-M101-box', 101);
+  createNode('W102', getWinner('M102'), 'winner', 'node-M102-box', 102);
+  createNode('W104', getWinner('M104'), 'winner', 'node-M104-box', 104);
+
+  const fNode = document.getElementById('node-W104');
+  if(fNode) {
+      fNode.style.width = '300px'; fNode.style.height = '70px';
+      if(getWinner('M104')) {
+          fNode.querySelector('.bracket-name').style.fontSize = '24px';
+          fNode.querySelector('.bracket-flag').style.width = '50px';
+          fNode.querySelector('.bracket-flag').style.height = '34px';
+      }
+  }
+
+  setTimeout(drawBracketLines, 100);
+}
+
+function drawBracketLines() {
+    const svg = document.getElementById('bracketSvg');
+    if(!svg) return;
+    svg.innerHTML = '';
+    const wrapper = document.getElementById('bracketWrapper').getBoundingClientRect();
+
+    const connect = (id1, id2, side) => {
+        const el1 = document.getElementById('node-' + id1);
+        const el2 = document.getElementById('node-' + id2);
+        if(!el1 || !el2) return;
+        const r1 = el1.getBoundingClientRect(), r2 = el2.getBoundingClientRect();
+        let x1, x2;
+        if (side === 'left') { x1 = r1.right; x2 = r2.left; }
+        else if (side === 'right') { x1 = r1.left; x2 = r2.right; }
+        else { x1 = (r1.left + r1.right)/2; x2 = (r2.left + r2.right)/2; }
+
+        x1 -= wrapper.left; x2 -= wrapper.left;
+        const y1 = (r1.top + r1.bottom) / 2 - wrapper.top;
+        const y2 = (r2.top + r2.bottom) / 2 - wrapper.top;
+
+        const midX = (x1 + x2) / 2;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const d = `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}`;
+        path.setAttribute("d", d);
+        path.setAttribute("class", "bracket-line");
+
+        if (!el1.classList.contains('empty') && !el2.classList.contains('empty')) path.classList.add('active');
+        svg.appendChild(path);
+    };
+
+    const leftR32 = [74, 77, 73, 75, 79, 80, 76, 78];
+    const rightR32 = [81, 82, 85, 87, 86, 88, 83, 84];
+
+    leftR32.forEach(m => {
+        connect('M'+m+'-H', 'W'+m, 'left');
+        connect('M'+m+'-A', 'W'+m, 'left');
+    });
+    rightR32.forEach(m => {
+        connect('M'+m+'-H', 'W'+m, 'right');
+        connect('M'+m+'-A', 'W'+m, 'right');
+    });
+
+    [ ['W74','W89'],['W77','W89'], ['W73','W90'],['W75','W90'], ['W79','W92'],['W80','W92'], ['W76','W91'],['W78','W91'] ].forEach(p => connect(p[0], p[1], 'left'));
+    [ ['W81','W94'],['W82','W94'], ['W85','W96'],['W87','W96'], ['W86','W95'],['W88','W95'], ['W83','W93'],['W84','W93'] ].forEach(p => connect(p[0], p[1], 'right'));
+
+    [ ['W89','W97'],['W90','W97'], ['W92','W99'],['W91','W99'] ].forEach(p => connect(p[0], p[1], 'left'));
+    [ ['W94','W98'],['W96','W98'], ['W95','W100'],['W93','W100'] ].forEach(p => connect(p[0], p[1], 'right'));
+
+    connect('W97', 'W101', 'left'); connect('W98', 'W101', 'right');
+    connect('W99', 'W102', 'left'); connect('W100', 'W102', 'right');
+
+    connect('W101', 'W104', 'center'); connect('W102', 'W104', 'center');
+}
+
+
+function showMapTooltip(mid, e) {
+  const m = KO.find(x => x.id === mid);
+  if (!m) return;
+  const tt = document.getElementById('mapTooltip');
+  const hId = resolveSlot(m.h), aId = resolveSlot(m.a);
+
+  let html = `<b>Match ${mid} - ${m.s || ''}</b>`;
+  if (hId) {
+      const n = TEAMS[hId].n[currentLang] || TEAMS[hId].n.en;
+      html += `<div class="map-tooltip-team">${flagImg(hId, 20)} ${n}</div>`;
+  }
+  if (aId) {
+      const n = TEAMS[aId].n[currentLang] || TEAMS[aId].n.en;
+      html += `<div class="map-tooltip-team">${flagImg(aId, 20)} ${n}</div>`;
+  }
+
+  const sc = scores[mid];
+  if (sc) html += `<div style="color:#f1c40f; font-size:18px; margin:5px 0;">${sc.h}:${sc.a}</div>`;
+  else html += `<div style="margin:5px 0; opacity:0.6;">vs</div>`;
+
+  html += `<div style="font-size:11px; opacity:0.7;">${tCity(m.v)}<br>${m.d} ${m.t}</div>`;
+
+  tt.innerHTML = html;
+  tt.style.display = 'block';
+
+  const move = (ev) => {
+    tt.style.left = (ev.clientX + 15) + 'px';
+    tt.style.top = (ev.clientY + 15) + 'px';
+  };
+  move(e);
+  e.target.onmousemove = move;
+}
+
+function handleMapNodeClick(mid, e) {
+  const now = Date.now();
+  if (now - mapLastTap < 300) {
+    const m = KO.find(x => x.id === mid);
+    const win = getWinner(mid) || resolveSlot(m.h) || resolveSlot(m.a);
+    if (win) goToTeam(win);
+    e.preventDefault();
+  } else {
+    viewMatchEvents(mid);
+  }
+  mapLastTap = now;
+}
+</script>
 </body>
 </html>
