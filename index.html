@@ -1449,6 +1449,7 @@ const VICTORY_STORIES = {
 
 let isAdmin = false;
 let activeTab=0;
+let mapLastTap = 0;
 let saveTimer=null;
 let currentLang='ru';
 let selectedTeamId=null;
@@ -3655,7 +3656,8 @@ function renderMatchBlock(m,isKo){
 }
 
 
-let mapLastTap = 0;
+
+
 
 
 
@@ -3666,7 +3668,6 @@ let mapLastTap = 0;
 
 function buildUI(){
   const T = TRANSLATIONS[currentLang];
-
   document.getElementById('txt-title').textContent = T.title;
   document.getElementById('txt-subtitle').textContent = T.subtitle;
   document.getElementById('txt-design').textContent = T.design;
@@ -3682,12 +3683,32 @@ function buildUI(){
   const tabs=[T.groups, T.tables, T.thirds, T.calendar, T.knockout, T.bracket, T.teams, T.stadiums, T.map];
   const tabEl=document.getElementById('tabs');
   const panels=document.getElementById('panels');
-  tabEl.innerHTML='';panels.innerHTML='';
+  tabEl.innerHTML=''; panels.innerHTML='';
+
   tabs.forEach((t,i)=>{
     const b=document.createElement('button');
-    b.className='tab'+(i===activeTab?' active':'');
-    b.textContent=t;b.dataset.tab=i;
-    b.onclick=()=>{activeTab=i;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('panel'+i).classList.add('active'); if(i===8) setTimeout(drawBracketLines, 100);};
+    b.className='tab' + (i === activeTab ? ' active' : '');
+    b.textContent=t; b.dataset.tab=i;
+    b.onclick=()=>{
+      activeTab=i;
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      const p=document.getElementById('panel'+i);
+      if(p) {
+        p.classList.add('active');
+        if(i===8) { renderMap(); setTimeout(drawBracketLines, 100); }
+      }
+    };
+    tabEl.appendChild(b);
+
+    const p=document.createElement('div');
+    p.className='panel' + (i === activeTab ? ' active' : '');
+    p.id='panel'+i;
+    panels.appendChild(p);
+  });
+}
+;
     tabEl.appendChild(b);
     const p=document.createElement('div');
     p.className='panel'+(i===activeTab?' active':'');
@@ -43201,12 +43222,14 @@ function renderStadiums(){
   if(panel) panel.innerHTML = h + '</div>';
 }
 
+
 function renderAll(){
   const ae=document.activeElement;
   const fid=ae&&ae.dataset?ae.dataset.id:null;
   const fside=ae&&ae.dataset?ae.dataset.side:null;
   const selStart=ae&&ae.selectionStart!=null?ae.selectionStart:null;
-  renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderTeams();renderStadiums();renderMap();
+  renderGroups();renderTables();renderThird();renderCalendar();renderKnockout();renderBracket();renderTeams();renderStadiums();
+  if(activeTab === 8) renderMap();
   bindInputs();
   if(fid){
     const inp=document.querySelector('input.score-inp[data-id="'+fid+'"][data-side="'+fside+'"]');
@@ -44200,7 +44223,7 @@ document.addEventListener('click', function startMusicOnFirstClick() {
 
 
 <script>
-let mapLastTap = 0;
+
 
 function viewMatchEvents(matchId) {
   const m = [...GROUP_MATCHES, ...KO].find(x => x.id === matchId);
