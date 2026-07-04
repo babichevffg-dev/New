@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-06-28T11:53:10.657Z",
+  "updatedAt": "2026-07-04T10:07:17.598Z",
   "scores": {
     "A1": {
       "h": 2,
@@ -2876,6 +2876,587 @@
           "playerName": "Lionel Messi",
           "minute": "80",
           "video": "image/197.mp4"
+        }
+      ]
+    },
+    "M73": {
+      "h": 0,
+      "a": 1,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Nathan Saliba",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Stephen Eustáquio",
+          "minute": "90+",
+          "video": "image/204.mp4"
+        }
+      ]
+    },
+    "M76": {
+      "h": 2,
+      "a": 1,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Kaishu Sano",
+          "minute": "29",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Casemiro",
+          "minute": "56",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Gabriel Martinelli",
+          "minute": "90+",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Danilo",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Casemiro",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Kaishu Sano",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Daichi Kamada",
+          "minute": "",
+          "video": ""
+        }
+      ]
+    },
+    "M74": {
+      "h": 3,
+      "a": 4,
+      "pen": "a",
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Kai Havertz",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Andrés Cubas",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Matías Galarza",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Kai Havertz",
+          "minute": "54",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Julio Enciso",
+          "minute": "42",
+          "video": ""
+        }
+      ]
+    },
+    "M75": {
+      "h": 2,
+      "a": 3,
+      "pen": "a",
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Issa Diop",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Cody Gakpo",
+          "minute": "72",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Issa Diop",
+          "minute": "90+",
+          "video": ""
+        }
+      ]
+    },
+    "M78": {
+      "h": 1,
+      "a": 2,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Antonio Nusa",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Amad Diallo",
+          "minute": "74",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Antonio Nusa",
+          "minute": "39",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Erling Haaland",
+          "minute": "86",
+          "video": ""
+        }
+      ]
+    },
+    "M77": {
+      "h": 3,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Kylian Mbappé",
+          "minute": "45",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Bradley Barcola",
+          "minute": "53",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Kylian Mbappé",
+          "minute": "74",
+          "video": ""
+        }
+      ]
+    },
+    "M79": {
+      "h": 2,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "red",
+          "playerName": "Piero Hincapié",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Moises Caicedo",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Alan Franco",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Julián Quiñones",
+          "minute": "22",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Raul Jimenez",
+          "minute": "31",
+          "video": ""
+        }
+      ]
+    },
+    "M80": {
+      "h": 2,
+      "a": 1,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Jude Bellingham",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Noah Sadiki",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Brian Cipenga",
+          "minute": "7",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Harry Kane",
+          "minute": "75",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Harry Kane",
+          "minute": "86",
+          "video": ""
+        }
+      ]
+    },
+    "M82": {
+      "h": 3,
+      "a": 2,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Brandon Mechele",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Habib Diarra",
+          "minute": "25",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Pape Matar Sarr",
+          "minute": "51",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Romelu Lukaku",
+          "minute": "86",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Youri Tielemans",
+          "minute": "89",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Youri Tielemans",
+          "minute": "90+",
+          "video": ""
+        }
+      ]
+    },
+    "M81": {
+      "h": 2,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "red",
+          "playerName": "Folarin Balogun",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Stjepan Radeljić",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Folarin Balogun",
+          "minute": "45",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Malik Tillman",
+          "minute": "82",
+          "video": ""
+        }
+      ]
+    },
+    "M84": {
+      "h": 3,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Stefan Posch",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Mikel Oyarzabal",
+          "minute": "36",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Pedro Porro",
+          "minute": "66",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Mikel Oyarzabal",
+          "minute": "89",
+          "video": ""
+        }
+      ]
+    },
+    "M83": {
+      "h": 2,
+      "a": 1,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Rúben Dias",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Luka Modric",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Ivan Perišić",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Ivan Perišić",
+          "minute": "53",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Cristiano Ronaldo",
+          "minute": "68",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Gonçalo Ramos",
+          "minute": "90+",
+          "video": ""
+        }
+      ]
+    },
+    "M85": {
+      "h": 2,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Fares Chaibi",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Breel Embolo",
+          "minute": "10",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Dan Ndoye",
+          "minute": "46",
+          "video": ""
+        }
+      ]
+    },
+    "M88": {
+      "h": 2,
+      "a": 4,
+      "pen": "a",
+      "events": [
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Yasser Ibrahim",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Emam Ashour",
+          "minute": "13",
+          "video": ""
+        }
+      ]
+    },
+    "M86": {
+      "h": 3,
+      "a": 2,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Gonzalo Montiel",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Laros Duarte",
+          "minute": "59",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "goal",
+          "playerName": "Sidny Lopes Cabral",
+          "minute": "90+",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Lionel Messi",
+          "minute": "29",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Lautaro Martínez",
+          "minute": "90+",
+          "video": ""
+        }
+      ]
+    },
+    "M87": {
+      "h": 1,
+      "a": 0,
+      "pen": null,
+      "events": [
+        {
+          "side": "h",
+          "type": "yellow",
+          "playerName": "Santiago Arias",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "a",
+          "type": "yellow",
+          "playerName": "Caleb Yirenkyi",
+          "minute": "",
+          "video": ""
+        },
+        {
+          "side": "h",
+          "type": "goal",
+          "playerName": "Jhon Arias",
+          "minute": "14",
+          "video": ""
         }
       ]
     }
