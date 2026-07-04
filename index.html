@@ -1099,6 +1099,7 @@ body.admin-active .toolbar { display: flex; }
             <option value="goal">⚽ Goal</option>
             <option value="yellow">🟨 Yellow Card</option>
             <option value="red">🟥 Red Card</option>
+            <option value="penalty">🥅 Penalty Shootout</option>
           </select>
           <div id="minWrapHome">
             <select id="minHome"></select>
@@ -1118,6 +1119,7 @@ body.admin-active .toolbar { display: flex; }
             <option value="goal">⚽ Goal</option>
             <option value="yellow">🟨 Yellow Card</option>
             <option value="red">🟥 Red Card</option>
+            <option value="penalty">🥅 Penalty Shootout</option>
           </select>
           <div id="minWrapAway">
             <select id="minAway"></select>
@@ -1715,6 +1717,7 @@ const TRANSLATIONS = {
     ev_goal: "⚽ Gol",
     ev_yellow: "🟨 Tarjeta amarilla",
     ev_red: "🟥 Tarjeta roja",
+    ev_penalty: "🥅 Tanda de penaltis",
     minute: "Minuto",
     saved: "Guardado",
     loaded: "Carga guardada de",
@@ -1818,6 +1821,7 @@ const TRANSLATIONS = {
     ev_goal: "⚽ But",
     ev_yellow: "🟨 Carton jaune",
     ev_red: "🟥 Carton rouge",
+    ev_penalty: "🥅 Tirs au but",
     minute: "Minute",
     saved: "Enregistré",
     loaded: "Chargement réussi du",
@@ -1921,6 +1925,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ Gol",
     "ev_yellow": "🟨 Sarı Kart",
     "ev_red": "🟥 Kırmızı Kart",
+    "ev_penalty": "🥅 Penaltı Atışları",
     "minute": "Dakika",
     "saved": "Kaydedildi",
     "loaded": "Kaydedilen yüklendi:",
@@ -2025,6 +2030,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ هدف",
     "ev_yellow": "🟨 بطاقة صفراء",
     "ev_red": "🟥 بطاقة حمراء",
+    "ev_penalty": "🥅 ضربات الجزاء الترجيحية",
     "minute": "الدقيقة",
     "saved": "تم الحفظ",
     "loaded": "تم تحميل الحفظ من",
@@ -2129,6 +2135,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ Gol",
     "ev_yellow": "🟨 Sarı Kart",
     "ev_red": "🟥 Kırmızı Kart",
+    "ev_penalty": "🥅 Penaltı Atışları",
     "minute": "Dakika",
     "saved": "Kaydedildi",
     "loaded": "Kaydedilen yüklendi:",
@@ -2235,6 +2242,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ هدف",
     "ev_yellow": "🟨 بطاقة صفراء",
     "ev_red": "🟥 بطاقة حمراء",
+    "ev_penalty": "🥅 ضربات الجزاء الترجيحية",
     "minute": "الدقيقة",
     "saved": "تم الحفظ",
     "loaded": "تم تحميل الحفظ من",
@@ -2341,6 +2349,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ Gol",
     "ev_yellow": "🟨 Sarı Kart",
     "ev_red": "🟥 Kırmızı Kart",
+    "ev_penalty": "🥅 Penaltı Atışları",
     "minute": "Dakika",
     "saved": "Kaydedildi",
     "loaded": "Kaydedilen yüklendi:",
@@ -2447,6 +2456,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ هدف",
     "ev_yellow": "🟨 بطاقة صفراء",
     "ev_red": "🟥 بطاقة حمراء",
+    "ev_penalty": "🥅 ضربات الجزاء الترجيحية",
     "minute": "الدقيقة",
     "saved": "تم الحفظ",
     "loaded": "تم تحميل الحفظ من",
@@ -2553,6 +2563,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ Gol",
     "ev_yellow": "🟨 Sarı Kart",
     "ev_red": "🟥 Kırmızı Kart",
+    "ev_penalty": "🥅 Penaltı Atışları",
     "minute": "Dakika",
     "saved": "Kaydedildi",
     "loaded": "Kaydedilen yüklendi:",
@@ -2659,6 +2670,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ هدف",
     "ev_yellow": "🟨 بطاقة صفراء",
     "ev_red": "🟥 بطاقة حمراء",
+    "ev_penalty": "🥅 ضربات الجزاء الترجيحية",
     "minute": "الدقيقة",
     "saved": "تم الحفظ",
     "loaded": "تم تحميل الحفظ من",
@@ -2765,6 +2777,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ Gol",
     "ev_yellow": "🟨 Sarı Kart",
     "ev_red": "🟥 Kırmızı Kart",
+    "ev_penalty": "🥅 Penaltı Atışları",
     "minute": "Dakika",
     "saved": "Kaydedildi",
     "loaded": "Kaydedilen yüklendi:",
@@ -2870,6 +2883,7 @@ const TRANSLATIONS = {
     "ev_goal": "⚽ هدف",
     "ev_yellow": "🟨 بطاقة صفراء",
     "ev_red": "🟥 بطاقة حمراء",
+    "ev_penalty": "🥅 ضربات الجزاء الترجيحية",
     "minute": "الدقيقة",
     "saved": "تم الحفظ",
     "loaded": "تم تحميل الحفظ من",
@@ -2975,6 +2989,7 @@ const TRANSLATIONS = {
     ev_goal: "⚽ Гол",
     ev_yellow: "🟨 Желтая карточка",
     ev_red: "🟥 Красная карточка",
+    ev_penalty: "🥅 Серия пенальти",
     minute: "Минута",
     saved: "Сохранено",
     loaded: "Загружено сохранение от",
@@ -3078,6 +3093,7 @@ const TRANSLATIONS = {
     ev_goal: "⚽ Goal",
     ev_yellow: "🟨 Yellow Card",
     ev_red: "🟥 Red Card",
+    ev_penalty: "🥅 Penalty Shootout",
     minute: "Minute",
     saved: "Saved",
     loaded: "Loaded save from",
@@ -3181,6 +3197,7 @@ const TRANSLATIONS = {
     ev_goal: "⚽ 进球",
     ev_yellow: "🟨 黄牌",
     ev_red: "🟥 红牌",
+    ev_penalty: "🥅 点球大战",
     minute: "分钟",
     saved: "已保存",
     loaded: "已加载保存于",
@@ -3413,6 +3430,11 @@ function openMatchEvents(matchId) {
     sel.options[0].textContent = T.ev_goal || '⚽ Goal';
     sel.options[1].textContent = T.ev_yellow || '🟨 Yellow Card';
     sel.options[2].textContent = T.ev_red || '🟥 Red Card';
+    if (sel.options[3]) {
+      sel.options[3].textContent = T.ev_penalty || '🥅 Penalty Shootout';
+      const isKo = KO.some(x => x.id === matchId);
+      sel.options[3].style.display = isKo ? 'block' : 'none';
+    }
   });
 
   document.getElementById('eventsModal').classList.add('show');
@@ -3427,8 +3449,8 @@ function toggleMinuteInput(side) {
   const type = document.getElementById('selType' + (side === 'h' ? 'Home' : 'Away')).value;
   const minWrap = document.getElementById('minWrap' + (side === 'h' ? 'Home' : 'Away'));
   const videoWrap = document.getElementById('videoWrap' + (side === 'h' ? 'Home' : 'Away'));
-  if (type === 'goal') {
-    minWrap.style.display = 'block';
+  if (type === 'goal' || type === 'penalty') {
+    minWrap.style.display = (type === 'penalty') ? 'none' : 'block';
     if (videoWrap) videoWrap.style.display = 'block';
   } else {
     minWrap.style.display = 'none';
@@ -3474,15 +3496,16 @@ function renderMatchEventsList() {
     if (ev.type === 'goal') icon = '⚽';
     else if (ev.type === 'yellow') icon = '🟨';
     else if (ev.type === 'red') icon = '🟥';
+    else if (ev.type === 'penalty') icon = '🥅';
 
     const minStr = ev.minute ? ` (${ev.minute}')` : '';
     const allMatches = [...GROUP_MATCHES, ...KO];
     const match = allMatches.find(x => x.id === currentEventsMatchId);
     const teamId = ev.side === 'h' ? resolveSlot(match.h) : resolveSlot(match.a);
-    const displayName = getPlayerTranslatedName(ev.playerName, teamId);
+    const displayName = ev.type === 'penalty' ? (TRANSLATIONS[currentLang].penalty || 'Penalty') : getPlayerTranslatedName(ev.playerName, teamId);
 
     let videoInput = '';
-    if (isAdmin && ev.type === 'goal') {
+    if (isAdmin && (ev.type === 'goal' || ev.type === 'penalty')) {
       videoInput = `<div style="margin-top:4px; width:100%;">
         <input type="text" placeholder="image/1.mov" value="${ev.video || ''}"
                onchange="updateEventVideo(${idx}, this.value)"
@@ -3517,8 +3540,9 @@ function handleAddEvent(side) {
   let minute = minInp.value.trim();
   let video = videoInp ? videoInp.value.trim() : '';
 
-  if (!playerName) return;
-  if (type !== 'goal') {
+  if (!playerName && type !== 'penalty') return;
+  if (type === 'penalty') minute = '';
+  if (type !== 'goal' && type !== 'penalty') {
     minute = '';
     video = '';
   }
@@ -3732,8 +3756,12 @@ function getWinner(mid){if(mid.startsWith("M")) mid=mid.slice(1); return resolve
 function renderMatchGoals(matchId) {
   const sc = getScore(matchId);
   const events = sc.events || [];
-  const goals = events.filter(e => e.type === 'goal' && e.video);
-  goals.sort((a, b) => (parseInt(a.minute) || 999) - (parseInt(b.minute) || 999));
+  const goals = events.filter(e => (e.type === 'goal' && e.video) || e.type === 'penalty');
+  goals.sort((a, b) => {
+    if (a.type === 'penalty' && b.type !== 'penalty') return 1;
+    if (a.type !== 'penalty' && b.type === 'penalty') return -1;
+    return (parseInt(a.minute) || 999) - (parseInt(b.minute) || 999);
+  });
   if (goals.length === 0) return '';
 
   const allMatches = [...GROUP_MATCHES, ...KO];
@@ -3745,11 +3773,12 @@ function renderMatchGoals(matchId) {
 
   goals.forEach(ev => {
     const teamId = ev.side === 'h' ? resolveSlot(match.h) : resolveSlot(match.a);
-    const displayName = getPlayerTranslatedName(ev.playerName, teamId);
+    const displayName = ev.type === 'penalty' ? (TRANSLATIONS[currentLang].penalty || 'Penalty') : getPlayerTranslatedName(ev.playerName, teamId);
     const minStr = ev.minute ? ` (${ev.minute}')` : '';
-    h += `<div class="goal-item" onclick="playVideo('${ev.video}'); toggleGoalDropdown(null); event.stopPropagation();">`;
+    const hasVideo = !!ev.video;
+    h += `<div class="goal-item" ${hasVideo ? `onclick="playVideo('${ev.video}'); toggleGoalDropdown(null); event.stopPropagation();"` : 'onclick="toggleGoalDropdown(null); event.stopPropagation();"'} style="${hasVideo ? '' : 'cursor:default; opacity:0.8;'}">`;
     h += flagImg(teamId);
-    h += `<span class="ball-small">⚽</span><span>${displayName}${minStr}</span>`;
+    h += `<span class="ball-small">${ev.type === "penalty" ? "🥅" : "⚽"}</span><span>${displayName}${minStr}</span>`;
     h += '</div>';
   });
 
