@@ -3383,10 +3383,14 @@ function getMatchTitle(matchId) {
 
 let currentEventsMatchId = null;
 
-function fillMinuteSelects() {
+function fillMinuteSelects(isKo = false) {
   const mins = [];
   for(let i=1; i<=90; i++) mins.push(i.toString());
   mins.push("90+");
+  if (isKo) {
+    for(let i=91; i<=120; i++) mins.push(i.toString());
+    mins.push("120+");
+  }
   ['minHome', 'minAway'].forEach(id => {
     const sel = document.getElementById(id);
     if(!sel) return;
@@ -3401,7 +3405,8 @@ function fillMinuteSelects() {
 }
 
 function openMatchEvents(matchId) {
-  fillMinuteSelects();
+  const isKo = KO.some(x => x.id === matchId);
+  fillMinuteSelects(isKo);
   currentEventsMatchId = matchId;
   const allMatches = [...GROUP_MATCHES, ...KO];
   const m = allMatches.find(x => x.id === matchId);
