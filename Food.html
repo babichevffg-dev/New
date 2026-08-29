@@ -269,13 +269,51 @@ const MOTIVATIONAL_QUOTES = [
 
 /* ============ БАЗА ПРОДУКТОВ ============ */
 const DEFAULT_FOODS = [
-  // Крупы
+  // Крупы и Гарниры
   { id: 'grechka', name: 'Гречка (варёная)', kcal: 110, p: 4.5, f: 1.1, c: 21, cat: 'Крупы' },
   { id: 'rice', name: 'Рис варёный', kcal: 130, p: 2.7, f: 0.3, c: 28, cat: 'Крупы' },
+  { id: 'potato_fried', name: 'Жареная картошка', kcal: 192, p: 2.8, f: 9.5, c: 24, cat: 'Крупы' },
+  { id: 'potato', name: 'Картофель варёный', kcal: 82, p: 2, f: 0.4, c: 17, cat: 'Овощи' },
   { id: 'oatmeal', name: 'Овсянка на воде', kcal: 88, p: 3, f: 1.7, c: 15, cat: 'Крупы' },
   { id: 'pasta', name: 'Макароны варёные', kcal: 131, p: 5, f: 1.1, c: 27, cat: 'Крупы' },
   { id: 'bulgur', name: 'Булгур варёный', kcal: 83, p: 3.1, f: 0.2, c: 18.6, cat: 'Крупы' },
   { id: 'quinoa', name: 'Киноа варёное', kcal: 120, p: 4.4, f: 1.9, c: 21.3, cat: 'Крупы' },
+
+  // Готовые блюда и Яйца
+  { id: 'omelet', name: 'Омлет из 2 яиц с молоком', kcal: 184, p: 14, f: 13, c: 2.5, cat: 'Готовые блюда' },
+  { id: 'egg', name: 'Яйцо куриное (1 шт ~50г)', kcal: 157, p: 12.7, f: 11.5, c: 0.7, cat: 'Яйца' },
+  { id: 'egg_white', name: 'Белок яичный', kcal: 44, p: 11, f: 0.2, c: 0.7, cat: 'Яйца' },
+  { id: 'cutlet_chicken', name: 'Котлета куриная (на пару/запеч.)', kcal: 165, p: 19.5, f: 8.5, c: 3.2, cat: 'Готовые блюда' },
+  { id: 'cutlet_beef', name: 'Котлета говяжья', kcal: 230, p: 18, f: 16, c: 4, cat: 'Готовые блюда' },
+
+  // Супы
+  { id: 'soup_borscht', name: 'Борщ с говядиной', kcal: 58, p: 3.5, f: 2.8, c: 4.8, cat: 'Супы' },
+  { id: 'soup_pea', name: 'Суп гороховый', kcal: 66, p: 4.2, f: 2.1, c: 8.5, cat: 'Супы' },
+  { id: 'soup_chicken', name: 'Суп куриный с лапшой', kcal: 45, p: 3.2, f: 1.8, c: 4.2, cat: 'Супы' },
+  { id: 'soup_veg', name: 'Суп овощной лёгкий', kcal: 32, p: 1.2, f: 0.8, c: 5.1, cat: 'Супы' },
+
+  // Салаты
+  { id: 'salad_fresh', name: 'Салат свежий (огурцы, помидоры, зелень)', kcal: 25, p: 1, f: 0.2, c: 4.2, cat: 'Салаты' },
+  { id: 'salad_greek', name: 'Салат Греческий с фетой', kcal: 135, p: 4.5, f: 11, c: 4.8, cat: 'Салаты' },
+  { id: 'salad_caesar', name: 'Салат Цезарь с курицей', kcal: 165, p: 13, f: 10.5, c: 5.2, cat: 'Салаты' },
+
+  // Молочная продукция (0%, 0.5%, 1.5%, 2.5%, 3.2%)
+  { id: 'milk_0', name: 'Молоко 0% (обезжиренное)', kcal: 31, p: 3.0, f: 0.05, c: 4.7, cat: 'Молочка' },
+  { id: 'milk_05', name: 'Молоко 0.5%', kcal: 35, p: 3.0, f: 0.5, c: 4.7, cat: 'Молочка' },
+  { id: 'milk_15', name: 'Молоко 1.5%', kcal: 44, p: 3.0, f: 1.5, c: 4.7, cat: 'Молочка' },
+  { id: 'milk_25', name: 'Молоко 2.5%', kcal: 52, p: 2.8, f: 2.5, c: 4.7, cat: 'Молочка' },
+  { id: 'milk_32', name: 'Молоко 3.2%', kcal: 60, p: 2.9, f: 3.2, c: 4.7, cat: 'Молочка' },
+
+  { id: 'kefir_0', name: 'Кефир 0%', kcal: 30, p: 3.0, f: 0.05, c: 3.8, cat: 'Молочка' },
+  { id: 'kefir_05', name: 'Кефир 0.5%', kcal: 33, p: 3.0, f: 0.5, c: 3.8, cat: 'Молочка' },
+  { id: 'kefir_15', name: 'Кефир 1.5%', kcal: 41, p: 3.0, f: 1.5, c: 4.0, cat: 'Молочка' },
+  { id: 'kefir_25', name: 'Кефир 2.5%', kcal: 53, p: 2.9, f: 2.5, c: 4.0, cat: 'Молочка' },
+  { id: 'kefir_32', name: 'Кефир 3.2%', kcal: 59, p: 2.8, f: 3.2, c: 4.1, cat: 'Молочка' },
+
+  { id: 'tvorog5', name: 'Творог 5%', kcal: 121, p: 17, f: 5, c: 1.8, cat: 'Молочка' },
+  { id: 'tvorog0', name: 'Творог обезжиренный 0%', kcal: 71, p: 18, f: 0.6, c: 1.8, cat: 'Молочка' },
+  { id: 'yogurt_greek', name: 'Йогурт греческий 2%', kcal: 73, p: 8, f: 2, c: 3.5, cat: 'Молочка' },
+  { id: 'cheese', name: 'Сыр твёрдый', kcal: 350, p: 25, f: 27, c: 0, cat: 'Молочка' },
 
   // Хлеб
   { id: 'bread_white', name: 'Хлеб белый', kcal: 265, p: 8, f: 1, c: 53, cat: 'Хлеб' },
@@ -296,41 +334,37 @@ const DEFAULT_FOODS = [
   { id: 'cod', name: 'Треска варёная', kcal: 78, p: 17.8, f: 0.7, c: 0, cat: 'Рыба' },
   { id: 'shrimp', name: 'Креветки варёные', kcal: 95, p: 20, f: 1, c: 1, cat: 'Рыба' },
 
-  // Яйца и молочка
-  { id: 'egg', name: 'Яйцо куриное (1 шт ~50г)', kcal: 157, p: 12.7, f: 11.5, c: 0.7, cat: 'Яйца' },
-  { id: 'egg_white', name: 'Белок яичный', kcal: 44, p: 11, f: 0.2, c: 0.7, cat: 'Яйца' },
-  { id: 'milk', name: 'Молоко 2.5%', kcal: 52, p: 2.8, f: 2.5, c: 4.7, cat: 'Молочка' },
-  { id: 'tvorog5', name: 'Творог 5%', kcal: 121, p: 17, f: 5, c: 1.8, cat: 'Молочка' },
-  { id: 'tvorog0', name: 'Творог обезжиренный 0%', kcal: 71, p: 18, f: 0.6, c: 1.8, cat: 'Молочка' },
-  { id: 'kefir', name: 'Кефир 1%', kcal: 40, p: 3, f: 1, c: 4, cat: 'Молочка' },
-  { id: 'yogurt_greek', name: 'Йогурт греческий 2%', kcal: 73, p: 8, f: 2, c: 3.5, cat: 'Молочка' },
-  { id: 'cheese', name: 'Сыр твёрдый', kcal: 350, p: 25, f: 27, c: 0, cat: 'Молочка' },
-
-  // Овощи и зелень
+  // Овощи, Фрукты и Ягоды
+  { id: 'watermelon', name: 'Арбуз свежий', kcal: 30, p: 0.6, f: 0.2, c: 7.5, cat: 'Фрукты' },
   { id: 'cucumber', name: 'Огурец свежий', kcal: 15, p: 0.8, f: 0.1, c: 2.8, cat: 'Овощи' },
   { id: 'tomato', name: 'Помидор свежий', kcal: 20, p: 1.1, f: 0.2, c: 3.7, cat: 'Овощи' },
-  { id: 'potato', name: 'Картофель варёный', kcal: 82, p: 2, f: 0.4, c: 17, cat: 'Овощи' },
   { id: 'broccoli', name: 'Брокколи', kcal: 34, p: 2.8, f: 0.4, c: 7, cat: 'Овощи' },
   { id: 'spinach', name: 'Шпинат', kcal: 23, p: 2.9, f: 0.4, c: 3.6, cat: 'Овощи' },
-
-  // Фрукты и ягоды
   { id: 'apple', name: 'Яблоко', kcal: 52, p: 0.4, f: 0.4, c: 10, cat: 'Фрукты' },
   { id: 'banana', name: 'Банан', kcal: 95, p: 1.5, f: 0.2, c: 21, cat: 'Фрукты' },
   { id: 'orange', name: 'Апельсин', kcal: 43, p: 0.9, f: 0.2, c: 8, cat: 'Фрукты' },
   { id: 'berries', name: 'Ягоды (клубника/малина)', kcal: 40, p: 0.8, f: 0.4, c: 8, cat: 'Фрукты' },
 
-  // Напитки
+  // Напитки (Чай, Цикорий, Кофе)
+  { id: 'chicory_plain', name: 'Цикорий без сахара', kcal: 4, p: 0.2, f: 0, c: 0.8, cat: 'Напитки' },
+  { id: 'chicory_sugar', name: 'Цикорий с сахаром', kcal: 24, p: 0.2, f: 0, c: 5.8, cat: 'Напитки' },
+  { id: 'chicory_sweetener', name: 'Цикорий с сахарозаменителем', kcal: 4, p: 0.2, f: 0, c: 0.8, cat: 'Напитки' },
   { id: 'tea_no_sugar', name: 'Чай без сахара', kcal: 1, p: 0, f: 0, c: 0.3, cat: 'Напитки' },
-  { id: 'tea_sugar', name: 'Чай с 1 ч.л. сахара', kcal: 20, p: 0, f: 0, c: 5, cat: 'Напитки' },
+  { id: 'tea_sugar', name: 'Чай с сахаром', kcal: 20, p: 0, f: 0, c: 5, cat: 'Напитки' },
+  { id: 'tea_sweetener', name: 'Чай с сахарозаменителем', kcal: 1, p: 0, f: 0, c: 0.3, cat: 'Напитки' },
   { id: 'coffee_black', name: 'Кофе чёрный', kcal: 2, p: 0.2, f: 0, c: 0.3, cat: 'Напитки' },
   { id: 'coffee_milk', name: 'Кофе с молоком', kcal: 30, p: 1, f: 1, c: 3, cat: 'Напитки' },
   { id: 'juice', name: 'Сок фреш / покупной', kcal: 45, p: 0.7, f: 0.2, c: 10, cat: 'Напитки' },
   { id: 'protein_shake', name: 'Протеиновый коктейль', kcal: 120, p: 24, f: 1.5, c: 3, cat: 'Напитки' },
 
-  // Жиры, орехи, сладости
+  // Масла и Жиры
+  { id: 'oil_sunflower', name: 'Масло подсолнечное', kcal: 899, p: 0, f: 99.9, c: 0, cat: 'Жиры' },
+  { id: 'oil_olive', name: 'Масло оливковое', kcal: 884, p: 0, f: 100, c: 0, cat: 'Жиры' },
   { id: 'almonds', name: 'Миндаль / Орехи', kcal: 579, p: 21, f: 49, c: 22, cat: 'Жиры' },
   { id: 'peanut_butter', name: 'Арахисовая паста', kcal: 588, p: 25, f: 50, c: 20, cat: 'Жиры' },
-  { id: 'oil_olive', name: 'Масло оливковое', kcal: 884, p: 0, f: 100, c: 0, cat: 'Жиры' },
+
+  // Сладости и Шоколад
+  { id: 'chocolate_milk', name: 'Шоколад молочный', kcal: 535, p: 7, f: 30, c: 59, cat: 'Сладкое' },
   { id: 'chocolate_dark', name: 'Шоколад тёмный 75%+', kcal: 540, p: 8, f: 37, c: 45, cat: 'Сладкое' }
 ];
 
@@ -402,6 +436,79 @@ const calcFoodKcal = (food, grams) => ({
   c: +(food.c * grams / 100).toFixed(1)
 });
 
+/* ============ УТИЛИТЫ И ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДНЯ ============ */
+function getTodayRecord() {
+  const key = todayKey();
+  if (!state.data.days[key]) {
+    state.data.days[key] = {
+      meals: [],
+      activities: [],
+      weight: null,
+      oils: { sunflower_fry: 0, sunflower_salad: 0, olive_fry: 0, olive_salad: 0 },
+      water: 0,
+      dental: { morning: false, evening: false, rinse1: false, rinse2: false },
+      fasting: { active: false, startTime: null, targetHours: 16 }
+    };
+  }
+  const d = state.data.days[key];
+  if (!d.oils) d.oils = { sunflower_fry: 0, sunflower_salad: 0, olive_fry: 0, olive_salad: 0 };
+  if (typeof d.water !== 'number') d.water = 0;
+  if (!d.dental) d.dental = { morning: false, evening: false, rinse1: false, rinse2: false };
+  if (!d.fasting) d.fasting = { active: false, startTime: null, targetHours: 16 };
+  return d;
+}
+
+function quickLogOil(type, usage, grams) {
+  const d = getTodayRecord();
+  const oilKey = `${type}_${usage}`;
+  d.oils[oilKey] = (d.oils[oilKey] || 0) + grams;
+
+  // Calculate macros: 1g oil ~ 8.9 kcal, 1g fat
+  const isOlive = type === 'olive';
+  const oilName = isOlive ? 'Масло оливковое' : 'Масло подсолнечное';
+  const usageName = usage === 'fry' ? 'жарка' : 'салат';
+  const kcalPerG = isOlive ? 8.84 : 8.99;
+
+  const kcal = Math.round(grams * kcalPerG);
+  const f = +grams.toFixed(1);
+
+  d.meals.push({
+    name: `${oilName} (${usageName})`,
+    kcal: kcal,
+    p: 0,
+    f: f,
+    c: 0,
+    grams: grams,
+    icon: usage === 'fry' ? '🍳' : '🥗',
+    mealType: usage === 'fry' ? 'lunch' : 'dinner',
+    desc: `Добавлено при ${usageName==='жарка'?'жарке':'заправке салата'} (${grams}г)`
+  });
+
+  state.data.xp = (state.data.xp || 0) + 10;
+  save();
+  SoundEffects.playSuccess();
+  render();
+}
+
+function quickLogWater(ml) {
+  const d = getTodayRecord();
+  d.water = Math.max(0, (d.water || 0) + ml);
+  state.data.xp = (state.data.xp || 0) + 5;
+  save();
+  SoundEffects.playSuccess();
+  render();
+}
+
+function toggleDentalCare(key) {
+  const d = getTodayRecord();
+  d.dental[key] = !d.dental[key];
+  if (d.dental[key]) state.data.xp = (state.data.xp || 0) + 5;
+  save();
+  SoundEffects.playClick();
+  render();
+}
+
+
 const todayKey = () => new Date().toISOString().slice(0, 10);
 
 // Расчёт уровня пользователя по XP
@@ -429,7 +536,7 @@ const getLevelInfo = (xp = 0) => {
 /* ============ ГЛОБАЛЬНЫЙ STATE ============ */
 let state = {
   profile: JSON.parse(localStorage.getItem('caloriequest_profile') || 'null'),
-  data: JSON.parse(localStorage.getItem('caloriequest_data') || '{"days":{},"achievements":[],"streak":0,"xp":50,"weights":[],"customFoods":[]}'),
+  data: JSON.parse(localStorage.getItem('caloriequest_data') || '{"days":{},"achievements":[],"streak":0,"xp":50,"weights":[],"customFoods":[],"customRecipes":[]}'),
   tab: 'today',
   dark: localStorage.getItem('caloriequest_dark') !== '0',
   sound: localStorage.getItem('caloriequest_sound') !== '0',
@@ -748,6 +855,583 @@ function renderDashboard() {
 }
 
 /* ============ ВКЛАДКА "СЕГОДНЯ" ============ */
+
+function renderOilTrackerCard(day) {
+  const oils = day.oils || { sunflower_fry: 0, sunflower_salad: 0, olive_fry: 0, olive_salad: 0 };
+  const totalSunflower = (oils.sunflower_fry || 0) + (oils.sunflower_salad || 0);
+  const totalOlive = (oils.olive_fry || 0) + (oils.olive_salad || 0);
+  const totalFry = (oils.sunflower_fry || 0) + (oils.olive_fry || 0);
+  const totalSalad = (oils.sunflower_salad || 0) + (oils.olive_salad || 0);
+  const totalGrams = totalSunflower + totalOlive;
+  const totalKcal = Math.round(totalGrams * 8.9);
+
+  return `
+  <!-- КАРТОЧКА УЧЁТА МАСЛА (ПОДСОЛНЕЧНОЕ И ОЛИВКОВОЕ) -->
+  <div class="sport-card bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-900 border-amber-500/30 p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🫒</span>
+        <div>
+          <h3 class="font-bold text-xs text-amber-300 uppercase tracking-wider">Учёт подсолнечного и оливкового масла</h3>
+          <p class="text-[10px] text-slate-400">Учитывает скрытые жиры при жарке и в салатах</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-base font-black text-amber-400">${totalGrams}г <span class="text-xs font-normal text-slate-400">(${totalKcal} ккал)</span></div>
+        <div class="text-[9px] text-slate-400">в рационе за день</div>
+      </div>
+    </div>
+
+    <!-- Сводные данные по видам и назначению -->
+    <div class="grid grid-cols-2 gap-2 text-xs">
+      <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 space-y-1">
+        <div class="font-bold text-slate-300 flex justify-between">
+          <span>🌻 Подсолнечное:</span>
+          <span class="text-amber-400">${totalSunflower}г</span>
+        </div>
+        <div class="text-[10px] text-slate-400 flex justify-between">
+          <span>🍳 Жарка: ${oils.sunflower_fry || 0}г</span>
+          <span>🥗 Салат: ${oils.sunflower_salad || 0}г</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 space-y-1">
+        <div class="font-bold text-slate-300 flex justify-between">
+          <span>🫒 Оливковое:</span>
+          <span class="text-emerald-400">${totalOlive}г</span>
+        </div>
+        <div class="text-[10px] text-slate-400 flex justify-between">
+          <span>🍳 Жарка: ${oils.olive_fry || 0}г</span>
+          <span>🥗 Салат: ${oils.olive_salad || 0}г</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Быстрые пресеты для записи масла -->
+    <div class="space-y-1.5 pt-1">
+      <div class="text-[11px] font-semibold text-slate-400 flex justify-between items-center">
+        <span>⚡ Быстрый ввод добавленного масла:</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
+        <button onclick="quickLogOil('sunflower', 'fry', 15)" class="sport-btn btn-ghost py-1.5 px-2 text-[11px] justify-between border-amber-500/30">
+          <span>🍳 Подсолн. (жарка)</span>
+          <span class="font-bold text-amber-400">15г</span>
+        </button>
+        <button onclick="quickLogOil('sunflower', 'salad', 10)" class="sport-btn btn-ghost py-1.5 px-2 text-[11px] justify-between border-amber-500/30">
+          <span>🥗 Подсолн. (салат)</span>
+          <span class="font-bold text-amber-400">10г</span>
+        </button>
+        <button onclick="quickLogOil('olive', 'fry', 15)" class="sport-btn btn-ghost py-1.5 px-2 text-[11px] justify-between border-emerald-500/30">
+          <span>🍳 Оливк. (жарка)</span>
+          <span class="font-bold text-emerald-400">15г</span>
+        </button>
+        <button onclick="quickLogOil('olive', 'salad', 10)" class="sport-btn btn-ghost py-1.5 px-2 text-[11px] justify-between border-emerald-500/30">
+          <span>🥗 Оливк. (салат)</span>
+          <span class="font-bold text-emerald-400">10г</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-1 pt-1 text-[10px]">
+        <button onclick="quickLogOil('olive', 'salad', 5)" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 text-center">
+          🥄 1 ч.л. (5г)
+        </button>
+        <button onclick="quickLogOil('olive', 'fry', 2)" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 text-center">
+          💨 Спрей (2г)
+        </button>
+        <button onclick="quickLogOil('sunflower', 'salad', 30)" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 text-center">
+          🥄🥄 2 ст.л. (30г)
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+
+/* ============ 7 ФУНКЦИОНАЛЬНЫХ УЛУЧШЕНИЙ ============ */
+
+// 1. 💧 ТРЕКЕР ВОДЫ И ГИДРАТАЦИИ
+function renderWaterTrackerCard(day, weight) {
+  const targetWater = Math.round((weight || 70) * 35); // 35мл на кг веса
+  const currentWater = day.water || 0;
+  const pct = Math.min(100, Math.round((currentWater / (targetWater || 1)) * 100));
+
+  return `
+  <div class="sport-card bg-gradient-to-br from-cyan-950/40 via-slate-900 to-slate-900 border-cyan-500/30 p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">💧</span>
+        <div>
+          <h3 class="font-bold text-xs text-cyan-300 uppercase tracking-wider">Трекер Воды и Гидратации</h3>
+          <p class="text-[10px] text-slate-400">Норма: 35 мл на 1 кг веса</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-base font-black text-cyan-400">${currentWater} <span class="text-xs font-normal text-slate-400">/ ${targetWater} мл</span></div>
+        <div class="text-[9px] text-slate-400">${pct}% от дневной нормы</div>
+      </div>
+    </div>
+
+    <div class="h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+      <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500" style="width: ${pct}%"></div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-1.5 pt-1">
+      <button onclick="quickLogWater(100)" class="sport-btn btn-ghost py-1.5 text-xs">
+        +100мл 🥛
+      </button>
+      <button onclick="quickLogWater(250)" class="sport-btn btn-ghost py-1.5 text-xs">
+        +250мл ☕
+      </button>
+      <button onclick="quickLogWater(500)" class="sport-btn btn-ghost py-1.5 text-xs">
+        +500мл 🍾
+      </button>
+      <button onclick="quickLogWater(-250)" class="sport-btn btn-ghost py-1.5 text-xs text-red-400">
+        -250мл ↩️
+      </button>
+    </div>
+  </div>`;
+}
+
+// 2. 👨‍🍳 КОНСТРУКТОР СЛОЖНЫХ БЛЮД И РЕЦЕПТОВ
+function openRecipeBuilderModal() {
+  const modal = document.getElementById('modalRoot');
+  const allFoods = [...DEFAULT_FOODS, ...(state.data.customFoods || [])];
+
+  const recipeState = {
+    name: 'Мой фирменный салат / суп',
+    ingredients: [
+      { foodId: 'chicken', grams: 150 },
+      { id: 'oil_olive', foodId: 'oil_olive', grams: 15 }
+    ]
+  };
+
+  const renderModal = () => {
+    let totalKcal = 0, totalP = 0, totalF = 0, totalC = 0, totalWeight = 0;
+
+    recipeState.ingredients.forEach(ing => {
+      const f = allFoods.find(x => x.id === ing.foodId) || allFoods[0];
+      const grams = ing.grams || 0;
+      totalWeight += grams;
+      totalKcal += (f.kcal * grams / 100);
+      totalP += (f.p * grams / 100);
+      totalF += (f.f * grams / 100);
+      totalC += (f.c * grams / 100);
+    });
+
+    const per100Kcal = totalWeight > 0 ? Math.round((totalKcal / totalWeight) * 100) : 0;
+    const per100P = totalWeight > 0 ? +(totalP / totalWeight * 100).toFixed(1) : 0;
+    const per100F = totalWeight > 0 ? +(totalF / totalWeight * 100).toFixed(1) : 0;
+    const per100C = totalWeight > 0 ? +(totalC / totalWeight * 100).toFixed(1) : 0;
+
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="sport-card bg-slate-900 w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-4 space-y-4 pop border-slate-700">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+            <span>👨‍🍳</span> Конструктор сложных блюд и рецептов
+          </h3>
+          <button id="closeRecipeModal" class="text-slate-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 font-semibold mb-1">Название блюда / рецепта</label>
+          <input id="recipeName" value="${recipeState.name}" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-xs font-semibold" />
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-xs text-slate-400 font-semibold">
+            <span>Ингредиенты блюда:</span>
+            <button id="addIngredientBtn" class="text-brand-400 hover:underline">+ ингредиент</button>
+          </div>
+
+          ${recipeState.ingredients.map((ing, idx) => `
+            <div class="flex gap-2 items-center">
+              <select data-ing-idx="${idx}" class="ing-select flex-1 px-2 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-xs">
+                ${allFoods.map(f => `<option value="${f.id}" ${f.id===ing.foodId?'selected':''}>${f.name} (${f.kcal}ккал/100г)</option>`).join('')}
+              </select>
+              <input type="number" value="${ing.grams}" data-ing-g="${idx}" class="ing-grams w-20 px-2 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-xs text-center font-bold" placeholder="г" />
+              <button data-ing-del="${idx}" class="text-slate-500 hover:text-red-400 px-1 text-sm">✕</button>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="sport-card bg-slate-800/90 p-3 space-y-2 border-brand-500/30">
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-slate-300 font-bold">Вес всего блюда: ${Math.round(totalWeight)}г</span>
+            <span class="text-base font-black text-brand-400">${per100Kcal} ккал / 100г</span>
+          </div>
+          <div class="text-[11px] text-slate-400 flex justify-between border-t border-slate-700/50 pt-1.5">
+            <span>Б: ${per100P}г</span>
+            <span>Ж: ${per100F}г</span>
+            <span>У: ${per100C}г</span>
+            <span class="text-slate-300">Всего: ${Math.round(totalKcal)} ккал</span>
+          </div>
+        </div>
+
+        <button id="saveRecipeBtn" class="sport-btn btn-primary w-full py-3 text-xs">
+          Сохранить блюдо в свою базу 🎯
+        </button>
+      </div>
+    </div>`;
+
+    document.getElementById('closeRecipeModal').onclick = () => { modal.innerHTML = ''; };
+
+    const nameInput = document.getElementById('recipeName');
+    nameInput.oninput = (e) => { recipeState.name = e.target.value; };
+
+    document.getElementById('addIngredientBtn').onclick = () => {
+      recipeState.ingredients.push({ foodId: 'cucumber', grams: 100 });
+      renderModal();
+    };
+
+    modal.querySelectorAll('.ing-select').forEach(sel => {
+      sel.onchange = (e) => {
+        recipeState.ingredients[parseInt(sel.dataset.ingIdx)].foodId = e.target.value;
+        renderModal();
+      };
+    });
+
+    modal.querySelectorAll('.ing-grams').forEach(inp => {
+      inp.onchange = (e) => {
+        recipeState.ingredients[parseInt(inp.dataset.ingG)].grams = float(e.target.value) || 0;
+        renderModal();
+      };
+    });
+
+    modal.querySelectorAll('[data-ing-del]').forEach(btn => {
+      btn.onclick = () => {
+        recipeState.ingredients.splice(parseInt(btn.dataset.ingDel), 1);
+        renderModal();
+      };
+    });
+
+    document.getElementById('saveRecipeBtn').onclick = () => {
+      if (!recipeState.name.trim() || totalWeight <= 0) {
+        alert('Введите название и ингредиенты');
+        return;
+      }
+      const newCustomFood = {
+        id: 'recipe_' + Date.now(),
+        name: recipeState.name,
+        kcal: per100Kcal,
+        p: per100P,
+        f: per100F,
+        c: per100C,
+        cat: 'Мои блюда'
+      };
+
+      if (!state.data.customFoods) state.data.customFoods = [];
+      state.data.customFoods.push(newCustomFood);
+      save();
+      SoundEffects.playSuccess();
+      modal.innerHTML = '';
+      alert(`Блюдо "${recipeState.name}" успешно сохранено! Теперь оно доступно в поиске продуктов.`);
+      render();
+    };
+  };
+
+  renderModal();
+}
+
+// 3. 📊 ГЛУБОКИЙ БЖУ АНАЛИТИК (30/30/40) С КОНТРОЛЕМ ЖИРОВ
+function renderDeepMacroAnalyticsCard(totals, day) {
+  const totalGrams = (totals.p + totals.f + totals.c) || 1;
+  const pPct = Math.round((totals.p * 4 / (totals.kcal || 1)) * 100);
+  const fPct = Math.round((totals.f * 9 / (totals.kcal || 1)) * 100);
+  const cPct = Math.round((totals.c * 4 / (totals.kcal || 1)) * 100);
+
+  // Контроль жиров: жиры из масел vs прочие жиры
+  const oils = day.oils || { sunflower_fry: 0, sunflower_salad: 0, olive_fry: 0, olive_salad: 0 };
+  const oilGrams = (oils.sunflower_fry||0) + (oils.sunflower_salad||0) + (oils.olive_fry||0) + (oils.olive_salad||0);
+  const foodFatGrams = Math.max(0, totals.f - oilGrams);
+
+  return `
+  <div class="sport-card bg-gradient-to-br from-indigo-950/40 via-slate-900 to-slate-900 border-indigo-500/30 p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">📊</span>
+        <div>
+          <h3 class="font-bold text-xs text-indigo-300 uppercase tracking-wider">Глубокий БЖУ Аналитик & Контроль Жиров</h3>
+          <p class="text-[10px] text-slate-400">Целевое пропорционирование: 30% Белки / 30% Жиры / 40% Углеводы</p>
+        </div>
+      </div>
+      <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold">30 / 30 / 40</span>
+    </div>
+
+    <!-- Трёхцветная полоса БЖУ -->
+    <div class="h-4 bg-slate-800 rounded-lg overflow-hidden flex border border-slate-700">
+      <div class="bg-brand-500 text-[9px] font-bold text-slate-950 flex items-center justify-center transition-all" style="width:${pPct}%">${pPct>8?pPct+'%':''}</div>
+      <div class="bg-amber-500 text-[9px] font-bold text-slate-950 flex items-center justify-center transition-all" style="width:${fPct}%">${fPct>8?fPct+'%':''}</div>
+      <div class="bg-cyan-500 text-[9px] font-bold text-slate-950 flex items-center justify-center transition-all" style="width:${cPct}%">${cPct>8?cPct+'%':''}</div>
+    </div>
+
+    <!-- Раздельный контроль жиров (масла vs продукты) -->
+    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 space-y-1.5 text-xs">
+      <div class="font-bold text-slate-200 flex justify-between">
+        <span>🥑 Структура поступивших жиров (${totals.f.toFixed(1)}г):</span>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-[11px]">
+        <div class="bg-slate-800 p-2 rounded-lg">
+          <span class="text-slate-400 block">Жиры из масел:</span>
+          <b class="text-amber-400 text-sm">${oilGrams.toFixed(1)}г</b>
+          <span class="text-[9px] text-slate-400 block">(${Math.round(oilGrams*8.9)} ккал)</span>
+        </div>
+        <div class="bg-slate-800 p-2 rounded-lg">
+          <span class="text-slate-400 block">Жиры из продуктов:</span>
+          <b class="text-emerald-400 text-sm">${foodFatGrams.toFixed(1)}г</b>
+          <span class="text-[9px] text-slate-400 block">(${Math.round(foodFatGrams*9)} ккал)</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// 4. ⚡ ЭКСПРЕСС-ВВОД БЛЮД С УМНЫМ ТЕКСТОМ
+function parseAndAddExpressMeal(text) {
+  if (!text || !text.trim()) return;
+  const allFoods = [...DEFAULT_FOODS, ...(state.data.customFoods || [])];
+
+  const parts = text.split(new RegExp("[,;\n]+"));
+  let addedCount = 0;
+  const d = getTodayRecord();
+
+  parts.forEach(part => {
+    const p = part.trim();
+    if (!p) return;
+    const match = p.match(/(.*?)\s*(\d+)\s*(г|гр|g|мл)?$/i);
+    let nameSearch = p;
+    let grams = 100;
+
+    if (match) {
+      nameSearch = match[1].trim();
+      grams = parseInt(match[2]) || 100;
+    }
+
+    const found = allFoods.find(f => f.name.toLowerCase().includes(nameSearch.toLowerCase())) ||
+                  allFoods.find(f => nameSearch.toLowerCase().includes(f.name.toLowerCase().split(' ')[0]));
+
+    if (found) {
+      const kbju = calcFoodKcal(found, grams);
+      d.meals.push({
+        ...kbju,
+        grams,
+        name: found.name,
+        icon: '⚡',
+        mealType: 'snack',
+        desc: 'Экспресс (' + grams + 'г)'
+      });
+      addedCount++;
+    }
+  });
+
+  if (addedCount > 0) {
+    state.data.xp = (state.data.xp || 0) + (addedCount * 10);
+    save();
+    SoundEffects.playSuccess();
+    render();
+    alert('Экспресс-ввод: успешно распознано и добавлено ' + addedCount + ' элементов!');
+  } else {
+    alert('Не удалось распознать продукты. Попробуйте указать: "гречка 200г, яблоко 150г"');
+  }
+}
+
+// 5. 📈 ИНТЕРАКТИВНЫЙ ГРАФИК ВЕСА И ПРОГНОЗ ДАТЫ ЦЕЛИ
+function renderWeightForecastCard() {
+  const p = state.profile;
+  const weights = state.data.weights || [];
+  const curW = weights.length > 0 ? weights[weights.length - 1].weight : (p.weight || 70);
+  const targetW = p.targetWeight || (curW - 5);
+  const diff = curW - targetW;
+
+  // Безопасный сброс 0.5 кг в неделю (71г в день)
+  const daysToGoal = diff > 0 ? Math.round(diff / 0.071) : 0;
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() + daysToGoal);
+  const dateStr = diff > 0 ? targetDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Цель достигнута! 🏆';
+
+  return `
+  <div class="sport-card bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-900 border-emerald-500/30 p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">📈</span>
+        <div>
+          <h3 class="font-bold text-xs text-emerald-300 uppercase tracking-wider">Прогноз даты достижения цели</h3>
+          <p class="text-[10px] text-slate-400">На основе математического дефицита (${p.deficitPercent}%)</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-base font-black text-brand-400">${curW} кг → ${targetW} кг</div>
+        <div class="text-[9px] text-slate-400">Осталось: ${diff > 0 ? diff.toFixed(1) + ' кг' : '0 кг'}</div>
+      </div>
+    </div>
+
+    <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+      <div>
+        <span class="text-slate-400 block text-[10px]">Расчётная дата цели:</span>
+        <b class="text-brand-400 text-sm">${dateStr}</b>
+      </div>
+      <div class="text-right">
+        <span class="text-slate-400 block text-[10px]">Дней пути:</span>
+        <b class="text-slate-100">${daysToGoal} дней</b>
+      </div>
+    </div>
+  </div>`;
+}
+
+// 6. ⏰ ЦИРКАДНЫЙ ТАЙМЕР 16/8
+function renderCircadianFastingCard(day) {
+  const f = day.fasting || { active: false, startTime: null, targetHours: 16 };
+  let hoursPassed = 0;
+  if (f.active && f.startTime) {
+    hoursPassed = (Date.now() - f.startTime) / (1000 * 3600);
+  }
+  const pct = Math.min(100, Math.round((hoursPassed / f.targetHours) * 100));
+
+  return `
+  <div class="sport-card bg-gradient-to-br from-purple-950/40 via-slate-900 to-slate-900 border-purple-500/30 p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">⏰</span>
+        <div>
+          <h3 class="font-bold text-xs text-purple-300 uppercase tracking-wider">Циркадный Таймер 16/8 (Интервальное голодание)</h3>
+          <p class="text-[10px] text-slate-400">Окно голодания: 16 часов | Окно питания: 8 часов</p>
+        </div>
+      </div>
+      <span class="text-xs px-2 py-0.5 rounded ${f.active ? 'bg-purple-500/30 text-purple-300 border border-purple-500/50' : 'bg-slate-800 text-slate-400'} font-bold">
+        ${f.active ? '🔥 Голодание идёт' : '⏹️ Не активно'}
+      </span>
+    </div>
+
+    ${f.active ? `
+      <div class="space-y-1.5">
+        <div class="flex justify-between text-xs font-bold text-slate-200">
+          <span>Прошло: ${hoursPassed.toFixed(1)} ч из ${f.targetHours} ч</span>
+          <span class="text-purple-400">${pct}%</span>
+        </div>
+        <div class="h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+          <div class="h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500" style="width: ${pct}%"></div>
+        </div>
+        <button onclick="toggleFasting(false)" class="sport-btn btn-ghost w-full py-2 text-xs text-red-400 border-red-500/20">
+          Завершить окно голодания 🛑
+        </button>
+      </div>
+    ` : `
+      <button onclick="toggleFasting(true)" class="sport-btn btn-primary w-full py-2.5 text-xs bg-gradient-to-r from-purple-600 to-indigo-600">
+        Старт 16-часового окна голодания 🚀
+      </button>
+    `}
+  </div>`;
+}
+
+function toggleFasting(active) {
+  const d = getTodayRecord();
+  if (active) {
+    d.fasting = { active: true, startTime: Date.now(), targetHours: 16 };
+    state.data.xp = (state.data.xp || 0) + 15;
+  } else {
+    d.fasting.active = false;
+  }
+  save();
+  SoundEffects.playClick();
+  render();
+}
+
+// 7. 📥 ЭКСПОРТ ОТЧЁТА ДЛЯ НУТРИЦИОЛОГА
+function openNutritionistReportModal() {
+  const modal = document.getElementById('modalRoot');
+  const p = state.profile;
+  const d = getTodayRecord();
+  const dayKey = todayKey();
+
+  const eatenKcal = d.meals.reduce((s, m) => s + m.kcal, 0);
+  const eatenP = d.meals.reduce((s, m) => s + m.p, 0);
+  const eatenF = d.meals.reduce((s, m) => s + m.f, 0);
+  const eatenC = d.meals.reduce((s, m) => s + m.c, 0);
+  const oils = d.oils || {};
+  const totalOilGrams = (oils.sunflower_fry||0) + (oils.sunflower_salad||0) + (oils.olive_fry||0) + (oils.olive_salad||0);
+
+  modal.innerHTML = `
+  <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="sport-card bg-slate-900 w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-5 space-y-4 pop border-slate-700">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="font-black text-base gradient-text flex items-center gap-2">
+            <span>📥</span> Отчёт для нутрициолога / Диетолога
+          </h3>
+          <p class="text-[10px] text-slate-400">Сформирован: ${new Date().toLocaleDateString('ru-RU')} | CalorieQuest</p>
+        </div>
+        <button id="closeReportModal" class="text-slate-400 hover:text-white font-bold p-1">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-300 font-mono bg-slate-950 p-4 rounded-xl border border-slate-800 select-all">
+        <div><b>ПРОФИЛЬ КЛИЕНТА:</b> ${p.name} (${p.gender==='m'?'Муж':'Жен'}, ${p.age} лет, ${p.height} см, ${p.weight} кг)</div>
+        <div><b>ЦЕЛЬ ВЕСА:</b> ${p.targetWeight} кг (Дефицит: ${p.deficitPercent}%)</div>
+        <div><b>СУТОЧНЫЙ РАЦИОН (${dayKey}):</b></div>
+        <div>• Калории: ${eatenKcal} ккал</div>
+        <div>• Белки: ${eatenP.toFixed(1)}г | Жиры: ${eatenF.toFixed(1)}г | Углеводы: ${eatenC.toFixed(1)}г</div>
+        <div>• Добавлено масла: ${totalOilGrams}г (Подсолнечное: ${(oils.sunflower_fry||0)+(oils.sunflower_salad||0)}г, Оливковое: ${(oils.olive_fry||0)+(oils.olive_salad||0)}г)</div>
+        <div>• Потребление воды: ${d.water || 0} мл</div>
+        <div>• Уход за зубами: ${d.dental?.morning?'✓':'✗'} Утро, ${d.dental?.evening?'✓':'✗'} Вечер, ${d.dental?.rinse1?'✓':'✗'} Полоскание 1, ${d.dental?.rinse2?'✓':'✗'} Полоскание 2</div>
+        <div class="pt-2 border-t border-slate-800"><b>ПРИЁМЫ ПИЩИ:</b></div>
+        ${d.meals.map((m, i) => `<div>${i+1}. ${m.name} (${m.grams}г) — ${m.kcal}ккал [Б:${m.p} Ж:${m.f} У:${m.c}]</div>`).join('')}
+      </div>
+
+      <div class="flex gap-2">
+        <button id="copyReportBtn" class="sport-btn btn-primary flex-1 py-3 text-xs">
+          📋 Скопировать в буфер
+        </button>
+        <button id="printReportBtn" class="sport-btn btn-cyan flex-1 py-3 text-xs">
+          🖨️ Распечатать / Сохранить PDF
+        </button>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('closeReportModal').onclick = () => { modal.innerHTML = ''; };
+  document.getElementById('copyReportBtn').onclick = () => {
+    const text = document.querySelector('.select-all').innerText;
+    navigator.clipboard.writeText(text);
+    SoundEffects.playSuccess();
+    alert('Отчёт скопирован в буфер обмена!');
+  };
+  document.getElementById('printReportBtn').onclick = () => { window.print(); };
+}
+
+// 8. 🦷 НАПОМИНАНИЯ И УХОД ЗА ЗУБАМИ
+function renderDentalCareCard(day) {
+  const d = day.dental || { morning: false, evening: false, rinse1: false, rinse2: false };
+  const count = [d.morning, d.evening, d.rinse1, d.rinse2].filter(Boolean).length;
+
+  return `
+  <div class="sport-card bg-gradient-to-br from-teal-950/40 via-slate-900 to-slate-900 border-teal-500/30 p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🦷</span>
+        <div>
+          <h3 class="font-bold text-xs text-teal-300 uppercase tracking-wider">Уход за зубами & Напоминания</h3>
+          <p class="text-[10px] text-slate-400">Утренняя/вечерняя чистка и 2 полоскания в день</p>
+        </div>
+      </div>
+      <span class="text-xs font-black text-teal-400">${count} / 4 вып.</span>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <button onclick="toggleDentalCare('morning')" class="sport-btn ${d.morning ? 'btn-primary' : 'btn-ghost'} py-2 text-xs justify-start">
+        ${d.morning ? '✅' : '⚪'} Утренняя чистка 🌅
+      </button>
+      <button onclick="toggleDentalCare('evening')" class="sport-btn ${d.evening ? 'btn-primary' : 'btn-ghost'} py-2 text-xs justify-start">
+        ${d.evening ? '✅' : '⚪'} Вечерняя чистка 🌙
+      </button>
+      <button onclick="toggleDentalCare('rinse1')" class="sport-btn ${d.rinse1 ? 'btn-cyan' : 'btn-ghost'} py-2 text-xs justify-start">
+        ${d.rinse1 ? '✅' : '⚪'} 1-е Полоскание 💧
+      </button>
+      <button onclick="toggleDentalCare('rinse2')" class="sport-btn ${d.rinse2 ? 'btn-cyan' : 'btn-ghost'} py-2 text-xs justify-start">
+        ${d.rinse2 ? '✅' : '⚪'} 2-е Полоскание 💧
+      </button>
+    </div>
+  </div>`;
+}
+
 function renderTodayTab(target, effectiveTarget, totals, remaining, progress, day) {
   const isOver = remaining < 0;
 
@@ -823,6 +1507,48 @@ function renderTodayTab(target, effectiveTarget, totals, remaining, progress, da
 
   <!-- Умные Рекомендации -->
   ${renderSmartRecommendations(remaining, totals, targetP, targetF, targetC)}
+
+  <!-- ТРЕКЕР МАСЛА -->
+  ${renderOilTrackerCard(day)}
+
+  <!-- ГЛУБОКИЙ БЖУ АНАЛИТИК (30/30/40) С КОНТРОЛЕМ ЖИРОВ -->
+  ${renderDeepMacroAnalyticsCard(totals, day)}
+
+  <!-- ТРЕКЕР ВОДЫ И ГИДРАТАЦИИ -->
+  ${renderWaterTrackerCard(day, state.profile.weight)}
+
+  <!-- ИНТЕРАКТИВНЫЙ ГРАФИК ВЕСА И ПРОГНОЗ ДАТЫ ЦЕЛИ -->
+  ${renderWeightForecastCard()}
+
+  <!-- ЦИРКАДНЫЙ ТАЙМЕР 16/8 -->
+  ${renderCircadianFastingCard(day)}
+
+  <!-- УХОД ЗА ЗУБАМИ И НАПОМИНАНИЯ -->
+  ${renderDentalCareCard(day)}
+
+  <!-- ЭКСПРЕСС-ВВОД И ДОПОЛНИТЕЛЬНЫЕ ИНСТРУМЕНТЫ -->
+  <div class="sport-card bg-slate-900/90 p-4 space-y-3 border-cyan-500/20">
+    <h3 class="font-bold text-xs text-slate-200 uppercase tracking-wider flex items-center justify-between">
+      <span>⚡ Экспресс-ввод блюд & Инструменты</span>
+    </h3>
+
+    <div class="flex gap-2">
+      <input id="expressMealInput" type="text" placeholder="Пример: гречка 200г, оливковое масло 10г"
+        class="flex-1 px-3 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-xs font-semibold" />
+      <button id="expressAddBtn" class="sport-btn btn-primary py-2 px-3 text-xs flex-shrink-0">
+        Ввод ⚡
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 pt-1">
+      <button onclick="openRecipeBuilderModal()" class="sport-btn btn-ghost py-2 text-xs border-indigo-500/30 text-indigo-300">
+        👨‍🍳 Конструктор блюд
+      </button>
+      <button onclick="openNutritionistReportModal()" class="sport-btn btn-ghost py-2 text-xs border-cyan-500/30 text-cyan-300">
+        📥 Отчёт для диетолога
+      </button>
+    </div>
+  </div>
 
   <!-- Быстрые действия -->
   <div class="grid grid-cols-2 gap-3">
@@ -1207,6 +1933,14 @@ function bindDashboardEvents() {
       render();
     };
   });
+
+  const expressBtn = document.getElementById('expressAddBtn');
+  if (expressBtn) {
+    expressBtn.onclick = () => {
+      const input = document.getElementById('expressMealInput');
+      if (input && input.value) parseAndAddExpressMeal(input.value);
+    };
+  }
 
   const of = document.getElementById('openFood');
   if (of) of.onclick = () => { SoundEffects.playClick(); openFoodModal(); };
