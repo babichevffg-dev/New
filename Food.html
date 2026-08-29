@@ -1191,9 +1191,7 @@ function parseAndAddExpressMeal(text) {
   if (!text || !text.trim()) return;
   const allFoods = [...DEFAULT_FOODS, ...(state.data.customFoods || [])];
 
-  // Пример текста: "гречка 200г, оливковое масло 10г, кура 150г"
-  const parts = text.split(/[,;
-]+/);
+  const parts = text.split(new RegExp("[,;\n]+"));
   let addedCount = 0;
   const d = getTodayRecord();
 
@@ -1209,7 +1207,6 @@ function parseAndAddExpressMeal(text) {
       grams = parseInt(match[2]) || 100;
     }
 
-    // Fuzzy matching product
     const found = allFoods.find(f => f.name.toLowerCase().includes(nameSearch.toLowerCase())) ||
                   allFoods.find(f => nameSearch.toLowerCase().includes(f.name.toLowerCase().split(' ')[0]));
 
@@ -1221,7 +1218,7 @@ function parseAndAddExpressMeal(text) {
         name: found.name,
         icon: '⚡',
         mealType: 'snack',
-        desc: `Экспресс-ввод (${grams}г)`
+        desc: 'Экспресс (' + grams + 'г)'
       });
       addedCount++;
     }
@@ -1232,7 +1229,7 @@ function parseAndAddExpressMeal(text) {
     save();
     SoundEffects.playSuccess();
     render();
-    alert(`Экспресс-ввод: успешно распознано и добавлено ${addedCount} элементов!`);
+    alert('Экспресс-ввод: успешно распознано и добавлено ' + addedCount + ' элементов!');
   } else {
     alert('Не удалось распознать продукты. Попробуйте указать: "гречка 200г, яблоко 150г"');
   }
