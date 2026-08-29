@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>КалорияПлюс — трекер калорий и активности</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>" />
+<link rel="manifest" href='data:application/manifest+json,{"name":"КалорияПлюс","short_name":"Калории","start_url":".","display":"standalone","background_color":"%230f172a","theme_color":"%2310b981","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>","sizes":"any","type":"image/svg+xml"}]}' />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          brand: { 500: '#10b981', 600: '#059669' },
+          accent: { 500: '#f59e0b' }
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+    -webkit-tap-highlight-color: transparent;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+  }
+  .dark body {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  }
+  .card { 
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
+    padding: 1.25rem; 
+  }
+  .dark .card { 
+    background: rgba(30, 41, 59, 0.95);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  .btn { 
+    padding: 0.625rem 1.25rem; 
+    border-radius: 1rem; 
+    font-weight: 600; 
+    transition: all 0.2s; 
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn-primary { 
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  }
+  .btn-primary:hover { 
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+  }
+  .btn-ghost { 
+    background: rgba(241, 245, 249, 0.9);
+    backdrop-filter: blur(10px);
+  }
+  .dark .btn-ghost { 
+    background: rgba(51, 65, 85, 0.9);
+    color: #e2e8f0; 
+  }
+  .btn-ghost:hover { 
+    background: rgba(226, 232, 240, 0.95);
+  }
+  .dark .btn-ghost:hover { 
+    background: rgba(71, 85, 105, 0.95);
+  }
+  input, select { outline: none; }
+  .modal-bg { 
+    background: rgba(0,0,0,0.6); 
+    backdrop-filter: blur(8px); 
+  }
+  @keyframes pop { 
+    0% { transform: scale(0.9); opacity: 0; } 
+    100% { transform: scale(1); opacity: 1; } 
+  }
+  .pop { animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .slide-up { animation: slideUp 0.3s ease-out; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .pulse { animation: pulse 2s ease-in-out infinite; }
+  .scroll-hide::-webkit-scrollbar { display: none; }
+  .gradient-text {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glow {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+  }
+</style>
+</head>
+<body class="text-slate-900 dark:text-slate-100">
+<div id="root"></div>
+
+<script>
+/* ============ ДАННЫЕ ============ */
+const FOODS = [
+  { id: 'grechka', name: 'Гречка (варёная)', kcal: 110, p: 4.5, f: 1.1, c: 21, cat: 'Крупы' },
+  { id: 'rice', name: 'Рис (варёный)', kcal: 130, p: 2.7, f: 0.3, c: 28, cat: 'Крупы' },
+  { id: 'oatmeal', name: 'Овсянка на воде', kcal: 88, p: 3, f: 1.7, c: 15, cat: 'Крупы' },
+  { id: 'pasta', name: 'Макароны вар.', kcal: 131, p: 5, f: 1.1, c: 27, cat: 'Крупы' },
+  { id: 'bread_white', name: 'Хлеб белый', kcal: 265, p: 8, f: 1, c: 53, cat: 'Хлеб' },
+  { id: 'bread_black', name: 'Хлеб чёрный', kcal: 200, p: 6.6, f: 1.2, c: 40, cat: 'Хлеб' },
+  { id: 'chicken', name: 'Куриная грудка (вар.)', kcal: 113, p: 23.6, f: 1.9, c: 0.4, cat: 'Мясо' },
+  { id: 'beef', name: 'Говядина (вар.)', kcal: 254, p: 25.8, f: 16.8, c: 0, cat: 'Мясо' },
+  { id: 'pork', name: 'Свинина (нежирная)', kcal: 240, p: 19, f: 18, c: 0, cat: 'Мясо' },
+  { id: 'turkey', name: 'Индейка', kcal: 125, p: 25, f: 2, c: 0, cat: 'Мясо' },
+  { id: 'salmon', name: 'Сёмга', kcal: 208, p: 20, f: 13, c: 0, cat: 'Рыба' },
+  { id: 'tuna', name: 'Тунец', kcal: 130, p: 29, f: 1, c: 0, cat: 'Рыба' },
+  { id: 'egg', name: 'Яйцо куриное (1 шт ~50г)', kcal: 157, p: 12.7, f: 11.5, c: 0.7, cat: 'Яйца' },
+  { id: 'milk', name: 'Молоко 2.5%', kcal: 52, p: 2.8, f: 2.5, c: 4.7, cat: 'Молочка' },
+  { id: 'tvorog5', name: 'Творог 5%', kcal: 121, p: 17, f: 5, c: 1.8, cat: 'Молочка' },
+  { id: 'tvorog0', name: 'Творог 0%', kcal: 71, p: 18, f: 0.6, c: 1.8, cat: 'Молочка' },
+  { id: 'kefir', name: 'Кефир 1%', kcal: 40, p: 3, f: 1, c: 4, cat: 'Молочка' },
+  { id: 'yogurt', name: 'Йогурт натуральный', kcal: 60, p: 4, f: 2, c: 6, cat: 'Молочка' },
+  { id: 'cheese', name: 'Сыр твёрдый', kcal: 350, p: 25, f: 27, c: 0, cat: 'Молочка' },
+  { id: 'apple', name: 'Яблоко', kcal: 52, p: 0.4, f: 0.4, c: 10, cat: 'Фрукты' },
+  { id: 'banana', name: 'Банан', kcal: 95, p: 1.5, f: 0.2, c: 21, cat: 'Фрукты' },
+  { id: 'orange', name: 'Апельсин', kcal: 43, p: 0.9, f: 0.2, c: 8, cat: 'Фрукты' },
+  { id: 'cucumber', name: 'Огурец', kcal: 15, p: 0.8, f: 0.1, c: 2.8, cat: 'Овощи' },
+  { id: 'tomato', name: 'Помидор', kcal: 20, p: 1.1, f: 0.2, c: 3.7, cat: 'Овощи' },
+  { id: 'potato', name: 'Картофель вар.', kcal: 82, p: 2, f: 0.4, c: 17, cat: 'Овощи' },
+  { id: 'broccoli', name: 'Брокколи', kcal: 34, p: 2.8, f: 0.4, c: 7, cat: 'Овощи' },
+  { id: 'tea_no_sugar', name: 'Чай без сахара', kcal: 1, p: 0, f: 0, c: 0.3, cat: 'Напитки' },
+  { id: 'tea_sugar', name: 'Чай с 1 ч.л. сахара', kcal: 20, p: 0, f: 0, c: 5, cat: 'Напитки' },
+  { id: 'coffee_black', name: 'Кофе чёрный', kcal: 2, p: 0.2, f: 0, c: 0.3, cat: 'Напитки' },
+  { id: 'coffee_milk', name: 'Кофе с молоком', kcal: 30, p: 1, f: 1, c: 3, cat: 'Напитки' },
+  { id: 'juice', name: 'Сок апельсиновый', kcal: 45, p: 0.7, f: 0.2, c: 10, cat: 'Напитки' },
+  { id: 'butter', name: 'Масло сливочное', kcal: 717, p: 0.5, f: 82, c: 0.8, cat: 'Жиры' },
+  { id: 'oil_olive', name: 'Масло оливковое', kcal: 884, p: 0, f: 100, c: 0, cat: 'Жиры' },
+  { id: 'sugar', name: 'Сахар', kcal: 399, p: 0, f: 0, c: 100, cat: 'Прочее' },
+  { id: 'chocolate', name: 'Шоколад молочный', kcal: 550, p: 7, f: 35, c: 54, cat: 'Сладкое' }
+];
+
+const PORTIONS = [
+  { id: 'plate_s', name: 'Тарелка маленькая', grams: 200, icon: '🥣' },
+  { id: 'plate_m', name: 'Тарелка средняя', grams: 350, icon: '🍽️' },
+  { id: 'plate_l', name: 'Тарелка большая', grams: 500, icon: '🍲' },
+  { id: 'add_s', name: 'Добавка маленькая', grams: 100, icon: '🥄' },
+  { id: 'add_m', name: 'Добавка средняя', grams: 200, icon: '🍴' },
+  { id: 'slice', name: 'Кусочек хлеба', grams: 30, icon: '🍞' },
+  { id: 'cup', name: 'Чашка', grams: 250, icon: '☕' },
+  { id: 'tbsp', name: 'Столовая ложка', grams: 15, icon: '🥄' },
+  { id: 'tsp', name: 'Чайная ложка', grams: 5, icon: '🥄' },
+  { id: 'pcs', name: 'Штука (средняя)', grams: 100, icon: '🔢' },
+  { id: 'g', name: 'Грамы (вручную)', grams: 1, icon: '⚖️' }
+];
+
+const ACTIVITIES = [
+  { id: 'rest', name: 'День без активности', kph: 0, icon: '🛋️' },
+  { id: 'walk_easy', name: 'Прогулка лёгкая', kph: 200, icon: '🚶' },
+  { id: 'walk_fast', name: 'Прогулка быстрая', kph: 350, icon: '🚶‍♂️' },
+  { id: 'gym', name: 'Тренажёрный зал', kph: 400, icon: '🏋️' },
+  { id: 'run', name: 'Бег', kph: 600, icon: '🏃' },
+  { id: 'bike', name: 'Велосипед', kph: 450, icon: '🚴' },
+  { id: 'household', name: 'Уборка / быт', kph: 250, icon: '🧹' },
+  { id: 'swim', name: 'Плавание', kph: 500, icon: '🏊' }
+];
+
+const MEAL_TYPES = [
+  { v: 'breakfast', l: 'Завтрак', i: '🌅' },
+  { v: 'lunch', l: 'Обед', i: '☀️' },
+  { v: 'dinner', l: 'Ужин', i: '🌙' },
+  { v: 'snack', l: 'Перекус', i: '🍪' }
+];
+
+const IDEAS = [
+  { name: '🥣 Творог 5% + банан', kcal: 260, p: 18, f: 5, c: 30 },
+  { name: '🥚 Яйца (2 шт) + хлеб', kcal: 235, p: 16, f: 12, c: 15 },
+  { name: '🍗 Курица + гречка', kcal: 330, p: 35, f: 3, c: 40 },
+  { name: '🍎 Яблоко + сыр', kcal: 130, p: 6, f: 7, c: 12 },
+  { name: '🥛 Кефир + овсянка', kcal: 180, p: 8, f: 2, c: 25 },
+  { name: '🐟 Сёмга + огурец', kcal: 230, p: 22, f: 14, c: 3 },
+  { name: '🥒 Овощной салат', kcal: 80, p: 2, f: 5, c: 8 },
+  { name: '🍫 Горький шоколад (20г)', kcal: 110, p: 2, f: 8, c: 8 }
+];
+
+/* ============ УТИЛИТЫ ============ */
+const ACTIVITY_COEF = { sedentary: 1.2, moderate: 1.375, active: 1.55 };
+const calcBMR = p => {
+  const base = 10 * p.weight + 6.25 * p.height - 5 * p.age;
+  return p.gender === 'm' ? base + 5 : base - 161;
+};
+const calcDailyNorm = p => Math.round(calcBMR(p) * (ACTIVITY_COEF[p.baseActivity] || 1.2));
+const calcTarget = p => Math.round(calcDailyNorm(p) * (1 - (p.deficitPercent || 20) / 100));
+const calcFoodKcal = (food, grams) => ({
+  kcal: Math.round(food.kcal * grams / 100),
+  p: +(food.p * grams / 100).toFixed(1),
+  f: +(food.f * grams / 100).toFixed(1),
+  c: +(food.c * grams / 100).toFixed(1)
+});
+const todayKey = () => new Date().toISOString().slice(0, 10);
+
+/* ============ STATE ============ */
+let state = {
+  profile: JSON.parse(localStorage.getItem('kp_profile') || 'null'),
+  data: JSON.parse(localStorage.getItem('kp_data') || '{"days":{},"achievements":[],"streak":0,"weights":[]}'),
+  tab: 'today',
+  dark: localStorage.getItem('kp_dark') === '1'
+};
+const save = () => {
+  localStorage.setItem('kp_profile', JSON.stringify(state.profile));
+  localStorage.setItem('kp_data', JSON.stringify(state.data));
+};
+const setDark = v => {
+  state.dark = v;
+  localStorage.setItem('kp_dark', v ? '1' : '0');
+  document.documentElement.classList.toggle('dark', v);
+  render();
+};
+if (state.dark) document.documentElement.classList.add('dark');
+
+/* ============ РЕНДЕР ============ */
+const root = document.getElementById('root');
+const render = () => {
+  root.innerHTML = state.profile ? renderDashboard() : renderSetup();
+  bindEvents();
+};
+
+function renderSetup() {
+  const f = state._setupForm || { 
+    name: '', gender: 'm', age: 30, height: 175, weight: 75, targetWeight: 70, 
+    baseActivity: 'sedentary', deficitPercent: 20 
+  };
+  state._setupForm = f;
+  const norm = calcDailyNorm(f);
+  const target = calcTarget(f);
+  return `
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="card max-w-md w-full space-y-5 pop">
+      <div class="text-center">
+        <div class="text-6xl mb-3 pulse">🎯</div>
+        <h1 class="text-3xl font-bold gradient-text">КалорияПлюс</h1>
+        <p class="text-sm text-slate-500 mt-2">Твой путь к лёгкости и здоровью</p>
+      </div>
+
+      <div>
+        <label class="block">
+          <span class="text-xs text-slate-500 font-semibold">Как тебя зовут?</span>
+          <input data-set="name" type="text" value="${f.name}" placeholder="Александр" 
+            class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-lg" />
+        </label>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <button data-set="gender:m" class="btn ${f.gender==='m'?'btn-primary':'btn-ghost'}">👨 Мужчина</button>
+        <button data-set="gender:f" class="btn ${f.gender==='f'?'btn-primary':'btn-ghost'}">👩 Женщина</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        ${[['age','Возраст','лет'],['height','Рост','см'],['weight','Вес','кг'],['targetWeight','Целевой вес','кг']].map(([k,l,u])=>`
+          <label class="block">
+            <span class="text-xs text-slate-500 font-semibold">${l}</span>
+            <input data-set="${k}" type="number" value="${f[k]}" class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700" />
+          </label>
+        `).join('')}
+      </div>
+
+      <div>
+        <span class="text-xs text-slate-500 font-semibold">Базовая активность</span>
+        <div class="grid grid-cols-3 gap-2 mt-2">
+          ${[['sedentary','🪑 Сидячий'],['moderate','🚶 Умеренный'],['active','🏃 Активный']].map(([v,l])=>`
+            <button data-set="baseActivity:${v}" class="btn text-xs ${f.baseActivity===v?'btn-primary':'btn-ghost'}">${l}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <label class="block">
+        <span class="text-xs text-slate-500 font-semibold">Дефицит калорий: <b class="gradient-text">${f.deficitPercent}%</b></span>
+        <input data-set="deficitPercent" type="range" min="5" max="35" value="${f.deficitPercent}" class="w-full mt-2" />
+      </label>
+
+      <div class="card bg-gradient-to-br from-brand-500 to-emerald-600 text-white glow">
+        <div class="text-xs opacity-80">Твоя норма</div>
+        <div class="text-4xl font-bold">${norm} <span class="text-lg opacity-80">ккал</span></div>
+        <div class="text-xs opacity-80 mt-3">Цель с дефицитом</div>
+        <div class="text-4xl font-bold">${target} <span class="text-lg opacity-80">ккал 🎯</span></div>
+      </div>
+
+      <button id="saveSetup" class="btn btn-primary w-full text-lg py-4">Начать квест 🚀</button>
+    </div>
+  </div>`;
+}
+
+function renderDashboard() {
+  const target = calcTarget(state.profile);
+  const dayKey = todayKey();
+  const day = state.data.days[dayKey] || { meals: [], activities: [], weight: null };
+  const totals = { kcal: 0, p: 0, f: 0, c: 0, burned: 0 };
+  day.meals.forEach(m => { totals.kcal += m.kcal; totals.p += m.p; totals.f += m.f; totals.c += m.c; });
+  day.activities.forEach(a => { totals.burned += a.kcal; });
+  const goal = target + totals.burned;
+  const remaining = goal - totals.kcal;
+  const progress = Math.min(100, (totals.kcal / goal) * 100);
+
+  return `
+  <div class="max-w-2xl mx-auto p-4 pb-24">
+    <header class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="text-2xl font-bold gradient-text">🎯 КалорияПлюс</h1>
+        <p class="text-xs text-slate-600 dark:text-slate-400">Привет, ${state.profile.name}! 👋</p>
+        <p class="text-xs text-slate-500">${new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="toggleDark" class="btn btn-ghost text-xl">${state.dark ? '☀️' : '🌙'}</button>
+        <div class="card px-3 py-1 flex items-center gap-1 text-sm">
+          🔥 ${state.data.streak || 0}
+        </div>
+      </div>
+    </header>
+
+    ${state.tab === 'today' ? `
+      <!-- Главный круг прогресса -->
+      <div class="card bg-gradient-to-br from-slate-900 to-slate-700 text-white mb-4 glow">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex-1">
+            <div class="text-xs opacity-70">Съедено / Цель</div>
+            <div class="text-4xl font-bold">${totals.kcal} <span class="text-lg opacity-60">/ ${goal}</span></div>
+            <div class="text-sm mt-1">🔥 Сожжено: ${totals.burned} ккал</div>
+            <div class="text-xs opacity-70 mt-1">Базовая цель: ${target} ккал</div>
+          </div>
+          <div class="relative w-32 h-32 flex-shrink-0">
+            <svg viewBox="0 0 100 100" class="transform -rotate-90 w-full h-full">
+              <circle cx="50" cy="50" r="42" stroke="#334155" stroke-width="10" fill="none" />
+              <circle cx="50" cy="50" r="42" stroke="${remaining < 0 ? '#ef4444' : '#10b981'}" stroke-width="10" fill="none"
+                stroke-dasharray="${progress * 2.64} 264" stroke-linecap="round" class="transition-all duration-500" />
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center text-center">
+              <div>
+                <div class="text-xs opacity-70">Осталось</div>
+                <div class="text-xl font-bold ${remaining < 0 ? 'text-red-400' : ''}">${remaining}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mt-4">
+          ${[['Белки', totals.p, '🥩', target*0.3/4],['Жиры', totals.f, '🥑', target*0.3/9],['Углев.', totals.c, '🍞', target*0.4/4]].map(([l,v,i,t])=>{
+            const pct = Math.min(100, (v/t)*100);
+            return `<div class="bg-white/10 rounded-xl p-2 text-center">
+              <div class="text-xs opacity-70">${i} ${l}</div>
+              <div class="font-bold">${v.toFixed(0)}г</div>
+              <div class="text-[10px] opacity-60">из ${t.toFixed(0)}г</div>
+              <div class="h-1 bg-white/20 rounded-full mt-1 overflow-hidden"><div class="h-full bg-brand-500 transition-all duration-500" style="width:${pct}%"></div></div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      ${renderRecommendations(remaining, totals, target)}
+
+      <div class="flex gap-2 mb-3">
+        <button id="openFood" class="btn btn-primary flex-1 flex items-center justify-center gap-1">➕ Еда</button>
+        <button id="openActivity" class="btn btn-ghost flex-1 flex items-center justify-center gap-1">➕ Активность</button>
+      </div>
+
+      <div class="card mb-3">
+        <h3 class="font-semibold mb-2 flex items-center gap-2">🍽️ Съедено</h3>
+        ${day.meals.length === 0 ? '<p class="text-sm text-slate-500">Пока пусто. Добавь первый приём пищи!</p>' :
+          `<ul class="space-y-1">${day.meals.map((m, i) => `
+            <li class="flex justify-between items-center text-sm py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
+              <div>
+                <div>${m.icon} <b>${m.name}</b></div>
+                <div class="text-xs text-slate-500">${m.desc} · ${m.grams}г · Б:${m.p} Ж:${m.f} У:${m.c}</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-semibold">${m.kcal} ккал</span>
+                <button data-del-meal="${i}" class="text-red-500 text-xs">✕</button>
+              </div>
+            </li>
+          `).join('')}</ul>`
+        }
+      </div>
+
+      <div class="card">
+        <h3 class="font-semibold mb-2 flex items-center gap-2">💪 Активность</h3>
+        ${day.activities.length === 0 ? '<p class="text-sm text-slate-500">Нет активностей</p>' :
+          `<ul class="space-y-1">${day.activities.map((a, i) => `
+            <li class="flex justify-between items-center text-sm py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
+              <span>${a.icon} ${a.name} · ${a.duration}ч</span>
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-brand-500">+${a.kcal} ккал</span>
+                <button data-del-act="${i}" class="text-red-500 text-xs">✕</button>
+              </div>
+            </li>
+          `).join('')}</ul>`
+        }
+      </div>
+    ` : state.tab === 'stats' ? renderStats() : state.tab === 'history' ? renderHistory() : renderTheory()}
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg border-t dark:border-slate-700 flex">
+      ${[['today','Сегодня','✨'],['stats','Статистика','📊'],['history','История','📅'],['theory','Теория','📚']].map(([k,l,i])=>`
+        <button data-tab="${k}" class="flex-1 py-3 flex flex-col items-center gap-1 text-xs ${state.tab===k?'text-brand-500':'text-slate-500'}">
+          <span class="text-xl">${i}</span> ${l}
+        </button>
+      `).join('')}
+    </nav>
+  </div>
+
+  <div id="modalRoot"></div>
+  `;
+}
+
+function renderRecommendations(remaining, totals, target) {
+  if (remaining <= 0) {
+    return `<div class="card bg-amber-100 dark:bg-amber-900/30 mb-3 border border-amber-300 dark:border-amber-700">
+      <div class="flex items-center gap-2 font-semibold text-amber-700 dark:text-amber-300">
+        🛑 Лимит достигнут! Отличный день.
+      </div>
+    </div>`;
+  }
+  const targetP = target * 0.3 / 4;
+  const targetF = target * 0.3 / 9;
+  const targetC = target * 0.4 / 4;
+  const lacks = [];
+  if (totals.p < targetP * 0.8) lacks.push('белков 🥩');
+  if (totals.f < targetF * 0.8) lacks.push('жиров 🥑');
+  if (totals.c < targetC * 0.8) lacks.push('углеводов 🍞');
+  const suitable = IDEAS.filter(i => i.kcal <= remaining).slice(0, 3);
+
+  return `<div class="card mb-3 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-800">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-xl">✨</span>
+      <h3 class="font-semibold">Рекомендации</h3>
+    </div>
+    <div class="text-sm space-y-2">
+      <div class="flex items-center gap-2">🎯 Можешь съесть ещё <b>${remaining} ккал</b></div>
+      ${lacks.length > 0 ? `<div class="text-xs text-slate-600 dark:text-slate-300">🍎 Не хватает: ${lacks.join(', ')}</div>` : ''}
+      ${suitable.length > 0 ? `
+        <div>
+          <div class="text-xs text-slate-500 mb-1">💡 Идеи перекуса:</div>
+          <div class="space-y-1">
+            ${suitable.map(i => `<div class="bg-white dark:bg-slate-800 rounded-lg p-2 text-xs flex justify-between">
+              <span>${i.name}</span>
+              <span class="font-semibold text-brand-500">${i.kcal} ккал</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  </div>`;
+}
+
+function renderStats() {
+  const target = calcTarget(state.profile);
+  const last7 = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const day = state.data.days[key] || { meals: [], activities: [] };
+    const kcal = day.meals.reduce((s, m) => s + m.kcal, 0);
+    const burned = day.activities.reduce((s, a) => s + a.kcal, 0);
+    last7.push({ day: d.toLocaleDateString('ru-RU', { weekday: 'short' }), kcal, burned, target });
+  }
+  const maxKcal = Math.max(target, ...last7.map(d => d.kcal)) * 1.1;
+
+  // График веса
+  const weights = state.data.weights || [];
+  const lastWeights = weights.slice(-7);
+
+  return `
+  <div class="space-y-4">
+    <div class="card">
+      <h3 class="font-semibold mb-3">📊 Калории за 7 дней</h3>
+      <div class="h-48 flex items-end gap-1">
+        ${last7.map(d => {
+          const h = (d.kcal / maxKcal) * 100;
+          const th = (d.target / maxKcal) * 100;
+          const ok = d.kcal > 0 && d.kcal <= d.target;
+          return `<div class="flex-1 flex flex-col items-center gap-1">
+            <div class="text-[10px]">${d.kcal || ''}</div>
+            <div class="w-full relative" style="height:100%">
+              <div class="absolute bottom-0 w-full bg-slate-200 dark:bg-slate-700 rounded-t" style="height:${th}%"></div>
+              <div class="absolute bottom-0 w-full rounded-t ${ok ? 'bg-brand-500' : d.kcal > d.target ? 'bg-red-500' : 'bg-slate-400'}" style="height:${h}%"></div>
+            </div>
+            <div class="text-[10px]">${d.day}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="flex gap-3 text-xs mt-3">
+        <span><span class="inline-block w-3 h-3 bg-brand-500 rounded"></span> В дефиците</span>
+        <span><span class="inline-block w-3 h-3 bg-red-500 rounded"></span> Перебор</span>
+        <span><span class="inline-block w-3 h-3 bg-slate-200 dark:bg-slate-700 rounded"></span> Цель</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-semibold mb-3">⚖️ График веса</h3>
+      <div class="flex gap-2 mb-3">
+        <input id="weightInput" type="number" step="0.1" placeholder="Текущий вес (кг)" 
+          class="flex-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700" />
+        <button id="saveWeight" class="btn btn-primary">Сохранить</button>
+      </div>
+      ${lastWeights.length > 0 ? `
+        <div class="h-32 flex items-end gap-1">
+          ${lastWeights.map((w, i) => {
+            const minW = Math.min(...lastWeights.map(x => x.weight));
+            const maxW = Math.max(...lastWeights.map(x => x.weight));
+            const range = maxW - minW || 1;
+            const h = ((w.weight - minW) / range) * 80 + 20;
+            return `<div class="flex-1 flex flex-col items-center gap-1">
+              <div class="text-[10px]">${w.weight}</div>
+              <div class="w-full bg-brand-500 rounded-t" style="height:${h}%"></div>
+              <div class="text-[10px]">${new Date(w.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="text-xs text-slate-500 mt-2 text-center">
+          ${lastWeights.length > 1 ? `Изменение: ${(lastWeights[lastWeights.length-1].weight - lastWeights[0].weight).toFixed(1)} кг` : ''}
+        </div>
+      ` : '<p class="text-sm text-slate-500 text-center">Нет данных. Добавь первый замер веса!</p>'}
+    </div>
+
+    <div class="card">
+      <h3 class="font-semibold mb-3">🏆 Достижения</h3>
+      <div class="grid grid-cols-3 gap-2">
+        ${[
+          { i: '🔥', n: 'Первый огонь', d: 'Начал квест', ok: true },
+          { i: '🥗', n: 'Зелёный день', d: 'В дефиците', ok: Object.values(state.data.days).some(d => d.meals.reduce((s,m)=>s+m.kcal,0) <= calcTarget(state.profile) && d.meals.length > 0) },
+          { i: '💪', n: 'Спортсмен', d: 'Была тренировка', ok: Object.values(state.data.days).some(d => d.activities.some(a => a.kcal >= 300)) },
+          { i: '📅', n: 'Неделя', d: '7 дней подряд', ok: state.data.streak >= 7 },
+          { i: '⭐', n: 'Мастер', d: '30 дней', ok: state.data.streak >= 30 },
+          { i: '🎯', n: 'Снайпер БЖУ', d: 'Баланс нутриентов', ok: false }
+        ].map(a => `
+          <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-3 text-center ${a.ok ? '' : 'opacity-40 grayscale'}">
+            <div class="text-3xl">${a.i}</div>
+            <div class="text-xs font-semibold mt-1">${a.n}</div>
+            <div class="text-[10px] text-slate-500">${a.d}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-semibold mb-3">💾 Данные</h3>
+      <div class="flex gap-2">
+        <button id="exportData" class="btn btn-ghost flex-1">📤 Экспорт JSON</button>
+        <button id="resetData" class="btn btn-ghost flex-1 text-red-500">🗑️ Сброс</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderHistory() {
+  const days = Object.keys(state.data.days).sort().reverse();
+  return `
+  <div class="space-y-4">
+    <div class="card">
+      <h3 class="font-semibold mb-3">📅 История по дням</h3>
+      ${days.length === 0 ? '<p class="text-sm text-slate-500">История пуста</p>' :
+        `<div class="space-y-2">${days.slice(0, 30).map(key => {
+          const day = state.data.days[key];
+          const kcal = day.meals.reduce((s, m) => s + m.kcal, 0);
+          const burned = day.activities.reduce((s, a) => s + a.kcal, 0);
+          const target = calcTarget(state.profile);
+          const ok = kcal > 0 && kcal <= target + burned;
+          const date = new Date(key);
+          return `
+            <div class="bg-slate-50 dark:bg-slate-700 rounded-xl p-3">
+              <div class="flex justify-between items-center mb-2">
+                <div class="font-semibold">${date.toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'short' })}</div>
+                <div class="text-xs ${ok ? 'text-brand-500' : 'text-red-500'}">${ok ? '✓ В дефиците' : kcal > 0 ? '✗ Перебор' : 'Нет данных'}</div>
+              </div>
+              <div class="text-xs text-slate-600 dark:text-slate-400 space-y-1">
+                <div>🍽️ Съедено: <b>${kcal} ккал</b> (${day.meals.length} приёмов)</div>
+                <div>🔥 Сожжено: <b>${burned} ккал</b> (${day.activities.length} активностей)</div>
+                <div>🎯 Цель: ${target} ккал</div>
+                ${day.weight ? `<div>⚖️ Вес: ${day.weight} кг</div>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('')}</div>`
+      }
+    </div>
+  </div>`;
+}
+
+function renderTheory() {
+  const profile = state.profile;
+  const bmr = calcBMR(profile);
+  const norm = calcDailyNorm(profile);
+  const target = calcTarget(profile);
+  
+  return `
+  <div class="space-y-4">
+    <div class="card">
+      <h3 class="font-semibold mb-3 text-lg">📚 Теория: как работают калории</h3>
+      
+      <div class="space-y-4 text-sm">
+        <div>
+          <h4 class="font-semibold mb-2 gradient-text">🔬 Формула Миффлина-Сан Жеора</h4>
+          <p class="text-slate-600 dark:text-slate-400 mb-2">
+            Это самая точная формула для расчёта базового обмена веществ (BMR) — сколько калорий тратит организм в покое.
+          </p>
+          <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-3 font-mono text-xs">
+            <div>Мужчины: BMR = 10 × вес(кг) + 6.25 × рост(см) − 5 × возраст + 5</div>
+            <div>Женщины: BMR = 10 × вес(кг) + 6.25 × рост(см) − 5 × возраст − 161</div>
+          </div>
+          <div class="mt-2 text-xs text-slate-500">
+            Твой BMR: <b class="gradient-text">${bmr} ккал</b>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-2 gradient-text">⚡ Коэффициенты активности</h4>
+          <div class="space-y-1 text-xs">
+            <div class="flex justify-between bg-slate-50 dark:bg-slate-700 p-2 rounded">
+              <span>🪑 Сидячий образ жизни</span>
+              <b>× 1.2</b>
+            </div>
+            <div class="flex justify-between bg-slate-50 dark:bg-slate-700 p-2 rounded">
+              <span>🚶 Умеренная активность</span>
+              <b>× 1.375</b>
+            </div>
+            <div class="flex justify-between bg-slate-50 dark:bg-slate-700 p-2 rounded">
+              <span>🏃 Высокая активность</span>
+              <b>× 1.55</b>
+            </div>
+          </div>
+          <div class="mt-2 text-xs text-slate-500">
+            Твоя суточная норма: <b class="gradient-text">${norm} ккал</b>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-2 gradient-text">🎯 Дефицит калорий</h4>
+          <p class="text-slate-600 dark:text-slate-400 mb-2">
+            Дефицит — это когда ты ешь меньше, чем тратишь. Организм начинает использовать запасы жира.
+          </p>
+          <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-3 font-mono text-xs">
+            Цель = Норма × (1 − дефицит%)
+          </div>
+          <div class="mt-2 text-xs text-slate-500">
+            Твоя цель: <b class="gradient-text">${target} ккал</b> (дефицит ${profile.deficitPercent}%)
+          </div>
+          <div class="mt-2 text-xs">
+            <p class="text-slate-600 dark:text-slate-400">
+              💡 <b>Безопасный дефицит:</b> 15-25% (0.5-1 кг в неделю)<br>
+              ⚠️ <b>Опасно:</b> больше 30% (риск потери мышц, замедление метаболизма)
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-2 gradient-text">🥩 БЖУ: белки, жиры, углеводы</h4>
+          <div class="space-y-2 text-xs">
+            <div class="bg-slate-50 dark:bg-slate-700 p-2 rounded">
+              <b>🥩 Белки:</b> 30% калорий · 4 ккал/г · строят мышцы
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-700 p-2 rounded">
+              <b>🥑 Жиры:</b> 30% калорий · 9 ккал/г · гормоны, витамины
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-700 p-2 rounded">
+              <b>🍞 Углеводы:</b> 40% калорий · 4 ккал/г · энергия
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-2 gradient-text">📖 Полезные ссылки</h4>
+          <div class="space-y-2 text-xs">
+            <a href="https://ru.wikipedia.org/wiki/Базовый_обмен_веществ" target="_blank" class="block bg-slate-50 dark:bg-slate-700 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+              📚 Википедия: Базовый обмен веществ
+            </a>
+            <a href="https://www.fitlabs.ru/nutrition/kalorii/" target="_blank" class="block bg-slate-50 dark:bg-slate-700 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+              💪 FitLabs: Всё о калориях
+            </a>
+            <a href="https://zajmy-onlayn.ru/kalkulyator-kaloriy/" target="_blank" class="block bg-slate-50 dark:bg-slate-700 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+              🧮 Калькулятор калорий онлайн
+            </a>
+            <a href="https://www.sportmaster.ru/articles/pravilnoe_pitanie_dlya_pohudeniya/" target="_blank" class="block bg-slate-50 dark:bg-slate-700 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+              🏃 Sportmaster: Правильное питание для похудения
+            </a>
+            <a href="https://health-diet.ru/" target="_blank" class="block bg-slate-50 dark:bg-slate-700 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-600">
+              🥗 Health-Diet: Таблицы калорийности продуктов
+            </a>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-brand-500 to-emerald-600 text-white rounded-xl p-4">
+          <h4 class="font-semibold mb-2">💡 Почему именно эти калории?</h4>
+          <p class="text-xs opacity-90">
+            Твоя цель в <b>${target} ккал</b> рассчитана индивидуально на основе твоего веса, роста, возраста и активности. 
+            Дефицит в <b>${profile.deficitPercent}%</b> — это безопасная скорость похудения (0.5-1 кг в неделю). 
+            Ты можешь изменить процент дефицита в настройках профиля, но не рекомендуем превышать 30%.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============ МОДАЛКИ ============ */
+function openFoodModal() {
+  const modal = document.getElementById('modalRoot');
+  const form = { mealType: 'lunch', foodId: FOODS[0].id, portions: [{ id: 'plate_m', qty: 1 }], search: '' };
+
+  const renderModal = () => {
+    const food = FOODS.find(f => f.id === form.foodId);
+    const filtered = FOODS.filter(f => f.name.toLowerCase().includes(form.search.toLowerCase()));
+    const totalGrams = form.portions.reduce((s, p) => {
+      const pr = PORTIONS.find(x => x.id === p.id);
+      return s + (pr ? pr.grams * p.qty : 0);
+    }, 0);
+    const kbju = calcFoodKcal(food, totalGrams);
+
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="bg-white dark:bg-slate-800 w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-4 space-y-3 pop">
+        <h3 class="font-bold text-lg">Добавить продукт</h3>
+
+        <div>
+          <div class="text-xs mb-1">Приём пищи</div>
+          <div class="grid grid-cols-4 gap-1">
+            ${MEAL_TYPES.map(m => `
+              <button data-mf="${m.v}" class="btn text-xs ${form.mealType===m.v?'btn-primary':'btn-ghost'}">${m.i} ${m.l}</button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div>
+          <div class="text-xs mb-1">Продукт</div>
+          <input id="foodSearch" value="${form.search}" placeholder="Поиск..." class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 mb-2" />
+          <select id="foodSelect" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700">
+            ${filtered.map(f => `<option value="${f.id}" ${f.id===form.foodId?'selected':''}>${f.name} (${f.kcal} ккал/100г)</option>`).join('')}
+          </select>
+        </div>
+
+        <div>
+          <div class="text-xs mb-1 flex justify-between">
+            <span>Порции</span>
+            <button id="addPortion" class="text-brand-500 text-xs">+ добавить</button>
+          </div>
+          <div class="space-y-2" id="portionsList">
+            ${form.portions.map((p, i) => `
+              <div class="flex gap-2 items-center">
+                <select data-pi="${i}" class="port-select flex-1 px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm">
+                  ${PORTIONS.map(pr => `<option value="${pr.id}" ${pr.id===p.id?'selected':''}>${pr.icon} ${pr.name} (${pr.grams}г)</option>`).join('')}
+                </select>
+                <input type="number" min="0.25" step="0.25" value="${p.qty}" data-qi="${i}" class="port-qty w-16 px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm" />
+                ${form.portions.length > 1 ? `<button data-rmi="${i}" class="text-red-500">✕</button>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="card bg-slate-100 dark:bg-slate-700">
+          <div class="text-sm">Итого: <b>${totalGrams}г</b> · <b>${kbju.kcal} ккал</b></div>
+          <div class="text-xs text-slate-500">Б:${kbju.p} · Ж:${kbju.f} · У:${kbju.c}</div>
+        </div>
+
+        <div class="flex gap-2">
+          <button id="closeModal" class="btn btn-ghost flex-1">Отмена</button>
+          <button id="saveFood" class="btn btn-primary flex-1">Добавить</button>
+        </div>
+      </div>
+    </div>`;
+
+    // Bind modal events
+    modal.querySelectorAll('[data-mf]').forEach(b => b.onclick = () => { form.mealType = b.dataset.mf; renderModal(); });
+    document.getElementById('foodSearch').oninput = e => { form.search = e.target.value; renderModal(); document.getElementById('foodSearch').focus(); };
+    document.getElementById('foodSelect').onchange = e => { form.foodId = e.target.value; renderModal(); };
+    document.getElementById('addPortion').onclick = () => { form.portions.push({ id: 'plate_m', qty: 1 }); renderModal(); };
+    modal.querySelectorAll('.port-select').forEach(s => s.onchange = e => { form.portions[+s.dataset.pi].id = e.target.value; renderModal(); });
+    modal.querySelectorAll('.port-qty').forEach(s => s.onchange = e => { form.portions[+s.dataset.qi].qty = +e.target.value; renderModal(); });
+    modal.querySelectorAll('[data-rmi]').forEach(b => b.onclick = () => { form.portions.splice(+b.dataset.rmi, 1); renderModal(); });
+    document.getElementById('closeModal').onclick = () => modal.innerHTML = '';
+    document.getElementById('saveFood').onclick = () => {
+      if (!food || totalGrams <= 0) return;
+      const mt = MEAL_TYPES.find(m => m.v === form.mealType);
+      const entry = {
+        ...kbju, grams: totalGrams, name: food.name, icon: mt.i, mealType: form.mealType,
+        desc: form.portions.map(p => {
+          const pr = PORTIONS.find(x => x.id === p.id);
+          return `${p.qty}×${pr?.name || ''}`;
+        }).join(' + ')
+      };
+      const dayKey = todayKey();
+      const day = state.data.days[dayKey] || { meals: [], activities: [] };
+      state.data.days[dayKey] = { ...day, meals: [...day.meals, entry] };
+      save();
+      modal.innerHTML = '';
+      render();
+    };
+  };
+  renderModal();
+}
+
+function openActivityModal() {
+  const modal = document.getElementById('modalRoot');
+  const form = { actId: ACTIVITIES[1].id, duration: 1 };
+
+  const renderModal = () => {
+    const act = ACTIVITIES.find(a => a.id === form.actId);
+    const kcal = (act.kph || 0) * form.duration;
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="bg-white dark:bg-slate-800 w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl p-4 space-y-3 pop">
+        <h3 class="font-bold text-lg">Добавить активность</h3>
+        <div class="grid grid-cols-2 gap-2">
+          ${ACTIVITIES.map(a => `
+            <button data-act="${a.id}" class="btn text-sm ${form.actId===a.id?'btn-primary':'btn-ghost'}">${a.icon} ${a.name}</button>
+          `).join('')}
+        </div>
+        <label class="block">
+          <span class="text-sm">Длительность: ${form.duration} ч</span>
+          <input id="actDur" type="range" min="0.25" max="5" step="0.25" value="${form.duration}" class="w-full" />
+        </label>
+        <div class="card bg-brand-500 text-white">Сожжёшь: <b>${kcal} ккал</b> 🔥</div>
+        <div class="flex gap-2">
+          <button id="closeModal" class="btn btn-ghost flex-1">Отмена</button>
+          <button id="saveAct" class="btn btn-primary flex-1">Добавить</button>
+        </div>
+      </div>
+    </div>`;
+    modal.querySelectorAll('[data-act]').forEach(b => b.onclick = () => { form.actId = b.dataset.act; renderModal(); });
+    document.getElementById('actDur').oninput = e => { form.duration = +e.target.value; renderModal(); };
+    document.getElementById('closeModal').onclick = () => modal.innerHTML = '';
+    document.getElementById('saveAct').onclick = () => {
+      const act = ACTIVITIES.find(a => a.id === form.actId);
+      const kcal = (act.kph || 0) * form.duration;
+      if (kcal === 0 && form.actId !== 'rest') return;
+      const dayKey = todayKey();
+      const day = state.data.days[dayKey] || { meals: [], activities: [] };
+      state.data.days[dayKey] = { ...day, activities: [...day.activities, { activityId: form.actId, name: act.name, icon: act.icon, duration: form.duration, kcal }] };
+      save();
+      modal.innerHTML = '';
+      render();
+    };
+  };
+  renderModal();
+}
+
+/* ============ EVENTS ============ */
+function bindEvents() {
+  // Setup
+  document.querySelectorAll('[data-set]').forEach(el => {
+    const [k, v] = el.dataset.set.split(':');
+    el.oninput = el.onclick = () => {
+      if (el.tagName === 'BUTTON') state._setupForm[k] = v;
+      else state._setupForm[k] = el.type === 'range' || el.type === 'number' ? +el.value : el.value;
+      if (el.tagName === 'BUTTON') render();
+      else render();
+    };
+  });
+  const saveBtn = document.getElementById('saveSetup');
+  if (saveBtn) saveBtn.onclick = () => { 
+    if (!state._setupForm.name.trim()) {
+      alert('Пожалуйста, введи своё имя!');
+      return;
+    }
+    state.profile = state._setupForm; 
+    save(); 
+    render(); 
+  };
+
+  // Dashboard
+  const td = document.getElementById('toggleDark');
+  if (td) td.onclick = () => setDark(!state.dark);
+  document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { state.tab = b.dataset.tab; render(); });
+  const of = document.getElementById('openFood');
+  if (of) of.onclick = openFoodModal;
+  const oa = document.getElementById('openActivity');
+  if (oa) oa.onclick = openActivityModal;
+  document.querySelectorAll('[data-del-meal]').forEach(b => b.onclick = () => {
+    const dayKey = todayKey();
+    const day = state.data.days[dayKey];
+    day.meals.splice(+b.dataset.delMeal, 1);
+    save(); render();
+  });
+  document.querySelectorAll('[data-del-act]').forEach(b => b.onclick = () => {
+    const dayKey = todayKey();
+    const day = state.data.days[dayKey];
+    day.activities.splice(+b.dataset.delAct, 1);
+    save(); render();
+  });
+  
+  // Weight
+  const sw = document.getElementById('saveWeight');
+  if (sw) sw.onclick = () => {
+    const input = document.getElementById('weightInput');
+    const weight = +input.value;
+    if (!weight || weight < 30 || weight > 300) {
+      alert('Введи корректный вес (30-300 кг)');
+      return;
+    }
+    if (!state.data.weights) state.data.weights = [];
+    state.data.weights.push({ date: todayKey(), weight });
+    save();
+    render();
+  };
+  
+  const ex = document.getElementById('exportData');
+  if (ex) ex.onclick = () => {
+    const blob = new Blob([JSON.stringify({ profile: state.profile, data: state.data }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `calorieplus_${todayKey()}.json`;
+    a.click();
+  };
+  const rs = document.getElementById('resetData');
+  if (rs) rs.onclick = () => {
+    if (confirm('Сбросить все данные? Это действие нельзя отменить!')) {
+      localStorage.clear();
+      location.reload();
+    }
+  };
+}
+
+render();
+</script>
+</body>
+</html>
