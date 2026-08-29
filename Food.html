@@ -1065,10 +1065,24 @@ function renderStatsTab() {
       </div>
     </div>
 
-    <!-- Резервное копирование -->
-    <div class="sport-card p-3 flex gap-2">
-      <button id="exportData" class="sport-btn btn-ghost flex-1 text-xs">📤 Экспорт JSON</button>
-      <button id="resetData" class="sport-btn btn-ghost flex-1 text-xs text-red-400 border-red-500/20">🗑️ Сбросить всё</button>
+    <!-- Сохранение в файл и авто-загрузка -->
+    <div class="sport-card p-4 space-y-3">
+      <h4 class="font-bold text-xs text-slate-200 uppercase tracking-wider">💾 Файловое хранилище (food_data.json)</h4>
+      <p class="text-[11px] text-slate-400">
+        Все введённые данные (профиль, приёмы пищи, тренировки, замеры веса) автоматически сохраняются в браузерное хранилище (LocalStorage) и подгружаются при каждом открытии сайта. Также вы можете сохранить резервный файл <b>food_data.json</b>.
+      </p>
+      <div class="grid grid-cols-2 gap-2">
+        <button id="exportData" class="sport-btn btn-primary py-2.5 text-xs">
+          💾 Сохранить в food_data.json
+        </button>
+        <label class="sport-btn btn-cyan py-2.5 text-xs cursor-pointer text-center">
+          📂 Загрузить из файла
+          <input id="importFileInput" type="file" accept=".json" class="hidden" />
+        </label>
+      </div>
+      <button id="resetData" class="sport-btn btn-ghost w-full py-2 text-xs text-red-400 border-red-500/20">
+        🗑️ Сбросить все данные
+      </button>
     </div>
   </div>`;
 }
@@ -1246,15 +1260,18 @@ function bindDashboardEvents() {
     };
   }
 
-  // Экспорт данных
+  // Сохранение файла и загрузка файла
   const ex = document.getElementById('exportData');
   if (ex) {
-    ex.onclick = () => {
-      const blob = new Blob([JSON.stringify({ profile: state.profile, data: state.data }, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `caloriequest_${todayKey()}.json`;
-      a.click();
+    ex.onclick = () => saveToFile();
+  }
+
+  const imp = document.getElementById('importFileInput');
+  if (imp) {
+    imp.onchange = (e) => {
+      if (e.target.files && e.target.files[0]) {
+        loadFromFile(e.target.files[0]);
+      }
     };
   }
 
@@ -1526,6 +1543,67 @@ function openActivityModal() {
 
   renderModal();
 }
+
+
+/* ============ СОХРАНЕНИЕ И АВТО-ЗАГРУЗКА ИЗ ФАЙЛА ============ */
+function saveToFile() {
+  const payload = {
+    profile: state.profile,
+    data: state.data,
+    dark: state.dark,
+    sound: state.sound,
+    savedAt: new Date().toISOString()
+  };
+  const jsonStr = JSON.stringify(payload, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'food_data.json';
+  a.click();
+}
+
+function loadFromFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (parsed.profile) state.profile = parsed.profile;
+      if (parsed.data) state.data = parsed.data;
+      if (typeof parsed.dark === 'boolean') state.dark = parsed.dark;
+      if (typeof parsed.sound === 'boolean') state.sound = parsed.sound;
+      save();
+      SoundEffects.playSuccess();
+      alert('Данные успешно загружены из файла!');
+      render();
+    } catch(err) {
+      alert('Ошибка при чтении файла JSON!');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Автоматическая подгрузка при открытии сайта если доступен food_data.json в домене
+async function autoLoadFromFile() {
+  try {
+    const res = await fetch('food_data.json', { cache: 'no-cache' });
+    if (res.ok) {
+      const parsed = await res.json();
+      if (parsed && parsed.profile) {
+        state.profile = parsed.profile;
+        if (parsed.data) state.data = parsed.data;
+        if (typeof parsed.dark === 'boolean') state.dark = parsed.dark;
+        if (typeof parsed.sound === 'boolean') state.sound = parsed.sound;
+        save();
+        render();
+      }
+    }
+  } catch(e) {
+    // Тихо игнорируем если файл не серверится на сервере
+  }
+}
+
+autoLoadFromFile();
 
 /* ============ ЗАПУСК ПРИЛОЖЕНИЯ ============ */
 render();
