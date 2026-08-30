@@ -290,6 +290,190 @@ function getMoscowTimeString(dateObj = getMoscowDate()) {
 
 const todayKey = () => getMoscowDateString();
 
+/* ============ БАДЫ И ВИТАМИНЫ: СПИСОК ОРГАНОВ И СПРАВОЧНИК ============ */
+const SUPPLEMENT_ORGANS = [
+  'Сердце',
+  'Почки',
+  'Мозг и нервная система',
+  'Кости и суставы',
+  'Кожа, волосы и ногти',
+  'Глаза (Зрение)',
+  'Кишечник и ЖКТ',
+  'Сосуды',
+  'Потенция и мужское/женское здоровье',
+  'Иммунитет',
+  'Общий тонус и энергия',
+  'Общая профилактика'
+];
+
+const SUPPLEMENT_RECOMMENDATIONS = [
+  {
+    organ: 'Сердце',
+    icon: '❤️',
+    bads: [
+      { name: 'Омега-3 (ЭПК / ДГК > 1000мг)', desc: 'Снижает уровень холестерина, укрепляет стенки сосудов и сердечную мышцу.', course: '30–60 дней (2–3 раза в год)' },
+      { name: 'Коэнзим Q10 (CoQ10 100–200мг)', desc: 'Клеточная энергия миокарда, антиоксидантная защита сердца.', course: '30–45 дней' },
+      { name: 'Лецитин (Подсолнечный / Соевый)', desc: 'Эмульгирует жиры, препятствует образованию атеросклеротических бляшек.', course: '30–60 дней' }
+    ],
+    vitamins: [
+      { name: 'Магний Цитрат / Глицинат (400мг)', desc: 'Нормализует сердечный ритм, снимает спазмы и стресс.', course: '30 дней' },
+      { name: 'Витамин E (Токоферол 200 МЕ)', desc: 'Защищает липиды мембран клеток сердца от окисления.', course: '30 дней' },
+      { name: 'Комплекс B6 + B9 (Фолиевая к-та) + B12', desc: 'Снижает опасный уровень гомоцистеина в крови.', course: '30 дней' }
+    ]
+  },
+  {
+    organ: 'Почки',
+    icon: '🫘',
+    bads: [
+      { name: 'Экстракт Клюквы (Проантоцианидины)', desc: 'Препятствует прикреплению бактерий к стенкам мочевыводящих путей.', course: '20–30 дней' },
+      { name: 'Экстракт Толокнянки / Ортосифона', desc: 'Мягкое фито-мочегонное и антисептическое действие.', course: '14–21 день' },
+      { name: 'Лист Брусники', desc: 'Уменьшает отечность, способствует выведению солей.', course: '14 дней' }
+    ],
+    vitamins: [
+      { name: 'Витамин C (Эстер-C / Натрия аскорбат 500мг)', desc: 'Антиоксидантная поддержка водно-солевого обмена.', course: '20–30 дней' },
+      { name: 'Витамин B6 (Пиридоксин)', desc: 'Предотвращает образование оксалатных камней в почках.', course: '30 дней' }
+    ]
+  },
+  {
+    organ: 'Мозг и нервная система',
+    icon: '🧠',
+    bads: [
+      { name: 'Ежовик Гребенчатый (Lion’s Mane)', desc: 'Стимулирует фактор роста нейронов (NGF), улучшает память и фокус.', course: '30–60 дней' },
+      { name: 'Гинкго Билоба (120мг)', desc: 'Улучшает микроциркуляцию мозгового кровообращения и снабжение кислородом.', course: '60 дней' },
+      { name: '5-HTP (Гидрокситриптофан 100мг)', desc: 'Предшественник серотонина: улучшает настроение и нормализует сон.', course: '30 дней' },
+      { name: 'Готу Кола', desc: 'Укрепляет сосуды мозга, снижает тревожность.', course: '30–45 дней' }
+    ],
+    vitamins: [
+      { name: 'B-Complex (Витамины B1, B6, B9, B12)', desc: 'Фундамент нервной системы, передача нейромедиаторов.', course: '30 дней' },
+      { name: 'Лецитин Мозговой (Холин + Инозитол)', desc: 'Строительный материал оболочек нервных волокон.', course: '45–60 дней' },
+      { name: 'Витамин D3 (5000 ME)', desc: 'Поддержка нейропластичности и когнитивных функций.', course: '60–90 дней' }
+    ]
+  },
+  {
+    organ: 'Кости и суставы',
+    icon: '🦴',
+    bads: [
+      { name: 'Глюкозамин + Хондроитин + MSM (Комплекс)', desc: 'Восстановление хрящевой ткани, смазка суставов, снятие воспаления.', course: '60–90 дней' },
+      { name: 'Пептиды Коллагена II типа', desc: 'Стимулирует синтез собственного суставного матрикса.', course: '60 дней' },
+      { name: 'Экстракт Босвеллии (Boswellia)', desc: 'Мощное натуральное противовоспалительное средство для суставов.', course: '30 дней' }
+    ],
+    vitamins: [
+      { name: 'Витамин D3 (5000 ME) + K2 (MK-7 100мкг)', desc: 'Направляет кальций строго в кости и зубы, а не в сосуды.', course: '60–90 дней' },
+      { name: 'Кальций Хелат / Цитрат (500–800мг)', desc: 'Минерализация и прочность костной ткани.', course: '45 дней' },
+      { name: 'Магний + Цинк', desc: 'Софакторы формирования костной матрицы.', course: '30–60 дней' }
+    ]
+  },
+  {
+    organ: 'Кожа, волосы и ногти',
+    icon: '✨',
+    bads: [
+      { name: 'Морской Коллаген I и III типа (5000мг)', desc: 'Упругость кожи, разглаживание морщин, увлажнение изнутри.', course: '60–90 дней' },
+      { name: 'Гиалуроновая кислота (120мг)', desc: 'Удерживает влагу в дерме и эпидермисе.', course: '30–60 дней' },
+      { name: 'MSM (Органическая Сера 1000мг)', desc: 'Укрепляет структуры кератина (волосы и ногти).', course: '30–60 дней' }
+    ],
+    vitamins: [
+      { name: 'Биотин (Витамин B7 5000–10000мкг)', desc: 'Останавливает выпадение волос, ускоряет рост ногтей.', course: '60 дней' },
+      { name: 'Цинка Пиколинат (25–50мг)', desc: 'Регулирует работу сальных желез, устраняет акне.', course: '30 дней' },
+      { name: 'Селен (100–200мкг)', desc: 'Мощный антиоксидант для защиты кожи от УФ-старения.', course: '30 дней' },
+      { name: 'Витамин C (1000мг)', desc: 'Обязательный софактор синтеза собственного коллагена.', course: '30–60 дней' }
+    ]
+  },
+  {
+    organ: 'Глаза (Зрение)',
+    icon: '👁️',
+    bads: [
+      { name: 'Лютеин (20мг) + Зеаксантин (4мг)', desc: 'Защищает макулу сетчатки от синего света экранов и УФ.', course: '60 дней' },
+      { name: 'Экстракт Черники (Антоцианы)', desc: 'Улучшает ночное зрение и микроциркуляцию глазных капилляров.', course: '30–45 дней' },
+      { name: 'Омега-3 ДГК (DHA)', desc: 'Увлажняет роговицу, предотвращает синдром сухого глаза.', course: '60 дней' }
+    ],
+    vitamins: [
+      { name: 'Витамин A (Ретинол 5000 ME)', desc: 'Ключевой витамин для сумеречного зрения.', course: '30 дней' },
+      { name: 'Витамин C + Рутин (Аскорутин)', desc: 'Укрепляет ломкие капилляры сетчатки.', course: '30 дней' },
+      { name: 'Цинк (25мг)', desc: 'Участвует в транспортировке витамина A к сетчатке.', course: '30 дней' }
+    ]
+  },
+  {
+    organ: 'Кишечник и ЖКТ',
+    icon: '🦠',
+    bads: [
+      { name: 'Мультиштаммовые Пробиотики (30–50 млрд КОЕ)', desc: 'Восстанавливает микрофлору, устраняет вздутие и тяжесть.', course: '14–30 дней' },
+      { name: 'Псиллиум (Шелуха семян подорожника 5г)', desc: 'Растворимая клетчатка для мягкого очищения кишечника.', course: '30 дней' },
+      { name: 'Растительные Ферменты (Энзимы)', desc: 'Помогают усваивать белки, жиры и углеводы без тяжести.', course: '14–21 день' }
+    ],
+    vitamins: [
+      { name: 'Цинк L-Карнозин', desc: 'Заживляет слизистые оболочки желудка и кишечника.', course: '30 дней' },
+      { name: 'Витамин D3', desc: 'Укрепляет плотные контакты кишечного эпителия.', course: '60 дней' }
+    ]
+  },
+  {
+    organ: 'Сосуды',
+    icon: '🫀',
+    bads: [
+      { name: 'Диосмин (500мг) + Гесперидин (100мг)', desc: 'Повышает венозный тонус, снижает отечность и тяжесть в ногах.', course: '30–60 дней' },
+      { name: 'Дигидрокверцетин (Эталонный антиоксидант)', desc: 'Защищает капилляры и эритроциты от разрушения.', course: '30 дней' },
+      { name: 'Экстракт Виноградных Косточек (ОПЦ)', desc: 'Укрепляет эластичность артерий и вен.', course: '45 дней' }
+    ],
+    vitamins: [
+      { name: 'Рутин / Витамин P (100мг)', desc: 'Уменьшает проницаемость и ломкость капилляров.', course: '30 дней' },
+      { name: 'Витамин C (500–1000мг)', desc: 'Синтез эластина и коллагена в стенках сосудов.', course: '30 дней' }
+    ]
+  },
+  {
+    organ: 'Потенция и мужское/женское здоровье',
+    icon: '⚡',
+    bads: [
+      { name: 'Мака Перуанская (Maca Extract 1000мг)', desc: 'Повышает выносливость, либидо и гормональный тонус.', course: '30–45 дней' },
+      { name: 'Трибулус Террестрис / Тонгкат Али', desc: 'Стимулирует выработку собственного тестостерона.', course: '30 дней' },
+      { name: 'L-Аргинин / L-Цитруллин (1500–3000мг)', desc: 'Донатор оксида азота: улучшает кровонаполнение и сосудистый тонус.', course: '30 дней' }
+    ],
+    vitamins: [
+      { name: 'Цинка Хелат (30–50мг)', desc: 'Ключевой минерал синтеза тестостерона и сперматогенеза.', course: '30 дней' },
+      { name: 'Селен (100–200мкг)', desc: 'Поддержка репродуктивной системы и щитовидной железы.', course: '30 дней' },
+      { name: 'Витамин D3 (5000 ME)', desc: 'Фундаментальная стероидная поддержка гормональной системы.', course: '60–90 дней' }
+    ]
+  },
+  {
+    organ: 'Иммунитет',
+    icon: '🛡️',
+    bads: [
+      { name: 'Экстракт Эхинацеи / Прополис', desc: 'Стимулирует интерферон и фагоцитоз при первых признаках простуды.', course: '10–14 дней' },
+      { name: 'Бета-Глюканы 1,3/1,6', desc: 'Активирует врожденный иммунный ответ.', course: '30 дней' },
+      { name: 'Экстракт Черной Бузины', desc: 'Блокирует проникновение вирусов в клетки.', course: '14 дней' }
+    ],
+    vitamins: [
+      { name: 'Витамин D3 (5000–10000 ME)', desc: 'Главный регулятор T- и B-лимфоцитов.', course: '30–60 дней' },
+      { name: 'Витамин C (1000мг с биофлавоноидами)', desc: 'Мощный антиоксидант и защитник лейкоцитов.', course: '20–30 дней' },
+      { name: 'Цинк + Селен', desc: 'Ускоряют выздоровление и снижают длительность заболеваний.', course: '20 дней' }
+    ]
+  },
+  {
+    organ: 'Общий тонус и энергия',
+    icon: '⚡',
+    bads: [
+      { name: 'Женьшень / Родиола Розовая / Элеутерококк', desc: 'Адаптогены: повышают устойчивость к стрессу и умственные силы.', course: '30 дней (утром)' },
+      { name: 'L-Карнитин (1500мг)', desc: 'Транспортирует жирные кислоты в митохондрии для выработки АТФ энергии.', course: '30 дней' },
+      { name: 'Коэнзим Q10 (100мг)', desc: 'Клеточные батарейки для всего организма.', course: '30–45 дней' }
+    ],
+    vitamins: [
+      { name: 'Комплекс Витаминов группы B (High Potency B-50)', desc: 'Устраняет хроническую усталость и апатию.', course: '30 дней' },
+      { name: 'Мультивитаминный спортивный комплекс', desc: 'Восполняет все дефициты микроэлементов при высоких нагрузках.', course: '30–60 дней' }
+    ]
+  },
+  {
+    organ: 'Общая профилактика',
+    icon: '🌿',
+    bads: [
+      { name: 'Омега-3 Высокой Концентрации', desc: 'Универсальная защита мембран клеток, сосудов и суставов.', course: '60–90 дней' },
+      { name: 'Спирулина / Хлорелла (3–5г)', desc: 'Детокс, хлорофилл и органический белок с микроэлементами.', course: '30–60 дней' }
+    ],
+    vitamins: [
+      { name: 'Витамин D3 (2000–5000 ME)', desc: 'Базовый круглогодичный витамин для каждого.', course: 'Постоянно / Курсами' },
+      { name: 'Магний Глицинат (300–400мг)', desc: 'Здоровый сон, нервы и расслабление мышц.', course: '30–60 дней' },
+      { name: 'Витамин C (500мг)', desc: 'Антиоксидантная защита от свободных радикалов.', course: '30 дней' }
+    ]
+  }
+];
+
 /* ============ БАЗА ПРОДУКТОВ С ГИ И КЛЕТЧАТКОЙ (FIBER) ============ */
 const DEFAULT_FOODS = [
   // Крупы и Гарниры
@@ -471,7 +655,8 @@ function getRecordForDate(dateKey) {
       oils: { sunflower_fry: 0, sunflower_salad: 0, olive_fry: 0, olive_salad: 0 },
       water: 0,
       dental: { morning: false, evening: false, rinse1: false, rinse2: false },
-      sleep: { hours: 7.5, quality: 'good' }
+      sleep: { hours: 7.5, quality: 'good' },
+      supplements: []
     };
   }
   const d = state.data.days[dateKey];
@@ -479,6 +664,7 @@ function getRecordForDate(dateKey) {
   if (typeof d.water !== 'number') d.water = 0;
   if (!d.dental) d.dental = { morning: false, evening: false, rinse1: false, rinse2: false };
   if (!d.sleep) d.sleep = { hours: 7.5, quality: 'good' };
+  if (!d.supplements) d.supplements = [];
   return d;
 }
 
@@ -562,7 +748,7 @@ const getLevelInfo = (xp = 0) => {
 /* ============ ГЛОБАЛЬНЫЙ STATE ============ */
 let state = {
   profile: JSON.parse(localStorage.getItem('caloriequest_profile') || 'null'),
-  data: JSON.parse(localStorage.getItem('caloriequest_data') || '{"days":{},"achievements":[],"streak":0,"xp":50,"weights":[],"customFoods":[],"customRecipes":[],"mealPresets":[],"hiddenTabs":[],"hiddenCards":[],"fasting":{"active":false,"startTime":null,"targetHours":16}}'),
+  data: JSON.parse(localStorage.getItem('caloriequest_data') || '{"days":{},"achievements":[],"streak":0,"xp":50,"weights":[],"customFoods":[],"customRecipes":[],"mealPresets":[],"hiddenTabs":[],"hiddenCards":[],"fasting":{"active":false,"startTime":null,"targetHours":16},"supplementCourses":[]}'),
   selectedDateKey: todayKey(),
   tab: 'today',
   dark: localStorage.getItem('caloriequest_dark') !== '0',
@@ -900,6 +1086,7 @@ function renderMoreTab(target, effectiveTarget, totals, remaining, progress, day
     card_sleep: '😴 Сон и Восстановление',
     card_fasting: '⏰ Циркадный Таймер 16/8',
     card_presets: '🍱 Шаблоны Приёмов Пищи',
+    card_supplements: '💊 Трекер Курсов БАДов и Витаминов',
     card_dental: '🦷 Уход за Зубами и Полоскания',
     card_express: '⚡ Экспресс-ввод и Инструменты',
     card_meals: '🍽️ Список Приёмов Пищи за день',
@@ -1373,9 +1560,63 @@ function renderOilTrackerCard(day) {
           <span>🥗 Оливк. (салат)</span>
           <span class="font-bold text-emerald-400">10г</span>
         </button>
+
+    <!-- СТРАВОЧНИК И РЕКОМЕНДАЦИИ ПО БАДАМ И ВИТАМИНАМ В РАЗРЕЗЕ ОРГАНОВ -->
+    <div class="sport-card bg-slate-900/90 border border-teal-500/40 p-4 space-y-4">
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span class="text-2xl">💊</span>
+        <div>
+          <h4 class="font-black text-sm text-teal-300 uppercase tracking-wider">Справочник БАДов и Витаминов по Органам</h4>
+          <p class="text-[10px] text-slate-400">Рекомендуемые курсы, описание и эффект для всех систем организма</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        ${SUPPLEMENT_RECOMMENDATIONS.map(rec => `
+          <div class="sport-card bg-slate-950/80 p-3.5 border-slate-800 space-y-2">
+            <div class="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+              <span class="text-xl">${rec.icon}</span>
+              <h5 class="font-extrabold text-xs text-slate-100 uppercase tracking-wide">${rec.organ}</h5>
+            </div>
+
+            <!-- Список БАДов -->
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">🌿 Рекомендуемые БАДы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.bads.map(b => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${b.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 font-semibold">${b.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${b.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Список Витаминов -->
+            <div class="space-y-1.5 pt-1">
+              <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wider">💊 Рекомендуемые Витамины и Минералы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.vitamins.map(v => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${v.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-semibold">${v.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${v.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
-  </div>`;
+
+  </div>
+</div>`;
 }
 
 // 1. 💧 ТРЕКЕР ВОДЫ И ГИДРАТАЦИИ
@@ -1470,9 +1711,63 @@ function renderFiberTrackerCard(totals) {
       </div>
     </div>
     <div class="h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-      <div class="h-full bg-gradient-to-r from-emerald-500 to-brand-400 transition-all duration-500" style="width: ${pct}%"></div>
+      <div class="h-full bg-gradient-to-r from-emerald-500 to-brand-400 transition-all duration-500" style="width: ${pct}%">
+    <!-- СТРАВОЧНИК И РЕКОМЕНДАЦИИ ПО БАДАМ И ВИТАМИНАМ В РАЗРЕЗЕ ОРГАНОВ -->
+    <div class="sport-card bg-slate-900/90 border border-teal-500/40 p-4 space-y-4">
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span class="text-2xl">💊</span>
+        <div>
+          <h4 class="font-black text-sm text-teal-300 uppercase tracking-wider">Справочник БАДов и Витаминов по Органам</h4>
+          <p class="text-[10px] text-slate-400">Рекомендуемые курсы, описание и эффект для всех систем организма</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        ${SUPPLEMENT_RECOMMENDATIONS.map(rec => `
+          <div class="sport-card bg-slate-950/80 p-3.5 border-slate-800 space-y-2">
+            <div class="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+              <span class="text-xl">${rec.icon}</span>
+              <h5 class="font-extrabold text-xs text-slate-100 uppercase tracking-wide">${rec.organ}</h5>
+            </div>
+
+            <!-- Список БАДов -->
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">🌿 Рекомендуемые БАДы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.bads.map(b => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${b.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 font-semibold">${b.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${b.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Список Витаминов -->
+            <div class="space-y-1.5 pt-1">
+              <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wider">💊 Рекомендуемые Витамины и Минералы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.vitamins.map(v => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${v.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-semibold">${v.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${v.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
     </div>
-  </div>`;
+
+  </div>
+</div>`;
 }
 
 // 4. 😴 УЛУЧШЕНИЕ 3: ОЦЕНКА СНА И ВОССТАНОВЛЕНИЯ (SLEEP & RECOVERY SCORE)
@@ -1510,9 +1805,63 @@ function renderSleepRecoveryCard(day) {
           <option value="good" ${s.quality==='good'?'selected':''}>👍 Хорошее</option>
           <option value="poor" ${s.quality==='poor'?'selected':''}>😴 Слабенькое</option>
         </select>
+
+    <!-- СТРАВОЧНИК И РЕКОМЕНДАЦИИ ПО БАДАМ И ВИТАМИНАМ В РАЗРЕЗЕ ОРГАНОВ -->
+    <div class="sport-card bg-slate-900/90 border border-teal-500/40 p-4 space-y-4">
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span class="text-2xl">💊</span>
+        <div>
+          <h4 class="font-black text-sm text-teal-300 uppercase tracking-wider">Справочник БАДов и Витаминов по Органам</h4>
+          <p class="text-[10px] text-slate-400">Рекомендуемые курсы, описание и эффект для всех систем организма</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        ${SUPPLEMENT_RECOMMENDATIONS.map(rec => `
+          <div class="sport-card bg-slate-950/80 p-3.5 border-slate-800 space-y-2">
+            <div class="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+              <span class="text-xl">${rec.icon}</span>
+              <h5 class="font-extrabold text-xs text-slate-100 uppercase tracking-wide">${rec.organ}</h5>
+            </div>
+
+            <!-- Список БАДов -->
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">🌿 Рекомендуемые БАДы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.bads.map(b => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${b.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 font-semibold">${b.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${b.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Список Витаминов -->
+            <div class="space-y-1.5 pt-1">
+              <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wider">💊 Рекомендуемые Витамины и Минералы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.vitamins.map(v => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${v.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-semibold">${v.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${v.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
-  </div>`;
+
+  </div>
+</div>`;
 }
 
 function updateSleepHours(v) {
@@ -1720,9 +2069,63 @@ function renderDeepMacroAnalyticsCard(totals, day) {
           <b class="text-emerald-400 text-sm">${foodFatGrams.toFixed(1)}г</b>
           <span class="text-[9px] text-slate-400 block">(${Math.round(foodFatGrams*9)} ккал)</span>
         </div>
+
+    <!-- СТРАВОЧНИК И РЕКОМЕНДАЦИИ ПО БАДАМ И ВИТАМИНАМ В РАЗРЕЗЕ ОРГАНОВ -->
+    <div class="sport-card bg-slate-900/90 border border-teal-500/40 p-4 space-y-4">
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span class="text-2xl">💊</span>
+        <div>
+          <h4 class="font-black text-sm text-teal-300 uppercase tracking-wider">Справочник БАДов и Витаминов по Органам</h4>
+          <p class="text-[10px] text-slate-400">Рекомендуемые курсы, описание и эффект для всех систем организма</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        ${SUPPLEMENT_RECOMMENDATIONS.map(rec => `
+          <div class="sport-card bg-slate-950/80 p-3.5 border-slate-800 space-y-2">
+            <div class="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+              <span class="text-xl">${rec.icon}</span>
+              <h5 class="font-extrabold text-xs text-slate-100 uppercase tracking-wide">${rec.organ}</h5>
+            </div>
+
+            <!-- Список БАДов -->
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">🌿 Рекомендуемые БАДы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.bads.map(b => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${b.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 font-semibold">${b.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${b.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Список Витаминов -->
+            <div class="space-y-1.5 pt-1">
+              <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wider">💊 Рекомендуемые Витамины и Минералы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.vitamins.map(v => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${v.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-semibold">${v.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${v.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
-  </div>`;
+
+  </div>
+</div>`;
 }
 
 // 6. ⏰ НЕПРЕРЫВНЫЙ ТАЙМЕР 16/8 ИНТЕРВАЛЬНОГО ГОЛОДАНИЯ
@@ -1783,6 +2186,303 @@ function toggleFasting(active) {
 }
 
 // 7. 📥 ЭКСПОРТ ОТЧЁТА ДЛЯ НУТРИЦИОЛОГА
+
+
+/* ============ УПРАВЛЕНИЕ КУРСАМИ БАДОВ И ВИТАМИНОВ ============ */
+function getCourseDaysInfo(course) {
+  if (!course.startDate) return { passed: 0, remaining: course.durationDays || 30, total: course.durationDays || 30, pct: 0, status: 'Не начат' };
+
+  const start = new Date(course.startDate);
+  const now = new Date(state.selectedDateKey || todayKey());
+  const diffTime = now - start;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+  const total = parseInt(course.durationDays) || 30;
+  const passed = Math.max(0, diffDays);
+  const remaining = Math.max(0, total - passed);
+  const pct = Math.min(100, Math.max(0, Math.round((passed / total) * 100)));
+
+  let status = 'В процессе';
+  if (diffDays <= 0) status = 'Скоро старт';
+  else if (passed >= total) status = 'Курс завершён 🎯';
+
+  return { passed, remaining, total, pct, status };
+}
+
+function quickLogSupplementFromCourse(courseId) {
+  const courses = state.data.supplementCourses || [];
+  const course = courses.find(c => c.id === courseId);
+  if (!course) return;
+
+  const d = getSelectedRecord();
+  if (!d.supplements) d.supplements = [];
+
+  d.supplements.push({
+    id: 'supp_' + Date.now(),
+    courseId: course.id,
+    name: course.name,
+    desc: course.desc || '',
+    organs: course.targetOrgans || [],
+    time: getMoscowTimeString()
+  });
+
+  state.data.xp = (state.data.xp || 0) + 10;
+  save();
+  SoundEffects.playSuccess();
+  render();
+}
+
+function deleteSupplementLog(idx) {
+  const d = getSelectedRecord();
+  if (d.supplements && d.supplements[idx]) {
+    d.supplements.splice(idx, 1);
+    save();
+    SoundEffects.playClick();
+    render();
+  }
+}
+
+function openSupplementCourseModal(courseToEdit = null) {
+  const modal = document.getElementById('modalRoot');
+  const isEdit = !!courseToEdit;
+
+  const form = courseToEdit ? JSON.parse(JSON.stringify(courseToEdit)) : {
+    id: 'course_' + Date.now(),
+    name: '',
+    desc: '',
+    durationDays: 30,
+    targetOrgans: ['Сердце'],
+    startDate: state.selectedDateKey || todayKey()
+  };
+
+  const renderModal = () => {
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="sport-card bg-slate-900 w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-4 space-y-3.5 pop border-teal-500/40">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+          <h3 class="font-bold text-base text-teal-300 flex items-center gap-2">
+            <span>💊</span> ${isEdit ? 'Редактировать курс БАДа / Витамина' : 'Создать курс БАДа / Витамина'}
+          </h3>
+          <button id="closeSuppModal" class="text-slate-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Название БАДа или Витамина *</label>
+            <input id="supp_name" value="${form.name}" placeholder="Например: Омега-3 1000мг или Витамин D3" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 font-semibold" />
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Описание и инструкция приёма</label>
+            <textarea id="supp_desc" rows="2" placeholder="Пример: По 1 капсуле утром во время еды" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 font-normal">${form.desc || ''}</textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Длительность (дней) *</label>
+              <input id="supp_duration" type="number" min="1" max="365" value="${form.durationDays}" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-teal-300 font-bold text-center text-sm" />
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Дата старта *</label>
+              <input id="supp_start" type="date" value="${form.startDate}" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 font-semibold text-center text-xs cursor-pointer" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Целевой орган / органокомплекс (несколько вариантов):</label>
+            <div class="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto custom-scrollbar bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+              ${SUPPLEMENT_ORGANS.map(organ => {
+                const checked = (form.targetOrgans || []).includes(organ);
+                return `
+                  <label class="flex items-center gap-1.5 p-1 rounded hover:bg-slate-800/60 cursor-pointer text-[11px] text-slate-200">
+                    <input type="checkbox" value="${organ}" ${checked ? 'checked' : ''} class="organ-cb accent-teal-500 rounded" />
+                    <span class="${checked ? 'font-bold text-teal-300' : ''}">${organ}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          ${isEdit ? `<button id="delSuppCourseBtn" class="sport-btn btn-ghost py-2.5 px-3 text-red-400 border-red-500/20 text-xs">Удалить</button>` : ''}
+          <button id="saveSuppCourseBtn" class="sport-btn btn-primary flex-1 py-2.5 text-xs bg-gradient-to-r from-teal-500 to-emerald-600">
+            ${isEdit ? 'Сохранить изменения 💾' : 'Запустить курс 🚀'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+    document.getElementById('closeSuppModal').onclick = () => { modal.innerHTML = ''; };
+
+    if (isEdit) {
+      document.getElementById('delSuppCourseBtn').onclick = () => {
+        if (confirm("Удалить этот курс БАДа?")) {
+          state.data.supplementCourses = (state.data.supplementCourses || []).filter(c => c.id !== form.id);
+          save();
+          modal.innerHTML = '';
+          render();
+        }
+      };
+    }
+
+    document.getElementById('saveSuppCourseBtn').onclick = () => {
+      const name = document.getElementById('supp_name').value.trim();
+      const desc = document.getElementById('supp_desc').value.trim();
+      const duration = parseInt(document.getElementById('supp_duration').value) || 30;
+      const startDate = document.getElementById('supp_start').value || todayKey();
+
+      const selectedOrgans = [];
+      modal.querySelectorAll('.organ-cb:checked').forEach(cb => selectedOrgans.push(cb.value));
+
+      if (!name) {
+        alert("Пожалуйста, введите название БАДа или Витамина!");
+        return;
+      }
+      if (selectedOrgans.length === 0) {
+        alert("Выберите хотя бы один целевой орган!");
+        return;
+      }
+
+      form.name = name;
+      form.desc = desc;
+      form.durationDays = duration;
+      form.startDate = startDate;
+      form.targetOrgans = selectedOrgans;
+
+      if (!state.data.supplementCourses) state.data.supplementCourses = [];
+      const idx = state.data.supplementCourses.findIndex(c => c.id === form.id);
+      if (idx >= 0) {
+        state.data.supplementCourses[idx] = form;
+      } else {
+        state.data.supplementCourses.push(form);
+      }
+
+      state.data.xp = (state.data.xp || 0) + 15;
+      save();
+      SoundEffects.playSuccess();
+      modal.innerHTML = '';
+      render();
+    };
+  };
+
+  renderModal();
+}
+
+function renderSupplementsTrackerCard(day) {
+  const courses = state.data.supplementCourses || [];
+  const takenToday = day.supplements || [];
+
+  return `
+  <div class="sport-card bg-gradient-to-br from-teal-950/40 via-slate-900 to-slate-900 border-teal-500/30 p-4 space-y-3.5">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">💊</span>
+        <div>
+          <h3 class="font-bold text-xs text-teal-300 uppercase tracking-wider">Курсы БАДов и Витаминов</h3>
+          <p class="text-[10px] text-slate-400">Трекер активных курсов, целевые органы и ежедневный приём</p>
+        </div>
+      </div>
+      <button onclick="openSupplementCourseModal()" class="sport-btn btn-ghost py-1 px-2.5 text-xs text-teal-300 border-teal-500/30 font-bold">
+        + Новый курс 💊
+      </button>
+    </div>
+
+    <!-- Зафиксированные приёмы за текущий/выбранный день -->
+    <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 space-y-2">
+      <div class="flex justify-between items-center text-xs font-bold text-slate-200">
+        <span>Принято за ${state.selectedDateKey || todayKey()}:</span>
+        <span class="text-teal-400">${takenToday.length} приёмов</span>
+      </div>
+
+      ${takenToday.length === 0 ? `
+        <div class="text-[11px] text-slate-500 text-center py-1">Вы ещё не отмечали приём БАДов в этот день.</div>
+      ` : `
+        <div class="divide-y divide-slate-800/80">
+          ${takenToday.map((s, idx) => `
+            <div class="py-1.5 flex justify-between items-center text-xs">
+              <div>
+                <span class="font-bold text-teal-300">💊 ${s.name}</span>
+                ${s.organs && s.organs.length > 0 ? `<span class="text-[10px] text-slate-400 block">🎯 Органы: ${s.organs.join(', ')}</span>` : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-slate-400">${s.time || ''}</span>
+                <button onclick="deleteSupplementLog(${idx})" class="text-slate-500 hover:text-red-400 text-xs px-1">✕</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `}
+    </div>
+
+    <!-- Активные курсы пользователя -->
+    <div class="space-y-2">
+      <div class="text-xs font-bold text-slate-300 flex justify-between items-center">
+        <span>Активные курсы приёма (${courses.length}):</span>
+      </div>
+
+      ${courses.length === 0 ? `
+        <div class="text-[11px] text-slate-500 text-center py-3 bg-slate-950/50 rounded-xl border border-slate-800">
+          У вас пока нет созданных курсов БАДов. Нажмите "<b>+ Новый курс</b>", чтобы добавить, например, Омега-3 или Магний!
+        </div>
+      ` : `
+        <div class="space-y-2">
+          ${courses.map(course => {
+            const info = getCourseDaysInfo(course);
+            const isTakenToday = takenToday.some(t => t.courseId === course.id);
+
+            return `
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 space-y-2">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <div class="font-bold text-xs text-slate-100 flex items-center gap-1.5">
+                      <span>💊 ${course.name}</span>
+                      <span class="text-[9px] px-2 py-0.2 rounded-full ${info.remaining > 0 ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30' : 'bg-amber-500/20 text-amber-300'} font-semibold">
+                        ${info.status}
+                      </span>
+                    </div>
+                    ${course.desc ? `<p class="text-[10px] text-slate-400 mt-0.5">${course.desc}</p>` : ''}
+                    <div class="text-[10px] text-teal-400 font-medium mt-1">
+                      🎯 Органы: <b>${(course.targetOrgans || []).join(', ')}</b>
+                    </div>
+                  </div>
+                  <button onclick='openSupplementCourseModal(${JSON.stringify(course).replace(/'/g, "&#39;")})' class="text-slate-500 hover:text-teal-300 text-xs p-1">
+                    ✏️
+                  </button>
+                </div>
+
+                <!-- Прогресс курса -->
+                <div class="space-y-1">
+                  <div class="flex justify-between text-[10px] text-slate-400 font-semibold">
+                    <span>Старт: ${course.startDate} (прошло ${info.passed} дн.)</span>
+                    <span class="text-teal-300 font-bold">Осталось: ${info.remaining} дн. из ${info.total}</span>
+                  </div>
+                  <div class="h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                    <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-400 transition-all duration-500" style="width: ${info.pct}%"></div>
+                  </div>
+                </div>
+
+                <!-- Кнопка приёма за день -->
+                <div class="pt-1">
+                  ${isTakenToday ? `
+                    <div class="text-center py-1.5 rounded-lg bg-teal-950/60 border border-teal-500/40 text-[11px] font-bold text-teal-300 flex items-center justify-center gap-1.5">
+                      <span>✅ Принято за ${state.selectedDateKey || todayKey()}</span>
+                      <button onclick="quickLogSupplementFromCourse('${course.id}')" class="text-[10px] text-slate-400 underline font-normal hover:text-white">+ ещё раз</button>
+                    </div>
+                  ` : `
+                    <button onclick="quickLogSupplementFromCourse('${course.id}')" class="sport-btn btn-primary w-full py-2 text-xs bg-gradient-to-r from-teal-500 to-emerald-600 shadow-md">
+                      💊 Принял БАД / Витамин сегодня
+                    </button>
+                  `}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `}
+    </div>
+  </div>`;
+}
 
 /* ============ МОДАЛЬНОЕ ОКНО НАСТРОЕК ПРОФИЛЯ ============ */
 function openProfileSettingsModal() {
@@ -2008,6 +2708,9 @@ function renderTodayTab(target, effectiveTarget, totals, remaining, progress, da
 
   <!-- ГЛИКЕМИЧЕСКАЯ НАГРУЗКА -->
   ${renderAtomicCard('card_gl', renderGlycemicLoadCard(totals))}
+
+  <!-- ТРЕКЕР БАДОВ И ВИТАМИНОВ -->
+  ${renderAtomicCard('card_supplements', renderSupplementsTrackerCard(day))}
 
   <!-- ТРЕКЕР ВОДЫ -->
   ${renderAtomicCard('card_water', renderWaterTrackerCard(day, state.profile.weight))}
@@ -2520,9 +3223,63 @@ function renderTheoryTab() {
           <p class="text-slate-400">Безопасная скорость сжигания жира без потери мышечной массы (0.5–1.0 кг в неделю):</p>
           <div class="text-base font-black text-brand-400 mt-1">Твоя цель: ${target} ккал/день 🎯</div>
         </div>
+
+    <!-- СТРАВОЧНИК И РЕКОМЕНДАЦИИ ПО БАДАМ И ВИТАМИНАМ В РАЗРЕЗЕ ОРГАНОВ -->
+    <div class="sport-card bg-slate-900/90 border border-teal-500/40 p-4 space-y-4">
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span class="text-2xl">💊</span>
+        <div>
+          <h4 class="font-black text-sm text-teal-300 uppercase tracking-wider">Справочник БАДов и Витаминов по Органам</h4>
+          <p class="text-[10px] text-slate-400">Рекомендуемые курсы, описание и эффект для всех систем организма</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        ${SUPPLEMENT_RECOMMENDATIONS.map(rec => `
+          <div class="sport-card bg-slate-950/80 p-3.5 border-slate-800 space-y-2">
+            <div class="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+              <span class="text-xl">${rec.icon}</span>
+              <h5 class="font-extrabold text-xs text-slate-100 uppercase tracking-wide">${rec.organ}</h5>
+            </div>
+
+            <!-- Список БАДов -->
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">🌿 Рекомендуемые БАДы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.bads.map(b => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${b.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 font-semibold">${b.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${b.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Список Витаминов -->
+            <div class="space-y-1.5 pt-1">
+              <div class="text-[11px] font-bold text-cyan-300 uppercase tracking-wider">💊 Рекомендуемые Витамины и Минералы:</div>
+              <div class="space-y-1.5 pl-1">
+                ${rec.vitamins.map(v => `
+                  <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 text-xs">
+                    <div class="font-bold text-slate-200 flex justify-between items-center">
+                      <span>${v.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-semibold">${v.course}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${v.desc}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
-  </div>`;
+
+  </div>
+</div>`;
 }
 
 /* ============ СОБЫТИЯ DASHBOARD ============ */
