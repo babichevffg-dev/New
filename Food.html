@@ -450,7 +450,7 @@ const calcBMR = p => {
 };
 
 const calcDailyNorm = p => Math.round(calcBMR(p) * (ACTIVITY_COEF[p.baseActivity] || 1.2));
-const calcTarget = p => Math.round(calcDailyNorm(p) * (1 - (p.deficitPercent || 20) / 100));
+const calcTarget = p => Math.round(calcDailyNorm(p) * (1 - (p.deficitPercent || 20) / 100)) - (parseInt(p.extraDeficitKcal) || 0);
 
 const calcFoodKcal = (food, grams) => ({
   kcal: Math.round(food.kcal * grams / 100),
@@ -581,7 +581,7 @@ if (!state.data.mealPresets) {
 if (!state.profile) {
   state._setupForm = {
     name: 'Александр', gender: 'm', age: 28, height: 178, weight: 78, targetWeight: 72,
-    baseActivity: 'moderate', deficitPercent: 20
+    baseActivity: 'moderate', deficitPercent: 20, extraDeficitKcal: 0
   };
 }
 
@@ -693,10 +693,21 @@ function renderSetup() {
 
         <div>
           <div class="flex justify-between items-center text-xs font-semibold mb-1">
-            <span class="text-slate-400 uppercase tracking-wider">Дефицит калорий:</span>
+            <span class="text-slate-400 uppercase tracking-wider">Базовый Дефицит калорий:</span>
             <span class="text-brand-400 text-base font-bold">${f.deficitPercent}%</span>
           </div>
           <input id="setup_deficitPercent" type="range" min="5" max="35" value="${f.deficitPercent}" class="w-full accent-emerald-500 cursor-pointer" />
+        </div>
+
+        <div>
+          <label class="block">
+            <div class="flex justify-between items-center text-xs font-semibold">
+              <span class="text-slate-400 uppercase tracking-wider">Дополнительный дефицит (ккал):</span>
+              <span class="text-amber-400 font-bold">+${f.extraDeficitKcal || 0} ккал</span>
+            </div>
+            <input id="setup_extraDeficitKcal" type="number" step="10" min="0" max="1000" value="${f.extraDeficitKcal || 0}" placeholder="Например: 100"
+              class="w-full mt-1 px-3 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-100 font-semibold text-center" />
+          </label>
         </div>
 
         <div class="sport-card bg-gradient-to-br from-slate-900 to-slate-800 border-emerald-500/30 p-4">
@@ -735,7 +746,7 @@ function bindSetupEvents() {
     nameEl.oninput = (e) => { f.name = e.target.value; };
   }
 
-  ['age', 'height', 'weight', 'targetWeight'].forEach(key => {
+  ['age', 'height', 'weight', 'targetWeight', 'extraDeficitKcal'].forEach(key => {
     const el = document.getElementById(`setup_${key}`);
     if (el) {
       el.oninput = (e) => {
@@ -1025,6 +1036,9 @@ function renderDashboard() {
       </div>
 
       <div class="flex items-center gap-2">
+        <button onclick="openProfileSettingsModal()" class="sport-btn btn-ghost px-2.5 py-1.5 text-sm" title="Настройки профиля и дефицита">
+          ⚙️
+        </button>
         <button id="toggleSound" class="sport-btn btn-ghost px-2.5 py-1.5 text-sm" title="Звуковой отклик">
           ${state.sound ? '🔊' : '🔇'}
         </button>
@@ -1769,6 +1783,110 @@ function toggleFasting(active) {
 }
 
 // 7. 📥 ЭКСПОРТ ОТЧЁТА ДЛЯ НУТРИЦИОЛОГА
+
+/* ============ МОДАЛЬНОЕ ОКНО НАСТРОЕК ПРОФИЛЯ ============ */
+function openProfileSettingsModal() {
+  const modal = document.getElementById('modalRoot');
+  const p = state.profile;
+  const f = { ...p, extraDeficitKcal: p.extraDeficitKcal || 0 };
+
+  const renderModal = () => {
+    const norm = calcDailyNorm(f);
+    const target = calcTarget(f);
+
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="sport-card bg-slate-900 w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-5 space-y-4 pop border-slate-700">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+            <span>⚙️</span> Настройки Профиля & Дефицита
+          </h3>
+          <button id="closeProfileModal" class="text-slate-400 hover:text-white font-bold p-1">✕</button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Имя Атлета</label>
+            <input id="prof_name" value="${f.name}" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 font-semibold" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Рост (см)</label>
+              <input id="prof_height" type="number" value="${f.height}" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 font-bold text-center" />
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Целевой вес (кг)</label>
+              <input id="prof_targetWeight" type="number" step="0.1" value="${f.targetWeight}" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 font-bold text-center" />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center text-xs font-semibold mb-1">
+              <span class="text-slate-400 uppercase tracking-wider">Базовый дефицит (%):</span>
+              <span class="text-brand-400 text-sm font-bold">${f.deficitPercent}%</span>
+            </div>
+            <input id="prof_deficitPercent" type="range" min="5" max="35" value="${f.deficitPercent}" class="w-full accent-emerald-500 cursor-pointer" />
+          </div>
+
+          <div class="bg-slate-800/80 p-3 rounded-xl border border-amber-500/30 space-y-1">
+            <div class="flex justify-between items-center font-semibold">
+              <span class="text-amber-300">Дополнительный дефицит (ккал):</span>
+              <span class="text-amber-400 font-extrabold text-sm">+${f.extraDeficitKcal || 0} ккал</span>
+            </div>
+            <p class="text-[10px] text-slate-400">Снижает дневную нормативную цель на фиксированное количество калорий для всех дней.</p>
+            <input id="prof_extraDeficitKcal" type="number" step="10" min="0" max="1000" value="${f.extraDeficitKcal || 0}" placeholder="Например: 100"
+              class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-amber-300 font-bold text-center text-sm" />
+          </div>
+
+          <div class="sport-card bg-slate-950 p-3 border-emerald-500/30">
+            <div class="flex justify-between text-slate-400 text-[11px]">
+              <span>TDEE (Норма): <b>${norm} ккал</b></span>
+              <span>Базовый дефицит: <b>-${norm - Math.round(calcDailyNorm(f) * (1 - f.deficitPercent/100))} ккал</b></span>
+            </div>
+            <div class="flex justify-between items-center mt-2 border-t border-slate-800 pt-2">
+              <span class="text-xs font-bold text-slate-200">Итоговая Дневная Цель:</span>
+              <span class="text-xl font-black text-brand-400">${target} ккал 🎯</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="saveProfileBtn" class="sport-btn btn-primary w-full py-3 text-xs shadow-lg shadow-emerald-500/20">
+          Сохранить изменения профиля 💾
+        </button>
+      </div>
+    </div>`;
+
+    document.getElementById('closeProfileModal').onclick = () => { modal.innerHTML = ''; };
+
+    document.getElementById('prof_name').oninput = (e) => { f.name = e.target.value; };
+    document.getElementById('prof_height').oninput = (e) => { f.height = parseFloat(e.target.value) || 170; renderModal(); };
+    document.getElementById('prof_targetWeight').oninput = (e) => { f.targetWeight = parseFloat(e.target.value) || 70; renderModal(); };
+
+    const defRange = document.getElementById('prof_deficitPercent');
+    defRange.oninput = (e) => {
+      f.deficitPercent = parseInt(e.target.value) || 20;
+      renderModal();
+    };
+
+    const extraInp = document.getElementById('prof_extraDeficitKcal');
+    extraInp.oninput = (e) => {
+      f.extraDeficitKcal = parseInt(e.target.value) || 0;
+      renderModal();
+    };
+
+    document.getElementById('saveProfileBtn').onclick = () => {
+      state.profile = { ...state.profile, ...f };
+      save();
+      SoundEffects.playSuccess();
+      modal.innerHTML = '';
+      render();
+    };
+  };
+
+  renderModal();
+}
+
 function openNutritionistReportModal() {
   const modal = document.getElementById('modalRoot');
   const p = state.profile;
