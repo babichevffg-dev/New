@@ -1775,6 +1775,133 @@ function renderSmartRecommendations(remaining, totals, targetP, targetF, targetC
 }
 
 /* ============ ВКЛАДКА "СТАТИСТИКА" ============ */
+
+/* ============ УНИВЕРСАЛЬНАЯ ФУНКЦИЯ ОТРЕСОВКИ ГРАФИКОВ (СТОЛБЦЫ / ЛИНИИ) ============ */
+function renderUniversalChart(dataItems, options = {}) {
+  const chartType = state.chartType || 'bar';
+  const height = options.height || 140;
+  const maxVal = Math.max(...dataItems.map(d => d.val || 0), options.minMax || 10) * 1.15;
+
+  if (chartType === 'line') {
+    const width = 320;
+    const padding = 25;
+    const ptGap = dataItems.length > 1 ? (width - padding * 2) / (dataItems.length - 1) : 0;
+
+    const points = dataItems.map((d, i) => {
+      const x = padding + i * ptGap;
+      const y = height - padding - ((d.val || 0) / maxVal) * (height - padding * 2);
+      return { x, y, val: d.val, label: d.label, sub: d.sub };
+    });
+
+    const pathD = points.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(' ');
+
+    return `
+    <div class="space-y-2">
+      <div class="relative w-full overflow-hidden" style="height: ${height}px;">
+        <svg class="w-full h-full" viewBox="0 0 ${width} ${height}">
+          <line x1="10" y1="${height - 20}" x2="${width - 10}" y2="${height - 20}" stroke="rgba(255,255,255,0.1)" stroke-dasharray="3,3" />
+          <line x1="10" y1="${height / 2}" x2="${width - 10}" y2="${height / 2}" stroke="rgba(255,255,255,0.05)" stroke-dasharray="3,3" />
+          <path d="${pathD}" fill="none" stroke="${options.strokeColor || '#10b981'}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+          ${points.map(p => `
+            <circle cx="${p.x}" cy="${p.y}" r="5" fill="${options.strokeColor || '#10b981'}" stroke="#0b0f17" stroke-width="2" />
+            <text x="${p.x}" y="${p.y - 8}" text-anchor="middle" fill="#f1f5f9" font-size="9" font-weight="bold">${p.sub || p.val}</text>
+          `).join('')}
+        </svg>
+      </div>
+      <div class="flex justify-between text-[10px] text-slate-400 font-semibold px-2">
+        ${dataItems.map(d => `<span>${d.label}</span>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Столбчатый график (Bar Chart)
+  return `
+  <div class="h-36 flex items-end gap-2 pt-4">
+    ${dataItems.map(d => {
+      const h = Math.min(100, Math.round(((d.val || 0) / maxVal) * 100));
+      return `
+        <div class="flex-1 flex flex-col items-center h-full justify-end gap-1">
+          <span class="text-[9px] text-slate-300 font-bold">${d.sub || d.val}</span>
+          <div class="w-full relative flex-1 flex items-end">
+            <div class="w-full rounded-t relative z-10 transition-all duration-500 ${options.barGradient || 'bg-gradient-to-t from-brand-600 to-brand-400'}" style="height:${Math.max(4, h)}%"></div>
+          </div>
+          <span class="text-[10px] text-slate-400 uppercase font-semibold">${d.label}</span>
+        </div>
+      `;
+    }).join('')}
+  </div>`;
+}
+
+/* ============ ВСПОМОГАТЕЛЬНЫЕ ГРАФИКИ СТАТИСТИКИ ============ */
+function renderWaterChart(last7Days) {
+  const data = last7Days.map(d => ({
+    label: d.day,
+    val: d.dayRecord.water || 0,
+    sub: `${d.dayRecord.water || 0}мл`
+  }));
+  return `
+  <div class="sport-card space-y-3 border-cyan-500/30">
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-sm text-cyan-300 flex items-center gap-1.5">💧 График Потребления Воды</h3>
+      <span class="text-[10px] text-slate-400">Цель: ~2500 мл/день</span>
+    </div>
+    ${renderUniversalChart(data, { strokeColor: '#06b6d4', barGradient: 'bg-gradient-to-t from-cyan-600 to-cyan-400', minMax: 2000 })}
+  </div>`;
+}
+
+function renderOilsChart(last7Days) {
+  const data = last7Days.map(d => {
+    const o = d.dayRecord.oils || {};
+    const totalGrams = (o.sunflower_fry||0) + (o.sunflower_salad||0) + (o.olive_fry||0) + (o.olive_salad||0);
+    return {
+      label: d.day,
+      val: totalGrams,
+      sub: `${totalGrams}г`
+    };
+  });
+  return `
+  <div class="sport-card space-y-3 border-amber-500/30">
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-sm text-amber-300 flex items-center gap-1.5">🫒 График Потребления Масла</h3>
+      <span class="text-[10px] text-slate-400">Оливковое & Подсолнечное</span>
+    </div>
+    ${renderUniversalChart(data, { strokeColor: '#f59e0b', barGradient: 'bg-gradient-to-t from-amber-600 to-amber-400', minMax: 30 })}
+  </div>`;
+}
+
+function renderSleepChart(last7Days) {
+  const data = last7Days.map(d => ({
+    label: d.day,
+    val: d.dayRecord.sleep?.hours || 7,
+    sub: `${d.dayRecord.sleep?.hours || 7}ч`
+  }));
+  return `
+  <div class="sport-card space-y-3 border-indigo-500/30">
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-sm text-indigo-300 flex items-center gap-1.5">😴 График Сна и Восстановления</h3>
+      <span class="text-[10px] text-slate-400">Норма: 7-9 часов</span>
+    </div>
+    ${renderUniversalChart(data, { strokeColor: '#6366f1', barGradient: 'bg-gradient-to-t from-indigo-600 to-indigo-400', minMax: 10 })}
+  </div>`;
+}
+
+function renderFastingChart(last7Days) {
+  const data = last7Days.map(d => ({
+    label: d.day,
+    val: d.dayRecord.fasting?.active ? 16 : 0,
+    sub: d.dayRecord.fasting?.active ? '16ч' : '0ч'
+  }));
+  return `
+  <div class="sport-card space-y-3 border-purple-500/30">
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-sm text-purple-300 flex items-center gap-1.5">⏰ Хроника Интервального Голодания</h3>
+      <span class="text-[10px] text-slate-400">Окна 16/8</span>
+    </div>
+    ${renderUniversalChart(data, { strokeColor: '#a855f7', barGradient: 'bg-gradient-to-t from-purple-600 to-purple-400', minMax: 16 })}
+  </div>`;
+}
+
+
 function renderStatsTab() {
   const target = calcTarget(state.profile);
   const last7 = [];
@@ -1783,55 +1910,63 @@ function renderStatsTab() {
     const d = getMoscowDate();
     d.setDate(d.getDate() - i);
     const key = getMoscowDateString(d);
-    const day = getRecordForDate(key);
-    const kcal = day.meals.reduce((s, m) => s + m.kcal, 0);
-    const burned = day.activities.reduce((s, a) => s + a.kcal, 0);
+    const dayRecord = getRecordForDate(key);
+    const kcal = dayRecord.meals.reduce((s, m) => s + m.kcal, 0);
+    const burned = dayRecord.activities.reduce((s, a) => s + a.kcal, 0);
     last7.push({
       day: d.toLocaleDateString('ru-RU', { weekday: 'short' }),
+      dateKey: key,
       kcal,
       burned,
-      target
+      target,
+      dayRecord
     });
   }
 
   const maxVal = Math.max(target, ...last7.map(d => d.kcal)) * 1.15 || 2000;
   const weights = state.data.weights || [];
-  const lastWeights = weights.slice(-7);
+  const chartType = state.chartType || 'bar';
 
   return `
   <div class="space-y-4">
-    <!-- График калорий за 7 дней -->
-    <div class="sport-card space-y-3">
-      <h3 class="font-bold text-sm text-slate-200">📊 Мониторинг за 7 дней</h3>
-      <div class="h-44 flex items-end gap-2 pt-4">
-        ${last7.map(d => {
-          const h = Math.round((d.kcal / maxVal) * 100);
-          const targetH = Math.round((d.target / maxVal) * 100);
-          const ok = d.kcal > 0 && d.kcal <= d.target + d.burned;
-          return `
-            <div class="flex-1 flex flex-col items-center h-full justify-end gap-1">
-              <span class="text-[9px] text-slate-400 font-bold">${d.kcal || 0}</span>
-              <div class="w-full relative flex-1 flex items-end">
-                <div class="absolute bottom-0 w-full bg-slate-800 rounded-t border-t border-slate-700" style="height:${targetH}%"></div>
-                <div class="w-full rounded-t relative z-10 transition-all duration-500 ${ok ? 'bg-gradient-to-t from-brand-600 to-brand-400' : d.kcal > d.target ? 'bg-gradient-to-t from-red-600 to-red-400' : 'bg-slate-600'}" style="height:${h}%"></div>
-              </div>
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">${d.day}</span>
-            </div>
-          `;
-        }).join('')}
+    <!-- Шапка Статистики с переключателем видов графиков -->
+    <div class="sport-card bg-slate-900/90 p-3 flex items-center justify-between border-brand-500/30">
+      <div>
+        <h2 class="font-bold text-sm text-slate-100">📊 Аналитика & Графики 7 дней</h2>
+        <p class="text-[10px] text-slate-400">Выберите тип визуализации</p>
       </div>
-
-      <div class="flex justify-around text-[10px] font-semibold text-slate-400 border-t border-slate-800 pt-2">
-        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 bg-brand-500 rounded-sm"></span> Дефицит</span>
-        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 bg-red-500 rounded-sm"></span> Профицит</span>
-        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 bg-slate-700 rounded-sm"></span> Лимит</span>
+      <div class="flex gap-1 p-1 bg-slate-800 rounded-xl border border-slate-700">
+        <button onclick="setChartType('bar')" class="px-2.5 py-1 rounded-lg text-xs font-bold ${chartType==='bar'?'btn-primary':'text-slate-400 hover:text-white'}">
+          📊 Столбцы
+        </button>
+        <button onclick="setChartType('line')" class="px-2.5 py-1 rounded-lg text-xs font-bold ${chartType==='line'?'btn-primary':'text-slate-400 hover:text-white'}">
+          📈 Линии
+        </button>
       </div>
     </div>
 
-    <!-- График веса -->
+    <!-- 1. График калорий за 7 дней -->
+    <div class="sport-card space-y-3">
+      <h3 class="font-bold text-sm text-slate-200">🔥 Мониторинг Калорий за 7 дней</h3>
+      ${renderUniversalChart(last7.map(d => ({ label: d.day, val: d.kcal, sub: `${d.kcal}ккал` })), { strokeColor: '#10b981', minMax: target })}
+    </div>
+
+    <!-- 2. График Воды -->
+    ${renderWaterChart(last7)}
+
+    <!-- 3. График Масла -->
+    ${renderOilsChart(last7)}
+
+    <!-- 4. График Сна -->
+    ${renderSleepChart(last7)}
+
+    <!-- 5. Хроника Голодания -->
+    ${renderFastingChart(last7)}
+
+    <!-- 6. График и Редактирование Веса -->
     <div class="sport-card space-y-3">
       <h3 class="font-bold text-sm text-slate-200 flex justify-between items-center">
-        <span>⚖️ Динамика веса</span>
+        <span>⚖️ Динамика и Записи веса</span>
         <span class="text-xs text-brand-400 font-semibold">Цель: ${state.profile.targetWeight || '--'} кг</span>
       </h3>
 
@@ -1841,21 +1976,21 @@ function renderStatsTab() {
         <button id="saveWeight" class="sport-btn btn-primary py-2 px-4 text-xs">Записать</button>
       </div>
 
-      ${lastWeights.length > 0 ? `
-        <div class="h-32 flex items-end gap-2 pt-2">
-          ${lastWeights.map((w, i) => {
-            const minW = Math.min(...lastWeights.map(x => x.weight)) - 1;
-            const maxW = Math.max(...lastWeights.map(x => x.weight)) + 1;
-            const range = maxW - minW || 1;
-            const h = Math.round(((w.weight - minW) / range) * 80 + 20);
-            return `
-              <div class="flex-1 flex flex-col items-center h-full justify-end gap-1">
-                <span class="text-[9px] text-slate-300 font-bold">${w.weight}</span>
-                <div class="w-full bg-gradient-to-t from-cyan-600 to-cyan-400 rounded-t" style="height:${h}%"></div>
-                <span class="text-[9px] text-slate-400">${new Date(w.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+      ${weights.length > 0 ? `
+        <div class="space-y-1.5 pt-2 border-t border-slate-800">
+          <div class="text-[11px] text-slate-400 font-bold mb-1">История замеров веса:</div>
+          <div class="divide-y divide-slate-800 max-h-40 overflow-y-auto custom-scrollbar">
+            ${weights.map((w, idx) => `
+              <div class="py-2 flex items-center justify-between text-xs">
+                <span class="text-slate-400">${w.date}</span>
+                <b class="text-slate-100 text-sm">${w.weight} кг</b>
+                <div class="flex gap-1">
+                  <button onclick="editWeightEntry(${idx})" class="p-1 text-xs text-brand-400 hover:underline">✏️</button>
+                  <button onclick="deleteWeightEntry(${idx})" class="p-1 text-xs text-red-400 hover:underline">✕</button>
+                </div>
               </div>
-            `;
-          }).join('')}
+            `).join('')}
+          </div>
         </div>
       ` : `
         <div class="text-center py-4 text-slate-500 text-xs">Нет замеров веса. Внеси первый замер!</div>
@@ -1883,11 +2018,11 @@ function renderStatsTab() {
       </div>
     </div>
 
-    <!-- Сохранение в файл и авто-загрузка -->
+    <!-- Файловое хранилище -->
     <div class="sport-card p-4 space-y-3">
       <h4 class="font-bold text-xs text-slate-200 uppercase tracking-wider">💾 Файловое хранилище (food_data.json)</h4>
       <p class="text-[11px] text-slate-400">
-        Все введённые данные сохраняются в браузерное хранилище (LocalStorage) и подгружаются при открытии сайта. Также вы можете сохранить резервный файл <b>food_data.json</b>.
+        Все данные сохраняются в браузерное хранилище (LocalStorage). Вы можете сохранить резервный файл <b>food_data.json</b>.
       </p>
       <div class="grid grid-cols-2 gap-2">
         <button id="exportData" class="sport-btn btn-primary py-2.5 text-xs">💾 Сохранить в food_data.json</button>
@@ -1901,6 +2036,38 @@ function renderStatsTab() {
       </button>
     </div>
   </div>`;
+}
+
+function setChartType(type) {
+  state.chartType = type;
+  SoundEffects.playClick();
+  render();
+}
+
+function editWeightEntry(idx) {
+  const w = state.data.weights[idx];
+  if (!w) return;
+  const newW = prompt("Введите правильный вес (кг):", w.weight);
+  if (newW !== null) {
+    const val = parseFloat(newW);
+    if (val && val >= 30 && val <= 300) {
+      state.data.weights[idx].weight = val;
+      save();
+      SoundEffects.playSuccess();
+      render();
+    } else {
+      alert("Введите корректный вес!");
+    }
+  }
+}
+
+function deleteWeightEntry(idx) {
+  if (confirm("Удалить эту запись веса?")) {
+    state.data.weights.splice(idx, 1);
+    save();
+    SoundEffects.playClick();
+    render();
+  }
 }
 
 /* ============ ВКЛАДКА "ИСТОРИЯ" (КЛИКАБЕЛЬНЫЕ КАРТОЧКИ) ============ */
