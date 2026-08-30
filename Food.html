@@ -3286,29 +3286,6 @@ function renderStatsTab() {
     <!-- 1. График калорий за 7 дней -->
     ${renderAtomicCard('card_chart_calories', renderCardCaloriesChart(last7, target))}
 
-    <!-- 2. График Воды -->
-    ${renderAtomicCard('card_chart_water', renderWaterChart(last7))}
-
-    <!-- 3. График Масла -->
-    ${renderAtomicCard('card_chart_oil', renderOilsChart(last7))}
-
-    <!-- 4. График Сна -->
-    ${renderAtomicCard('card_chart_sleep', renderSleepChart(last7))}
-
-    <!-- 5. Хроника Голодания -->
-    ${renderAtomicCard('card_chart_fasting', renderFastingChart(last7))}
-
-    <!-- 5.5. График Чистки Зубов -->
-    ${renderAtomicCard('card_chart_dental', renderDentalChart(last7))}
-
-    <!-- 6. График и Редактирование Веса -->
-    ${renderAtomicCard('card_weight', renderCardWeight(weights, state.profile.targetWeight))}
-
-    <!-- Достижения и Бейджи -->
-    ${renderAtomicCard('card_achievements', renderCardAchievements())}
-
-    <!-- Файловое хранилище -->
-    ${renderAtomicCard('card_storage', renderCardStorage())}
 
     <!-- ОТЧЁТ ПО КУРСАМ БАДОВ И ВИТАМИНАМ -->
     <div class="sport-card bg-slate-900 border border-teal-500/30 p-4 rounded-2xl space-y-3">
@@ -3368,6 +3345,31 @@ function renderStatsTab() {
         </div>
       `}
     </div>
+
+
+    <!-- 2. График Воды -->
+    ${renderAtomicCard('card_chart_water', renderWaterChart(last7))}
+
+    <!-- 3. График Масла -->
+    ${renderAtomicCard('card_chart_oil', renderOilsChart(last7))}
+
+    <!-- 4. График Сна -->
+    ${renderAtomicCard('card_chart_sleep', renderSleepChart(last7))}
+
+    <!-- 5. Хроника Голодания -->
+    ${renderAtomicCard('card_chart_fasting', renderFastingChart(last7))}
+
+    <!-- 5.5. График Чистки Зубов -->
+    ${renderAtomicCard('card_chart_dental', renderDentalChart(last7))}
+
+    <!-- 6. График и Редактирование Веса -->
+    ${renderAtomicCard('card_weight', renderCardWeight(weights, state.profile.targetWeight))}
+
+    <!-- Достижения и Бейджи -->
+    ${renderAtomicCard('card_achievements', renderCardAchievements())}
+
+    <!-- Файловое хранилище -->
+    ${renderAtomicCard('card_storage', renderCardStorage())}
 
     </div>`;
 }
