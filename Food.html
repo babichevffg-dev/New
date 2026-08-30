@@ -3060,13 +3060,3 @@ render();
 </script>
 </body>
 </html>
-function resetLayoutToDefault() {
-  if (confirm("Восстановить первоначальное положение всех окон и карточек на главном экране?")) {
-    state.data.hiddenTabs = [];
-    state.data.hiddenCards = [];
-    save();
-    SoundEffects.playSuccess();
-    state.tab = 'today';
-    render();
-  }
-}
