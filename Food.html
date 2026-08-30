@@ -562,7 +562,7 @@ const getLevelInfo = (xp = 0) => {
 /* ============ ГЛОБАЛЬНЫЙ STATE ============ */
 let state = {
   profile: JSON.parse(localStorage.getItem('caloriequest_profile') || 'null'),
-  data: JSON.parse(localStorage.getItem('caloriequest_data') || '{"days":{},"achievements":[],"streak":0,"xp":50,"weights":[],"customFoods":[],"customRecipes":[],"mealPresets":[],"hiddenTabs":[],"fasting":{"active":false,"startTime":null,"targetHours":16}}'),
+  data: JSON.parse(localStorage.getItem('caloriequest_data') || '{"days":{},"achievements":[],"streak":0,"xp":50,"weights":[],"customFoods":[],"customRecipes":[],"mealPresets":[],"hiddenTabs":[],"hiddenCards":[],"fasting":{"active":false,"startTime":null,"targetHours":16}}'),
   selectedDateKey: todayKey(),
   tab: 'today',
   dark: localStorage.getItem('caloriequest_dark') !== '0',
@@ -797,6 +797,34 @@ function bindSetupEvents() {
 /* ============ ГЛАВНАЯ ПАНЕЛЬ (DASHBOARD) ============ */
 
 /* ============ УПРАВЛЕНИЕ ВКЛАДКАМИ И ОКНАМИ (ПЕРЕНОС В ДОПОЛНИТЕЛЬНО) ============ */
+
+/* ============ РЕЕСТР АТОМАРНЫХ КАРТОЧЕК И ИНДИВИДУАЛЬНОЕ СКРЫТИЕ ============ */
+function isCardHidden(cardId) {
+  return (state.data.hiddenCards || []).includes(cardId);
+}
+
+function hideCard(cardId) {
+  if (!state.data.hiddenCards) state.data.hiddenCards = [];
+  if (!state.data.hiddenCards.includes(cardId)) {
+    state.data.hiddenCards.push(cardId);
+    save();
+    SoundEffects.playClick();
+    render();
+  }
+}
+
+function restoreCard(cardId) {
+  if (!state.data.hiddenCards) state.data.hiddenCards = [];
+  state.data.hiddenCards = state.data.hiddenCards.filter(id => id !== cardId);
+  save();
+  SoundEffects.playSuccess();
+  render();
+}
+
+function renderPinButton(cardId) {
+  return `<button onclick="hideCard('${cardId}')" title="Перенести эту карточку в 'Дополнительно'" class="text-[10px] text-slate-400 hover:text-amber-300 font-semibold flex items-center gap-1 bg-slate-800/80 px-2 py-0.5 rounded-lg border border-slate-700/60 transition-all">📌 В Дополнительно</button>`;
+}
+
 function moveToExtra(tabKey) {
   if (!state.data.hiddenTabs) state.data.hiddenTabs = [];
   if (!state.data.hiddenTabs.includes(tabKey)) {
@@ -818,9 +846,12 @@ function restoreFromExtra(tabKey) {
 }
 
 
+
 /* ============ ВКЛАДКА "ДОПОЛНИТЕЛЬНО" (MORE / EXTRA) ============ */
 function renderMoreTab(target, effectiveTarget, totals, remaining, progress, day) {
-  const hidden = state.data.hiddenTabs || [];
+  const hiddenTabs = state.data.hiddenTabs || [];
+  const hiddenCards = state.data.hiddenCards || [];
+
   const tabNames = {
     today: '⚡ Главный Дневник',
     stats: '📊 Статистика & Аналитика',
@@ -828,195 +859,113 @@ function renderMoreTab(target, effectiveTarget, totals, remaining, progress, day
     theory: '📚 Научная База и Теория'
   };
 
+  const cardTitles = {
+    card_energy: '⚡ Главный Баланс Калорий',
+    card_smart_rec: '💡 Умные Рекомендации',
+    card_ai_score: '🏅 ИИ-Оценка Качества Рациона (1-10)',
+    card_oil: '🫒 Трэкер Оливкового и Подсолнечного Масла',
+    card_macro: '📊 Глубокий БЖУ Аналитик & Контроль Жиров',
+    card_fiber: '🥦 Трекер Клетчатки',
+    card_gl: '📊 Гликемическая Нагрузка (GL)',
+    card_water: '💧 Трекер Воды и Гидратации',
+    card_sleep: '😴 Сон и Восстановление',
+    card_fasting: '⏰ Циркадный Таймер 16/8',
+    card_presets: '🍱 Шаблоны Приёмов Пищи',
+    card_dental: '🦷 Уход за Зубами и Полоскания',
+    card_express: '⚡ Экспресс-ввод и Инструменты',
+    card_meals: '🍽️ Список Приёмов Пищи за день',
+    card_activities: '💪 Список Активностей за день',
+    card_chart_calories: '🔥 График Калорий',
+    card_chart_water: '💧 График Потребления Воды',
+    card_chart_oil: '🫒 График Потребления Масла',
+    card_chart_sleep: '😴 График Сна и Восстановления',
+    card_chart_fasting: '⏰ Хроника Интервального Голодания',
+    card_chart_dental: '🦷 График Ухода за Зубами',
+    card_weight: '⚖️ График и Записи Веса',
+    card_achievements: '🏆 Спортивные Достижения',
+    card_storage: '💾 Файловое Хранилище'
+  };
+
+  const totalHiddenCount = hiddenTabs.length + hiddenCards.length;
+
   return `
   <div class="space-y-4">
     <div class="sport-card bg-slate-900/90 p-4 space-y-2 border-amber-500/30">
-      <div class="flex items-center gap-2">
-        <span class="text-2xl">⚙️</span>
-        <div>
-          <h3 class="font-bold text-sm text-slate-100 uppercase tracking-wider">Вкладка "Дополнительно"</h3>
-          <p class="text-[10px] text-slate-400">Сюда переносятся скрытые окна. Вы можете в любой момент вернуть их на главный экран.</p>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">⚙️</span>
+          <div>
+            <h3 class="font-bold text-sm text-slate-100 uppercase tracking-wider">Вкладка "Дополнительно"</h3>
+            <p class="text-[10px] text-slate-400">Здесь хранятся скрытые экраны и индивидуальные карточки.</p>
+          </div>
         </div>
+        <span class="text-xs font-bold text-amber-400 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20">
+          Скрыто: ${totalHiddenCount}
+        </span>
       </div>
     </div>
 
-    ${hidden.length === 0 ? `
+    ${totalHiddenCount === 0 ? `
       <div class="sport-card p-6 text-center text-slate-500 text-xs">
         <div class="text-3xl mb-2">📌</div>
-        Нет перенесённых окон. Чтобы перенести окно сюда, нажмите значок <b>"📌 В Дополнительно"</b> на любом из главных экранов.
+        Нет перенесённых окон или карточек.<br/>
+        Чтобы перенести любую карточку сюда, нажмите значок <b>"📌 В Дополнительно"</b> в её верхнем углу.
       </div>
     ` : `
       <div class="space-y-4">
-        ${hidden.map(tabKey => `
-          <div class="sport-card space-y-3 border-amber-500/20">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-              <span class="font-black text-xs text-amber-400 uppercase tracking-wider">${tabNames[tabKey] || tabKey}</span>
-              <button onclick="restoreFromExtra('${tabKey}')" class="sport-btn btn-primary py-1.5 px-3 text-xs">
-                📌 Вернуть на главный экран
-              </button>
-            </div>
-            <div class="pt-1">
-              ${tabKey === 'today' ? renderTodayTab(target, effectiveTarget, totals, remaining, progress, day)
-                : tabKey === 'stats' ? renderStatsTab()
-                : tabKey === 'history' ? renderHistoryTab()
-                : renderTheoryTab()
-              }
-            </div>
+        <!-- Секция свернутых главных окон -->
+        ${hiddenTabs.length > 0 ? `
+          <div class="space-y-2">
+            <h4 class="font-bold text-xs text-amber-400 uppercase tracking-wider">Скрытые разделы меню:</h4>
+            ${hiddenTabs.map(tabKey => `
+              <div class="sport-card space-y-2 border-amber-500/20">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-xs text-slate-200">${tabNames[tabKey] || tabKey}</span>
+                  <button onclick="restoreFromExtra('${tabKey}')" class="sport-btn btn-primary py-1 px-2.5 text-[11px]">
+                    📌 Вернуть на главный экран
+                  </button>
+                </div>
+              </div>
+            `).join('')}
           </div>
-        `).join('')}
+        ` : ''}
+
+        <!-- Секция свернутых индивидуальных карточек -->
+        ${hiddenCards.length > 0 ? `
+          <div class="space-y-2">
+            <h4 class="font-bold text-xs text-amber-400 uppercase tracking-wider">Скрытые индивидуальные карточки:</h4>
+            ${hiddenCards.map(cardId => `
+              <div class="sport-card space-y-3 border-amber-500/20">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span class="font-black text-xs text-amber-300">${cardTitles[cardId] || cardId}</span>
+                  <button onclick="restoreCard('${cardId}')" class="sport-btn btn-primary py-1 px-2.5 text-[11px]">
+                    📌 Вернуть на главный экран
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
       </div>
     `}
   </div>`;
 }
 
-function renderDashboard() {
-  const target = calcTarget(state.profile);
-  const curKey = state.selectedDateKey || todayKey();
-  const day = getRecordForDate(curKey);
-
-  const totals = { kcal: 0, p: 0, f: 0, c: 0, fiber: 0, gl: 0, burned: 0 };
-  day.meals.forEach(m => {
-    totals.kcal += m.kcal;
-    totals.p += m.p;
-    totals.f += m.f;
-    totals.c += m.c;
-    totals.fiber += (m.fiber || 0);
-    totals.gl += (m.gl || 0);
-  });
-  day.activities.forEach(a => { totals.burned += a.kcal; });
-
-  const effectiveTarget = target + totals.burned;
-  const remaining = effectiveTarget - totals.kcal;
-  const progress = Math.min(100, (totals.kcal / (effectiveTarget || 1)) * 100);
-
-  const lvlInfo = getLevelInfo(state.data.xp || 0);
-  const quote = MOTIVATIONAL_QUOTES[state.quoteIdx % MOTIVATIONAL_QUOTES.length];
-
-  // Форматирование выбранной даты
-  const isMskToday = curKey === todayKey();
-  const dateObj = new Date(curKey);
-  const formattedDate = dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', weekday: 'short' });
-
-  return `
-  <div class="max-w-xl mx-auto p-4 pb-28 space-y-4">
-    <!-- Шапка, Живые часы МСК и Статус Уровня -->
-    <header class="flex items-center justify-between gap-2">
-      <div>
-        <div class="flex items-center gap-2">
-          <h1 class="text-2xl font-black gradient-text tracking-tight">CalorieQuest</h1>
-          <span class="text-xs px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 font-bold border border-brand-500/30">
-            ${lvlInfo.icon} Lvl ${lvlInfo.lvl}
-          </span>
-        </div>
-        <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
-          <span>Привет, <b class="text-slate-200">${state.profile.name}</b>!</span>
-          <span id="liveMskClock" class="px-2 py-0.5 rounded bg-slate-800 text-cyan-400 font-mono font-bold border border-slate-700">
-            ${getMoscowTimeString()} МСК
-          </span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <button id="toggleSound" class="sport-btn btn-ghost px-2.5 py-1.5 text-sm" title="Звуковой отклик">
-          ${state.sound ? '🔊' : '🔇'}
-        </button>
-        <button id="toggleDark" class="sport-btn btn-ghost px-2.5 py-1.5 text-sm" title="Тема оформления">
-          ${state.dark ? '☀️' : '🌙'}
-        </button>
-        <div class="sport-card px-3 py-1.5 flex items-center gap-1.5 text-xs font-bold text-sports-flame bg-sports-flame/10 border-sports-flame/30">
-          🔥 ${state.data.streak || 0} дн.
-        </div>
-      </div>
-    </header>
-
-    <!-- ИНТЕРАКТИВНЫЙ БЛОК ВЫБОРА ДАТЫ -->
-    <div class="sport-card bg-slate-900/90 p-3 flex flex-col sm:flex-row items-center justify-between gap-3 border-brand-500/30">
-      <div class="flex items-center gap-2 w-full sm:w-auto justify-between">
-        <button id="prevDateBtn" class="sport-btn btn-ghost py-1.5 px-3 text-xs">◀ Вчера</button>
-        <div class="text-center">
-          <div class="text-xs font-bold text-slate-200 capitalize">${formattedDate}</div>
-          <div class="text-[10px] text-slate-400 font-semibold">${isMskToday ? '🟢 Текущий день (МСК)' : '🗓️ Режим редактирования'}</div>
-        </div>
-        <button id="nextDateBtn" class="sport-btn btn-ghost py-1.5 px-3 text-xs">Завтра ▶</button>
-      </div>
-
-      <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-        <input id="datePickerInput" type="date" value="${curKey}" class="px-2.5 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-xs font-semibold cursor-pointer" />
-        ${!isMskToday ? `<button id="resetTodayBtn" class="sport-btn btn-primary py-1.5 px-3 text-xs">Сегодня</button>` : ''}
-      </div>
-    </div>
-
-    <!-- Полоса прогресса XP Атлета -->
-    <div class="sport-card bg-slate-900/60 p-3 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2 text-xs">
-        <span class="text-xl">${lvlInfo.icon}</span>
-        <div>
-          <div class="font-bold text-slate-200">${lvlInfo.title}</div>
-          <div class="text-[10px] text-slate-400">${lvlInfo.xp} / ${lvlInfo.maxXp} XP</div>
-        </div>
-      </div>
-      <div class="flex-1 max-w-[140px] h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-        <div class="h-full bg-gradient-to-r from-brand-500 to-cyan-500 transition-all duration-500" style="width: ${lvlInfo.pct}%"></div>
-      </div>
-    </div>
-
-    <!-- Мотивационная цитата дня -->
-    <div class="sport-card bg-gradient-to-r from-cyan-950/40 to-slate-900/60 border-cyan-500/20 p-3.5 flex items-start gap-3">
-      <span class="text-2xl text-cyan-400 flex-shrink-0">💬</span>
-      <div class="flex-1 text-xs">
-        <p class="italic text-slate-200">"${quote.text}"</p>
-        <p class="text-[10px] text-slate-400 mt-1 text-right">— ${quote.author}</p>
-      </div>
-      <button id="nextQuote" class="text-slate-400 hover:text-white text-xs">🔄</button>
-    </div>
-
-    <!-- Навигационные табы -->
-    <div class="flex gap-1 p-1 bg-slate-900/80 rounded-2xl border border-slate-800">
-      ${[
-        ['today', 'Дневник', '⚡'],
-        ['stats', 'Статистика', '📊'],
-        ['history', 'История', '📅'],
-        ['theory', 'Теория', '📚'],
-        ['more', 'Ещё', '⚙️']
-      ].filter(([k]) => k === 'more' || !(state.data.hiddenTabs || []).includes(k))
-      .map(([k, l, i]) => `
-        <button data-tab="${k}" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all ${state.tab===k ? 'btn-active-tab' : 'text-slate-400 hover:text-slate-200'}">
-          ${i} ${l}
-        </button>
-      `).join('')}
-    </div>
-
-    ${state.tab === 'today' ? renderTodayTab(target, effectiveTarget, totals, remaining, progress, day)
-      : state.tab === 'stats' ? renderStatsTab()
-      : state.tab === 'history' ? renderHistoryTab()
-      : state.tab === 'theory' ? renderTheoryTab()
-      : renderMoreTab(target, effectiveTarget, totals, remaining, progress, day)
-    }
-
-    <!-- Фиксированное нижнее меню PWA -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-800 flex justify-around p-2 z-40">
-      ${[
-        ['today', 'Главная', '⚡'],
-        ['stats', 'Прогресс', '📈'],
-        ['history', 'Календарь', '📅'],
-        ['theory', 'База знаний', '📖'],
-        ['more', 'Ещё', '⚙️']
-      ].filter(([k]) => k === 'more' || !(state.data.hiddenTabs || []).includes(k))
-      .map(([k, l, i]) => `
-        <button data-tab="${k}" class="flex-1 py-1.5 flex flex-col items-center gap-0.5 text-[11px] font-semibold ${state.tab===k ? 'text-brand-400' : 'text-slate-500'}">
-          <span class="text-lg">${i}</span>
-          <span>${l}</span>
-        </button>
-      `).join('')}
-    </nav>
-  </div>
-
-  <div id="modalRoot"></div>
-  `;
-}
-
 
 /* ============ ВКЛАДКА "СЕГОДНЯ" (ДНЕВНИК ВЫБРАННОГО ДНЯ) ============ */
+
+
+function renderAtomicCard(cardId, contentHtml) {
+  if (isCardHidden(cardId)) return '';
+  // Inject pin button inside the card if pin button place exists or at top right
+  return `
+  <div class="relative group">
+    <div class="absolute top-2.5 right-2.5 z-20 opacity-80 hover:opacity-100">
+      ${renderPinButton(cardId)}
+    </div>
+    ${contentHtml}
+  </div>`;
+}
 
 function renderOilTrackerCard(day) {
   const oils = day.oils || { sunflower_fry: 0, sunflower_salad: 0, olive_fry: 0, olive_salad: 0 };
@@ -1591,112 +1540,9 @@ function renderDentalCareCard(day) {
   </div>`;
 }
 
-function renderTodayTab(target, effectiveTarget, totals, remaining, progress, day) {
-  const isOver = remaining < 0;
 
-  const targetP = Math.round((target * 0.3) / 4);
-  const targetF = Math.round((target * 0.3) / 9);
-  const targetC = Math.round((target * 0.4) / 4);
-
+function renderCardExpress() {
   return `
-  <!-- Круговой Главный Dashboard -->
-  <div class="flex justify-end"><button onclick="moveToExtra('today')" class="text-[11px] text-slate-400 hover:text-amber-300 font-semibold flex items-center gap-1 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-slate-800">📌 В Дополнительно</button></div>
-  <div class="sport-card bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-emerald-500/20 p-5 glow-pulse">
-    <div class="flex items-center justify-between gap-4">
-      <div class="flex-1 space-y-1">
-        <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Баланс Энергии Дня</div>
-        <div class="text-3xl font-black text-slate-100">
-          ${totals.kcal} <span class="text-base font-normal text-slate-400">/ ${effectiveTarget} ккал</span>
-        </div>
-
-        <div class="text-xs space-y-1 pt-1">
-          <div class="flex justify-between text-slate-300">
-            <span>🎯 Базовая цель:</span>
-            <b class="text-slate-100">${target} ккал</b>
-          </div>
-          <div class="flex justify-between text-sports-flame">
-            <span>🔥 Сожжено спортом:</span>
-            <b>+${totals.burned} ккал</b>
-          </div>
-        </div>
-      </div>
-
-      <!-- Круговой SVG Progress Bar -->
-      <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
-        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.08)" stroke-width="8" fill="none" />
-          <circle cx="50" cy="50" r="40"
-            stroke="${isOver ? '#ef4444' : '#10b981'}"
-            stroke-width="8"
-            fill="none"
-            stroke-dasharray="251.2"
-            stroke-dashoffset="${251.2 - (progress / 100) * 251.2}"
-            stroke-linecap="round"
-            class="transition-all duration-700 ease-out" />
-        </svg>
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
-          <span class="text-[10px] uppercase text-slate-400 font-bold">${isOver ? 'Перебор' : 'Остаток'}</span>
-          <span class="text-xl font-black ${isOver ? 'text-red-400' : 'text-brand-400'}">${Math.abs(remaining)}</span>
-          <span class="text-[9px] text-slate-400">ккал</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- БЖУ Табло -->
-    <div class="grid grid-cols-3 gap-2 mt-5">
-      ${[
-        ['Белки 🥩', totals.p, targetP, 'emerald'],
-        ['Жиры 🥑', totals.f, targetF, 'amber'],
-        ['Углеводы 🍞', totals.c, targetC, 'cyan']
-      ].map(([label, val, tgt, color]) => {
-        const pct = Math.min(100, Math.round((val / (tgt || 1)) * 100));
-        return `
-          <div class="bg-slate-800/80 rounded-xl p-2.5 border border-slate-700/50 text-center">
-            <div class="text-[11px] text-slate-400 font-semibold mb-1">${label}</div>
-            <div class="text-base font-bold text-slate-100">${val.toFixed(0)}г</div>
-            <div class="text-[10px] text-slate-400">из ${tgt}г</div>
-            <div class="h-1.5 bg-slate-700 rounded-full mt-2 overflow-hidden">
-              <div class="h-full bg-${color==='emerald'?'brand-500':color==='amber'?'sports-gold':'cyan-500'} rounded-full transition-all duration-500" style="width:${pct}%"></div>
-            </div>
-          </div>
-        `;
-      }).join('')}
-    </div>
-  </div>
-
-  <!-- УМНЫЕ РЕКОМЕНДАЦИИ -->
-  ${renderSmartRecommendations(remaining, totals, targetP, targetF, targetC)}
-
-  <!-- ИИ-ОЦЕНКА КАЧЕСТВА РАЦИОНА (1-10) -->
-  ${renderNutritionalQualityScoreCard(totals, day, target)}
-
-  <!-- ТРЕКЕР МАСЛА -->
-  ${renderOilTrackerCard(day)}
-
-  <!-- ГЛУБОКИЙ БЖУ АНАЛИТИК -->
-  ${renderDeepMacroAnalyticsCard(totals, day)}
-
-  <!-- ТРЕКЕР КЛЕТЧАТКИ -->
-  ${renderFiberTrackerCard(totals)}
-
-  <!-- ГЛИКЕМИЧЕСКАЯ НАГРУЗКА -->
-  ${renderGlycemicLoadCard(totals)}
-
-  <!-- ТРЕКЕР ВОДЫ -->
-  ${renderWaterTrackerCard(day, state.profile.weight)}
-
-  <!-- СНЕ И ВОССТАНОВЛЕНИЕ -->
-  ${renderSleepRecoveryCard(day)}
-
-  <!-- ЦИРКАДНЫЙ ТАЙМЕР 16/8 -->
-  ${renderCircadianFastingCard()}
-
-  <!-- ШАБЛОНЫ ПРИЁМОВ ПИЩИ (КОМБО-МЕНЮ) -->
-  ${renderMealPresetsCard(day)}
-
-  <!-- УХОД ЗА ЗУБАМИ И НАПОМИНАНИЯ -->
-  ${renderDentalCareCard(day)}
-
   <!-- ЭКСПРЕСС-ВВОД И ДОПОЛНИТЕЛЬНЫЕ ИНСТРУМЕНТЫ -->
   <div class="sport-card bg-slate-900/90 p-4 space-y-3 border-cyan-500/20">
     <h3 class="font-bold text-xs text-slate-200 uppercase tracking-wider flex items-center justify-between">
@@ -1719,18 +1565,11 @@ function renderTodayTab(target, effectiveTarget, totals, remaining, progress, da
         📥 Отчёт для диетолога
       </button>
     </div>
-  </div>
+  </div>`;
+}
 
-  <!-- Быстрые действия -->
-  <div class="grid grid-cols-2 gap-3">
-    <button id="openFood" class="sport-btn btn-primary py-3.5 shadow-lg shadow-emerald-500/20 text-sm">
-      ➕ Добавить еду 🍽️
-    </button>
-    <button id="openActivity" class="sport-btn btn-cyan py-3.5 shadow-lg shadow-cyan-500/20 text-sm">
-      ➕ Тренировка 💪
-    </button>
-  </div>
-
+function renderCardMeals(day) {
+  return `
   <!-- Список приёмов пищи за выбранный день -->
   <div class="sport-card space-y-3">
     <h3 class="font-bold text-sm text-slate-200 flex items-center justify-between">
@@ -1763,8 +1602,11 @@ function renderTodayTab(target, effectiveTarget, totals, remaining, progress, da
         `).join('')}
       </div>
     `}
-  </div>
+  </div>`;
+}
 
+function renderCardActivities(day) {
+  return `
   <!-- Список активностей за выбранный день -->
   <div class="sport-card space-y-3">
     <h3 class="font-bold text-sm text-slate-200 flex items-center justify-between">
@@ -1796,7 +1638,136 @@ function renderTodayTab(target, effectiveTarget, totals, remaining, progress, da
         `).join('')}
       </div>
     `}
+  </div>`;
+}
+
+function renderCardEnergy(totals, effectiveTarget, target, isOver, remaining, progress, targetP, targetF, targetC) {
+  return `
+  <div class="sport-card bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-emerald-500/20 p-5 glow-pulse">
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex-1 space-y-1">
+        <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Баланс Энергии Дня</div>
+        <div class="text-3xl font-black text-slate-100">
+          ${totals.kcal} <span class="text-base font-normal text-slate-400">/ ${effectiveTarget} ккал</span>
+        </div>
+
+        <div class="text-xs space-y-1 pt-1">
+          <div class="flex justify-between text-slate-300">
+            <span>🎯 Базовая цель:</span>
+            <b class="text-slate-100">${target} ккал</b>
+          </div>
+          <div class="flex justify-between text-sports-flame">
+            <span>🔥 Сожжено спортом:</span>
+            <b>+${totals.burned} ккал</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
+        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.08)" stroke-width="8" fill="none" />
+          <circle cx="50" cy="50" r="40"
+            stroke="${isOver ? '#ef4444' : '#10b981'}"
+            stroke-width="8"
+            fill="none"
+            stroke-dasharray="251.2"
+            stroke-dashoffset="${251.2 - (progress / 100) * 251.2}"
+            stroke-linecap="round"
+            class="transition-all duration-700 ease-out" />
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
+          <span class="text-[10px] uppercase text-slate-400 font-bold">${isOver ? 'Перебор' : 'Остаток'}</span>
+          <span class="text-xl font-black ${isOver ? 'text-red-400' : 'text-brand-400'}">${Math.abs(remaining)}</span>
+          <span class="text-[9px] text-slate-400">ккал</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2 mt-5">
+      ${[
+        ['Белки 🥩', totals.p, targetP, 'emerald'],
+        ['Жиры 🥑', totals.f, targetF, 'amber'],
+        ['Углеводы 🍞', totals.c, targetC, 'cyan']
+      ].map(([label, val, tgt, color]) => {
+        const pct = Math.min(100, Math.round((val / (tgt || 1)) * 100));
+        return `
+          <div class="bg-slate-800/80 rounded-xl p-2.5 border border-slate-700/50 text-center">
+            <div class="text-[11px] text-slate-400 font-semibold mb-1">${label}</div>
+            <div class="text-base font-bold text-slate-100">${val.toFixed(0)}г</div>
+            <div class="text-[10px] text-slate-400">из ${tgt}г</div>
+            <div class="h-1.5 bg-slate-700 rounded-full mt-2 overflow-hidden">
+              <div class="h-full bg-${color==='emerald'?'brand-500':color==='amber'?'sports-gold':'cyan-500'} rounded-full transition-all duration-500" style="width:${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+
+function renderTodayTab(target, effectiveTarget, totals, remaining, progress, day) {
+  const isOver = remaining < 0;
+
+  const targetP = Math.round((target * 0.3) / 4);
+  const targetF = Math.round((target * 0.3) / 9);
+  const targetC = Math.round((target * 0.4) / 4);
+
+  return `
+  <!-- Круговой Главный Dashboard -->
+  ${renderAtomicCard('card_energy', renderCardEnergy(totals, effectiveTarget, target, isOver, remaining, progress, targetP, targetF, targetC))}
+
+  <!-- УМНЫЕ РЕКОМЕНДАЦИИ -->
+  ${renderAtomicCard('card_smart_rec', renderSmartRecommendations(remaining, totals, targetP, targetF, targetC))}
+
+  <!-- ИИ-ОЦЕНКА КАЧЕСТВА РАЦИОНА (1-10) -->
+  ${renderAtomicCard('card_ai_score', renderNutritionalQualityScoreCard(totals, day, target))}
+
+  <!-- ТРЕКЕР МАСЛА -->
+  ${renderAtomicCard('card_oil', renderOilTrackerCard(day))}
+
+  <!-- ГЛУБОКИЙ БЖУ АНАЛИТИК -->
+  ${renderAtomicCard('card_macro', renderDeepMacroAnalyticsCard(totals, day))}
+
+  <!-- ТРЕКЕР КЛЕТЧАТКИ -->
+  ${renderAtomicCard('card_fiber', renderFiberTrackerCard(totals))}
+
+  <!-- ГЛИКЕМИЧЕСКАЯ НАГРУЗКА -->
+  ${renderAtomicCard('card_gl', renderGlycemicLoadCard(totals))}
+
+  <!-- ТРЕКЕР ВОДЫ -->
+  ${renderAtomicCard('card_water', renderWaterTrackerCard(day, state.profile.weight))}
+
+  <!-- СНЕ И ВОССТАНОВЛЕНИЕ -->
+  ${renderAtomicCard('card_sleep', renderSleepRecoveryCard(day))}
+
+  <!-- ЦИРКАДНЫЙ ТАЙМЕР 16/8 -->
+  ${renderAtomicCard('card_fasting', renderCircadianFastingCard())}
+
+  <!-- ШАБЛОНЫ ПРИЁМОВ ПИЩИ (КОМБО-МЕНЮ) -->
+  ${renderAtomicCard('card_presets', renderMealPresetsCard(day))}
+
+  <!-- УХОД ЗА ЗУБАМИ И НАПОМИНАНИЯ -->
+  ${renderAtomicCard('card_dental', renderDentalCareCard(day))}
+
+  <!-- ЭКСПРЕСС-ВВОД И ДОПОЛНИТЕЛЬНЫЕ ИНСТРУМЕНТЫ -->
+  ${renderAtomicCard('card_express', renderCardExpress())}
+
+  <!-- Быстрые действия -->
+  <div class="grid grid-cols-2 gap-3">
+    <button id="openFood" class="sport-btn btn-primary py-3.5 shadow-lg shadow-emerald-500/20 text-sm">
+      ➕ Добавить еду 🍽️
+    </button>
+    <button id="openActivity" class="sport-btn btn-cyan py-3.5 shadow-lg shadow-cyan-500/20 text-sm">
+      ➕ Тренировка 💪
+    </button>
   </div>
+
+  <!-- Список приёмов пищи за выбранный день -->
+  ${renderAtomicCard('card_meals', renderCardMeals(day))}
+
+  <!-- Список активностей за выбранный день -->
+  ${renderAtomicCard('card_activities', renderCardActivities(day))}
   `;
 }
 
@@ -2003,6 +1974,99 @@ function renderDentalChart(last7Days) {
   </div>`;
 }
 
+
+function renderCardCaloriesChart(last7, target) {
+  return `
+  <!-- 1. График калорий за 7 дней -->
+  <div class="sport-card space-y-3">
+    <h3 class="font-bold text-sm text-slate-200">🔥 Мониторинг Калорий за 7 дней</h3>
+    ${renderUniversalChart(last7.map(d => ({ label: d.day, val: d.kcal, sub: `${d.kcal}ккал` })), { strokeColor: '#10b981', minMax: target })}
+  </div>`;
+}
+
+function renderCardWeight(weights, targetWeight) {
+  return `
+  <!-- 6. График и Редактирование Веса -->
+  <div class="sport-card space-y-3">
+    <h3 class="font-bold text-sm text-slate-200 flex justify-between items-center">
+      <span>⚖️ Динамика и Записи веса</span>
+      <span class="text-xs text-brand-400 font-semibold">Цель: ${targetWeight || '--'} кг</span>
+    </h3>
+
+    <div class="flex gap-2">
+      <input id="weightInput" type="number" step="0.1" placeholder="Замер веса (кг)"
+        class="flex-1 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-xs font-semibold" />
+      <button id="saveWeight" class="sport-btn btn-primary py-2 px-4 text-xs">Записать</button>
+    </div>
+
+    ${weights.length > 0 ? `
+      <div class="space-y-1.5 pt-2 border-t border-slate-800">
+        <div class="text-[11px] text-slate-400 font-bold mb-1">История замеров веса:</div>
+        <div class="divide-y divide-slate-800 max-h-40 overflow-y-auto custom-scrollbar">
+          ${weights.map((w, idx) => `
+            <div class="py-2 flex items-center justify-between text-xs">
+              <span class="text-slate-400">${w.date}</span>
+              <b class="text-slate-100 text-sm">${w.weight} кг</b>
+              <div class="flex gap-1">
+                <button onclick="editWeightEntry(${idx})" class="p-1 text-xs text-brand-400 hover:underline">✏️</button>
+                <button onclick="deleteWeightEntry(${idx})" class="p-1 text-xs text-red-400 hover:underline">✕</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : `
+      <div class="text-center py-4 text-slate-500 text-xs">Нет замеров веса. Внеси первый замер!</div>
+    `}
+  </div>`;
+}
+
+function renderCardAchievements() {
+  return `
+  <!-- Достижения и Бейджи -->
+  <div class="sport-card space-y-3">
+    <h3 class="font-bold text-sm text-slate-200">🏆 Спортивные Достижения</h3>
+    <div class="grid grid-cols-3 gap-2">
+      ${[
+        { i: '🔥', n: 'Старт Квеста', d: 'Начал путь', ok: true },
+        { i: '🥗', n: 'Чистый Дефицит', d: 'День в норме', ok: Object.values(state.data.days).some(d => d.meals.length > 0) },
+        { i: '🏋️', n: 'Мастер Зала', d: '300+ ккал спорта', ok: Object.values(state.data.days).some(d => d.activities.some(a => a.kcal >= 300)) },
+        { i: '⚡', n: 'Стрик 7 Дней', d: '7 дней подряд', ok: (state.data.streak || 0) >= 7 },
+        { i: '👑', n: 'Iron Champion', d: '30 дней в форме', ok: (state.data.streak || 0) >= 30 },
+        { i: '🎯', n: 'Снайпер БЖУ', d: 'Баланс идеален', ok: true }
+      ].map(a => `
+        <div class="p-2.5 rounded-xl text-center border transition-all ${a.ok ? 'bg-slate-800/90 border-emerald-500/40 text-slate-100' : 'bg-slate-900/40 border-slate-800 opacity-40 grayscale'}">
+          <div class="text-2xl mb-1">${a.i}</div>
+          <div class="text-[11px] font-bold truncate">${a.n}</div>
+          <div class="text-[9px] text-slate-400 mt-0.5">${a.d}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function renderCardStorage() {
+  return `
+  <!-- Файловое хранилище -->
+  <div class="sport-card p-4 space-y-3">
+    <h4 class="font-bold text-xs text-slate-200 uppercase tracking-wider">💾 Файловое хранилище (food_data.json)</h4>
+    <p class="text-[11px] text-slate-400">
+      Все данные сохраняются в браузерное хранилище (LocalStorage). Вы можете сохранить резервный файл <b>food_data.json</b>.
+    </p>
+    <div class="grid grid-cols-2 gap-2">
+      <button id="exportData" class="sport-btn btn-primary py-2.5 text-xs">💾 Сохранить в food_data.json</button>
+      <label class="sport-btn btn-cyan py-2.5 text-xs cursor-pointer text-center">
+        📂 Загрузить из файла
+        <input id="importFileInput" type="file" accept=".json" class="hidden" />
+      </label>
+    </div>
+    <button id="resetData" class="sport-btn btn-ghost w-full py-2 text-xs text-red-400 border-red-500/20">
+      🗑️ Сбросить все данные
+    </button>
+  </div>`;
+}
+
+
 function renderStatsTab() {
   const target = calcTarget(state.profile);
   const last7 = [];
@@ -2024,14 +2088,12 @@ function renderStatsTab() {
     });
   }
 
-  const maxVal = Math.max(target, ...last7.map(d => d.kcal)) * 1.15 || 2000;
   const weights = state.data.weights || [];
   const chartType = state.chartType || 'bar';
 
   return `
   <div class="space-y-4">
     <!-- Шапка Статистики с переключателем видов графиков -->
-  <div class="flex justify-end"><button onclick="moveToExtra('stats')" class="text-[11px] text-slate-400 hover:text-amber-300 font-semibold flex items-center gap-1 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-slate-800">📌 В Дополнительно</button></div>
     <div class="sport-card bg-slate-900/90 p-3 flex items-center justify-between border-brand-500/30">
       <div>
         <h2 class="font-bold text-sm text-slate-100">📊 Аналитика & Графики 7 дней</h2>
@@ -2048,132 +2110,34 @@ function renderStatsTab() {
     </div>
 
     <!-- 1. График калорий за 7 дней -->
-    <div class="sport-card space-y-3">
-      <h3 class="font-bold text-sm text-slate-200">🔥 Мониторинг Калорий за 7 дней</h3>
-      ${renderUniversalChart(last7.map(d => ({ label: d.day, val: d.kcal, sub: `${d.kcal}ккал` })), { strokeColor: '#10b981', minMax: target })}
-    </div>
+    ${renderAtomicCard('card_chart_calories', renderCardCaloriesChart(last7, target))}
 
     <!-- 2. График Воды -->
-    ${renderWaterChart(last7)}
+    ${renderAtomicCard('card_chart_water', renderWaterChart(last7))}
 
     <!-- 3. График Масла -->
-    ${renderOilsChart(last7)}
+    ${renderAtomicCard('card_chart_oil', renderOilsChart(last7))}
 
     <!-- 4. График Сна -->
-    ${renderSleepChart(last7)}
+    ${renderAtomicCard('card_chart_sleep', renderSleepChart(last7))}
 
     <!-- 5. Хроника Голодания -->
-    ${renderFastingChart(last7)}
+    ${renderAtomicCard('card_chart_fasting', renderFastingChart(last7))}
 
     <!-- 5.5. График Чистки Зубов -->
-    ${renderDentalChart(last7)}
+    ${renderAtomicCard('card_chart_dental', renderDentalChart(last7))}
 
     <!-- 6. График и Редактирование Веса -->
-    <div class="sport-card space-y-3">
-      <h3 class="font-bold text-sm text-slate-200 flex justify-between items-center">
-        <span>⚖️ Динамика и Записи веса</span>
-        <span class="text-xs text-brand-400 font-semibold">Цель: ${state.profile.targetWeight || '--'} кг</span>
-      </h3>
-
-      <div class="flex gap-2">
-        <input id="weightInput" type="number" step="0.1" placeholder="Замер веса (кг)"
-          class="flex-1 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-100 text-xs font-semibold" />
-        <button id="saveWeight" class="sport-btn btn-primary py-2 px-4 text-xs">Записать</button>
-      </div>
-
-      ${weights.length > 0 ? `
-        <div class="space-y-1.5 pt-2 border-t border-slate-800">
-          <div class="text-[11px] text-slate-400 font-bold mb-1">История замеров веса:</div>
-          <div class="divide-y divide-slate-800 max-h-40 overflow-y-auto custom-scrollbar">
-            ${weights.map((w, idx) => `
-              <div class="py-2 flex items-center justify-between text-xs">
-                <span class="text-slate-400">${w.date}</span>
-                <b class="text-slate-100 text-sm">${w.weight} кг</b>
-                <div class="flex gap-1">
-                  <button onclick="editWeightEntry(${idx})" class="p-1 text-xs text-brand-400 hover:underline">✏️</button>
-                  <button onclick="deleteWeightEntry(${idx})" class="p-1 text-xs text-red-400 hover:underline">✕</button>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      ` : `
-        <div class="text-center py-4 text-slate-500 text-xs">Нет замеров веса. Внеси первый замер!</div>
-      `}
-    </div>
+    ${renderAtomicCard('card_weight', renderCardWeight(weights, state.profile.targetWeight))}
 
     <!-- Достижения и Бейджи -->
-    <div class="sport-card space-y-3">
-      <h3 class="font-bold text-sm text-slate-200">🏆 Спортивные Достижения</h3>
-      <div class="grid grid-cols-3 gap-2">
-        ${[
-          { i: '🔥', n: 'Старт Квеста', d: 'Начал путь', ok: true },
-          { i: '🥗', n: 'Чистый Дефицит', d: 'День в норме', ok: Object.values(state.data.days).some(d => d.meals.length > 0) },
-          { i: '🏋️', n: 'Мастер Зала', d: '300+ ккал спорта', ok: Object.values(state.data.days).some(d => d.activities.some(a => a.kcal >= 300)) },
-          { i: '⚡', n: 'Стрик 7 Дней', d: '7 дней подряд', ok: (state.data.streak || 0) >= 7 },
-          { i: '👑', n: 'Iron Champion', d: '30 дней в форме', ok: (state.data.streak || 0) >= 30 },
-          { i: '🎯', n: 'Снайпер БЖУ', d: 'Баланс идеален', ok: true }
-        ].map(a => `
-          <div class="p-2.5 rounded-xl text-center border transition-all ${a.ok ? 'bg-slate-800/90 border-emerald-500/40 text-slate-100' : 'bg-slate-900/40 border-slate-800 opacity-40 grayscale'}">
-            <div class="text-2xl mb-1">${a.i}</div>
-            <div class="text-[11px] font-bold truncate">${a.n}</div>
-            <div class="text-[9px] text-slate-400 mt-0.5">${a.d}</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
+    ${renderAtomicCard('card_achievements', renderCardAchievements())}
 
     <!-- Файловое хранилище -->
-    <div class="sport-card p-4 space-y-3">
-      <h4 class="font-bold text-xs text-slate-200 uppercase tracking-wider">💾 Файловое хранилище (food_data.json)</h4>
-      <p class="text-[11px] text-slate-400">
-        Все данные сохраняются в браузерное хранилище (LocalStorage). Вы можете сохранить резервный файл <b>food_data.json</b>.
-      </p>
-      <div class="grid grid-cols-2 gap-2">
-        <button id="exportData" class="sport-btn btn-primary py-2.5 text-xs">💾 Сохранить в food_data.json</button>
-        <label class="sport-btn btn-cyan py-2.5 text-xs cursor-pointer text-center">
-          📂 Загрузить из файла
-          <input id="importFileInput" type="file" accept=".json" class="hidden" />
-        </label>
-      </div>
-      <button id="resetData" class="sport-btn btn-ghost w-full py-2 text-xs text-red-400 border-red-500/20">
-        🗑️ Сбросить все данные
-      </button>
-    </div>
+    ${renderAtomicCard('card_storage', renderCardStorage())}
   </div>`;
 }
 
-function setChartType(type) {
-  state.chartType = type;
-  SoundEffects.playClick();
-  render();
-}
-
-function editWeightEntry(idx) {
-  const w = state.data.weights[idx];
-  if (!w) return;
-  const newW = prompt("Введите правильный вес (кг):", w.weight);
-  if (newW !== null) {
-    const val = parseFloat(newW);
-    if (val && val >= 30 && val <= 300) {
-      state.data.weights[idx].weight = val;
-      save();
-      SoundEffects.playSuccess();
-      render();
-    } else {
-      alert("Введите корректный вес!");
-    }
-  }
-}
-
-function deleteWeightEntry(idx) {
-  if (confirm("Удалить эту запись веса?")) {
-    state.data.weights.splice(idx, 1);
-    save();
-    SoundEffects.playClick();
-    render();
-  }
-}
 
 /* ============ ВКЛАДКА "ИСТОРИЯ" (КЛИКАБЕЛЬНЫЕ КАРТОЧКИ) ============ */
 function renderHistoryTab() {
