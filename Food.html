@@ -290,6 +290,190 @@ function getMoscowTimeString(dateObj = getMoscowDate()) {
 
 const todayKey = () => getMoscowDateString();
 
+/* ============ БАДЫ И ВИТАМИНЫ: СПИСОК ОРГАНОВ И СПРАВОЧНИК ============ */
+const SUPPLEMENT_ORGANS = [
+  'Сердце',
+  'Почки',
+  'Мозг и нервная система',
+  'Кости и суставы',
+  'Кожа, волосы и ногти',
+  'Глаза (Зрение)',
+  'Кишечник и ЖКТ',
+  'Сосуды',
+  'Потенция и мужское/женское здоровье',
+  'Иммунитет',
+  'Общий тонус и энергия',
+  'Общая профилактика'
+];
+
+const SUPPLEMENT_RECOMMENDATIONS = [
+  {
+    organ: "Сердце и сосуды",
+    icon: "❤️",
+    desc: "Поддержка сердечно-сосудистой системы, чистоты сосудов и нормализации давления.",
+    supplements: [
+      { name: "Омега-3 (EPA/DHA)", desc: "Укрепляет стенки сосудов, снижает уровень 'плохого' холестерина.", course: "2–3 месяца (2 раза в год)" },
+      { name: "Коэнзим Q10 (Убихинон)", desc: "Клеточный энергизатор для сердечной мышцы.", course: "1–2 месяца" },
+      { name: "Экстракт Боярышника", desc: "Улучшает коронарное кровообращение и тонус миокарда.", course: "1 месяц" }
+    ],
+    vitamins: [
+      { name: "Витамин K2 (MK-7)", desc: "Направляет кальций в кости, предотвращая кальциноз артерий.", course: "1–2 месяца" },
+      { name: "Магний В6 (Цитрат/Glродиа)", desc: "Снимает спазм сосудов, регулирует сердечный ритм.", course: "1–2 месяца постоянного приёма" },
+      { name: "Витамин E (Токоферол)", desc: "Антиоксидантная защита липидов крови от окисления.", course: "1 месяц" }
+    ]
+  },
+  {
+    organ: "Почки и мочевыделительная система",
+    icon: "🩺",
+    desc: "Профилактика отеков, поддержание водно-солевого баланса и фильтрации.",
+    supplements: [
+      { name: "Экстракт Клюквы / D-Манноза", desc: "Препятствует прикреплению бактерий к стенкам мочевого пузыря.", course: "2–4 недели" },
+      { name: "Листья Брусники и Толокнянки", desc: "Мягкий мочегонный и антисептический эффект.", course: "10–14 дней" }
+    ],
+    vitamins: [
+      { name: "Витамин B6 (Пиридоксин)", desc: "Снижает уровень оксалатов в моче, профилактика камнеобразования.", course: "1 месяц" },
+      { name: "Витамин C (в умеренной дозе)", desc: "Поддержка местной иммунной защиты.", course: "2–3 недели" }
+    ]
+  },
+  {
+    organ: "Мозг и нервная система",
+    icon: "🧠",
+    desc: "Улучшение памяти, концентрации, стрессоустойчивости и защиты нейронов.",
+    supplements: [
+      { name: "Ежовик Гребенчатый (Lion's Mane)", desc: "Стимулирует фактор роста нейронов (NGF), улучшает когнитивные функции.", course: "2–3 месяца" },
+      { name: "Гинкго Билоба / Готу Кола", desc: "Улучшает микроциркуляцию мозга и снабжение кислородом.", course: "1–2 месяца" },
+      { name: "Лецитин / Холин", desc: "Строительный материал для мембран нейронов и ацетилхолина.", course: "2 месяца" }
+    ],
+    vitamins: [
+      { name: "Витамин B12 (Метилкобаламин)", desc: "Защита миелиновой оболочки нервных волокон.", course: "1–2 месяца" },
+      { name: "Магний Треонат / Глицинат", desc: "Проникает через гематоэнцефалический барьер, улучшает сон и снимает тревожность.", course: "1–2 месяца" },
+      { name: "Витамин D3", desc: "Нейропротекторное действие и синтез дофамина.", course: "Курс 3 месяца (осень-зима)" }
+    ]
+  },
+  {
+    organ: "Кости и суставы",
+    icon: "🦴",
+    desc: "Укрепление суставно-связочного аппарата, хрящей и плотности костной ткани.",
+    supplements: [
+      { name: "Глюкозамин + Хондроитин + MSM", desc: "Регенерация хрящевой ткани и смазка суставов.", course: "3 месяца" },
+      { name: "Коллаген II типа (гидролизованный)", desc: "Восстановление связок и сухожилий.", course: "2–3 месяца" }
+    ],
+    vitamins: [
+      { name: "Витамин D3 + K2", desc: "Синергия для усвоения кальция и минерализации костей.", course: "2–3 месяца" },
+      { name: "Кальций (Хелат / Цитрат)", desc: "Минеральная основа костей.", course: "1–2 месяца" }
+    ]
+  },
+  {
+    organ: "Кожа, волосы и ногти",
+    icon: "✨",
+    desc: "Синтез собственного коллагена, защита от старения, укрепление луковиц и пластин.",
+    supplements: [
+      { name: "Коллаген I и III типа", desc: "Упругость кожи, уменьшение морщин.", course: "2–3 месяца" },
+      { name: "Гиалуроновая кислота", desc: "Глубокое увлажнение тканей изнутри.", course: "2 месяца" },
+      { name: "Гидролизат Кератина / MSM", desc: "Укрепление структуры волос и ногтей.", course: "1–2 месяца" }
+    ],
+    vitamins: [
+      { name: "Биотин (Витамин B7)", desc: "Стимуляция роста волос и предотвращение ломкости ногтей.", course: "2 месяца" },
+      { name: "Цинк + Селен", desc: "Контроль себорегулирования, устранение воспалений.", course: "1 месяц" },
+      { name: "Витамин C", desc: "Ключевой кофактор синтеза коллагена.", course: "1–2 месяца" }
+    ]
+  },
+  {
+    organ: "Глаза (Зрение)",
+    icon: "👁️",
+    desc: "Защита сетчатки от синего света гаджетов и зрительной усталости.",
+    supplements: [
+      { name: "Лютеин и Зеаксантин", desc: "Фильтрация вредного спектра света и защита макулы.", course: "2 месяца" },
+      { name: "Экстракт Черники (Антоцианы)", desc: "Улучшает адаптацию к темноте и микроциркуляцию сетчатки.", course: "1–2 месяца" }
+    ],
+    vitamins: [
+      { name: "Витамин A (Ретинол / Бета-каротин)", desc: "Необходим для зрительного пигмента родопсина.", course: "1 месяц" },
+      { name: "Витамин C и E", desc: "Антиоксидантная защита хрусталика.", course: "1–2 месяца" }
+    ]
+  },
+  {
+    organ: "Кишечник и ЖКТ",
+    icon: "🍏",
+    desc: "Здоровая микрофлора, комфортное пищеварение и правильное усвоение нутриентов.",
+    supplements: [
+      { name: "Мультипробиотики + Пребиотики", desc: "Восстановление баланса полезной микрофлоры.", course: "1 месяц" },
+      { name: "Псиллиум (Шелуха семян подорожника)", desc: "Растворимая клетчатка для мягкого очищения ЖКТ.", course: "Постоянно или курсами" },
+      { name: "Псиллиум / Экстракт Артишока", desc: "Стимуляция желчеоттока и моторики кишечника.", course: "2–4 недели" }
+    ],
+    vitamins: [
+      { name: "Витамин U (S-метилметионин)", desc: "Заживление слизистых оболочек желудка.", course: "1 месяц" },
+      { name: "Цинк-Карнозин", desc: "Восстановление целостности кишечного барьера.", course: "1 месяц" }
+    ]
+  },
+  {
+    organ: "Сосуды и Кровообращение",
+    icon: "🩸",
+    desc: "Эластичность вен, укрепление капилляров и профилактика варикоза.",
+    supplements: [
+      { name: "Диосмин + Гесперидин (Флавоноиды)", desc: "Повышение венозного тонуса, уменьшение застоя.", course: "1–2 месяца" },
+      { name: "Экстракт Конского Каштана", desc: "Укрепление стенки капилляров, противоотечный эффект.", course: "1 месяц" }
+    ],
+    vitamins: [
+      { name: "Рутин (Витамин P)", desc: "Снижает ломкость капилляров.", course: "1 месяц" },
+      { name: "Витамин C", desc: "Укрепление эндотелия сосудов.", course: "1 месяц" }
+    ]
+  },
+  {
+    organ: "Потенция и мужское/женское здоровье",
+    icon: "⚡",
+    desc: "Нормализация гормонального фона, либидо, репродуктивной функции и выносливости.",
+    supplements: [
+      { name: "Мака Перуанская / Трибулус", desc: "Стимуляция выработки эндогенного тестостерона и либидо.", course: "1–2 месяца" },
+      { name: "L-Аргинин / L-Цитруллин", desc: "Донатор оксида азота, улучшение кровонаполнения органов.", course: "1 месяц" },
+      { name: "Дииндолилметан (DIM) / Инозитол", desc: "Баланс эстрогенов у мужчин и женщин.", course: "2 месяца" }
+    ],
+    vitamins: [
+      { name: "Цинк (Пиколинат / Монометионин)", desc: "Ключевой минерал для синтеза тестостерона и сперматогенеза.", course: "1–2 месяца" },
+      { name: "Селен + Витамин E", desc: "Поддержка подвижности сперматозоидов и яичников.", course: "1–2 месяца" }
+    ]
+  },
+  {
+    organ: "Иммунитет",
+    icon: "🛡️",
+    desc: "Активация защитных сил организма в период простуд и вирусов.",
+    supplements: [
+      { name: "Эхинацея / Экстракт Бузины", desc: "Стимуляция выработки интерферонов.", course: "2–3 недели" },
+      { name: "Бета-глюканы (Из грибов или дрожжей)", desc: "Активация врожденного иммунного ответа.", course: "1 месяц" }
+    ],
+    vitamins: [
+      { name: "Витамин C (1000 мг)", desc: "Антиоксидантная поддержка белых кровяных телец.", course: "1–2 недели" },
+      { name: "Витамин D3 (5000 ME)", desc: "Ключевой регулятор иммунного ответа.", course: "1–3 месяца" },
+      { name: "Цинк", desc: "Блокировка размножения вирусов в клетке.", course: "2–3 недели" }
+    ]
+  },
+  {
+    organ: "Общий тонус и энергия",
+    icon: "🔋",
+    desc: "Преодоление хронической усталости, адаптация к нагрузкам и работоспособность.",
+    supplements: [
+      { name: "Родиола Розовая / Женьшень / Ашваганда", desc: "Адаптогены: снижают кортизол, повышают выносливость.", course: "1–2 месяца" },
+      { name: "L-Карнитин", desc: "Транспорт жирных кислот в митохондрии для выработки энергии.", course: "1 месяц" }
+    ],
+    vitamins: [
+      { name: "Комплекс Витаминов группы B (B-Complex)", desc: "Кофакторы клеточного метаболизма и выработки АТФ.", course: "1 месяц" },
+      { name: "Железо (Хелат / Бисглицинат)", desc: "Устранение анемии и тканевой гипоксии.", course: "2–3 месяца под контролем ферритина" }
+    ]
+  },
+  {
+    organ: "Общая профилактика и здоровье",
+    icon: "🌟",
+    desc: "Базовая поддержка ежедневного рациона для восполнения дефицитов.",
+    supplements: [
+      { name: "Омега-3 Высококонцентрированная", desc: "Базовые незаменимые жирные кислоты.", course: "Постоянно" },
+      { name: "Спирулина / Хлорелла", desc: "Источник микроэлементов, детокс и хлорофилл.", course: "1 месяц" }
+    ],
+    vitamins: [
+      { name: "Мультивитаминно-минеральный комплекс", desc: "Базовое восполнение дневных норм.", course: "1–2 месяца (в межсезонье)" },
+      { name: "Витамин D3 (2000 ME)", desc: "Профилактическая дозировка.", course: "Круглогодично" }
+    ]
+  }
+];
+
 /* ============ БАЗА ПРОДУКТОВ С ГИ И КЛЕТЧАТКОЙ (FIBER) ============ */
 const DEFAULT_FOODS = [
   // Крупы и Гарниры
@@ -471,7 +655,8 @@ function getRecordForDate(dateKey) {
       oils: { sunflower_fry: 0, sunflower_salad: 0, olive_fry: 0, olive_salad: 0 },
       water: 0,
       dental: { morning: false, evening: false, rinse1: false, rinse2: false },
-      sleep: { hours: 7.5, quality: 'good' }
+      sleep: { hours: 7.5, quality: 'good' },
+      supplements: []
     };
   }
   const d = state.data.days[dateKey];
@@ -479,6 +664,8 @@ function getRecordForDate(dateKey) {
   if (typeof d.water !== 'number') d.water = 0;
   if (!d.dental) d.dental = { morning: false, evening: false, rinse1: false, rinse2: false };
   if (!d.sleep) d.sleep = { hours: 7.5, quality: 'good' };
+  if (!d.supplements) d.supplements = [];
+      if (!d.customSupplements) d.customSupplements = [];
   return d;
 }
 
@@ -562,7 +749,7 @@ const getLevelInfo = (xp = 0) => {
 /* ============ ГЛОБАЛЬНЫЙ STATE ============ */
 let state = {
   profile: JSON.parse(localStorage.getItem('caloriequest_profile') || 'null'),
-  data: JSON.parse(localStorage.getItem('caloriequest_data') || '{"days":{},"achievements":[],"streak":0,"xp":50,"weights":[],"customFoods":[],"customRecipes":[],"mealPresets":[],"hiddenTabs":[],"hiddenCards":[],"fasting":{"active":false,"startTime":null,"targetHours":16}}'),
+  data: JSON.parse(localStorage.getItem('caloriequest_data') || '{"days":{},"achievements":[],"streak":0,"xp":50,"weights":[],"customFoods":[],"customRecipes":[],"mealPresets":[],"customSupplements":[],"hiddenTabs":[],"hiddenCards":[],"fasting":{"active":false,"startTime":null,"targetHours":16},"supplementCourses":[]}'),
   selectedDateKey: todayKey(),
   tab: 'today',
   dark: localStorage.getItem('caloriequest_dark') !== '0',
@@ -900,6 +1087,7 @@ function renderMoreTab(target, effectiveTarget, totals, remaining, progress, day
     card_sleep: '😴 Сон и Восстановление',
     card_fasting: '⏰ Циркадный Таймер 16/8',
     card_presets: '🍱 Шаблоны Приёмов Пищи',
+    card_supplements: '💊 Трекер Курсов БАДов и Витаминов',
     card_dental: '🦷 Уход за Зубами и Полоскания',
     card_express: '⚡ Экспресс-ввод и Инструменты',
     card_meals: '🍽️ Список Приёмов Пищи за день',
@@ -1784,6 +1972,691 @@ function toggleFasting(active) {
 
 // 7. 📥 ЭКСПОРТ ОТЧЁТА ДЛЯ НУТРИЦИОЛОГА
 
+
+
+
+/* ============ БАДЫ / ВИТАМИНЫ: ПОЛЬЗОВАТЕЛЬСКИЙ СПИСОК ВЫБОРКИ И CRUD ============ */
+function openSupplementListModal() {
+  const modal = document.getElementById('modalRoot');
+  const customSupps = state.data.customSupplements || [];
+
+  const renderModal = () => {
+    const list = state.data.customSupplements || [];
+
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="sport-card bg-slate-900 w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-5 space-y-4 border border-teal-500/40">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-slate-100 text-base flex items-center gap-2">
+            <span>📋</span> Список выборки БАДов и Витаминов (${list.length})
+          </h3>
+          <button onclick="document.getElementById('modalRoot').innerHTML=''" class="text-slate-400 hover:text-white p-1">✕</button>
+        </div>
+
+        <p class="text-xs text-slate-400">
+          Сохранённые позиции для одиночного приёма и быстрой заготовки курсов.
+        </p>
+
+        <div class="space-y-2">
+          ${list.length === 0 ? `
+            <div class="text-[11px] text-slate-500 bg-slate-950 p-4 text-center rounded-xl border border-slate-800 space-y-2">
+              <p>Ваш мастер-список витаминов пока пуст.</p>
+              <button onclick="openSupplementListModal()" class="sport-btn btn-primary py-1.5 px-3 text-xs bg-teal-600">
+                + Добавить первый БАД / Витамин
+              </button>
+            </div>
+          ` : `
+            <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
+              ${list.map((item, idx) => `
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center gap-2">
+                  <div class="space-y-0.5">
+                    <div class="font-bold text-xs text-slate-100 flex items-center gap-1.5">
+                      <span>${item.type === 'Витамин' ? '💊' : '🌿'} ${item.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-300 font-semibold">${item.type || 'БАД'}</span>
+                    </div>
+                    ${item.desc ? `<p class="text-[10px] text-slate-400">${item.desc}</p>` : ''}
+                    <div class="text-[10px] text-teal-400">
+                      🎯 ${(item.targetOrgans && item.targetOrgans.length > 0) ? item.targetOrgans.join(', ') : 'Общая профилактика'}
+                      ${item.defaultDose ? ` • ${item.defaultDose}` : ''}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button onclick='openCustomSupplementModal(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="sport-btn btn-ghost py-1 px-2 text-xs text-teal-300 border-teal-500/30">
+                      ✏️
+                    </button>
+                    <button onclick="deleteCustomSupplementItem('${item.id}')" class="sport-btn btn-ghost py-1 px-2 text-xs text-red-400 border-red-500/30 hover:bg-red-950/30">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <div class="pt-2 flex justify-between items-center border-t border-slate-800">
+          <button onclick="openSupplementListModal()" class="sport-btn btn-primary py-2 px-4 text-xs bg-gradient-to-r from-teal-500 to-emerald-600">
+            + Новый БАД / Витамин в список
+          </button>
+          <button onclick="document.getElementById('modalRoot').innerHTML=''" class="sport-btn btn-ghost py-2 px-3 text-xs text-slate-400">
+            Закрыть
+          </button>
+        </div>
+      </div>
+    </div>
+    `;
+  };
+
+  renderModal();
+}
+
+function deleteCustomSupplementItem(id) {
+  if (confirm("Удалить этот БАД / Витамин из вашего списка выборки?")) {
+    state.data.customSupplements = (state.data.customSupplements || []).filter(s => s.id !== id);
+    save();
+    openSupplementListModal();
+    render();
+  }
+}
+
+function openCustomSupplementModal(suppToEdit = null) {
+  const modal = document.getElementById('modalRoot');
+  const isEdit = !!suppToEdit;
+  const form = suppToEdit ? { ...suppToEdit } : {
+    id: 'supp_' + Date.now() + '_' + Math.random().toString(36).substr(2,4),
+    name: '',
+    type: 'БАД',
+    desc: '',
+    defaultDose: '',
+    targetOrgans: []
+  };
+
+  const renderModal = () => {
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="sport-card bg-slate-900 w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-5 space-y-4 border border-teal-500/40">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-slate-100 text-base flex items-center gap-2">
+            <span>💊</span> ${isEdit ? 'Редактировать БАД / Витамин' : 'Добавить БАД / Витамин в список'}
+          </h3>
+          <button onclick="document.getElementById('modalRoot').innerHTML=''" class="text-slate-400 hover:text-white p-1">✕</button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Название *</label>
+            <input type="text" id="suppName" value="${form.name.replace(/"/g, '&quot;')}" placeholder="Например: Омега-3 1000мг, Магний B6..." class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Категория</label>
+            <select id="suppType" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+              <option value="БАД" ${form.type === 'БАД' ? 'selected' : ''}>🌿 БАД</option>
+              <option value="Витамин" ${form.type === 'Витамин' ? 'selected' : ''}>💊 Витамин</option>
+              <option value="Минерал" ${form.type === 'Минерал' ? 'selected' : ''}>⚡ Минерал</option>
+              <option value="Экстракт" ${form.type === 'Экстракт' ? 'selected' : ''}>🌱 Экстракт / Травы</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Описание / Заметки</label>
+            <textarea id="suppDesc" rows="2" placeholder="Назначение, рекомендации по приёму..." class="sport-input w-full p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">${form.desc || ''}</textarea>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Рекомендуемая дозировка / схема</label>
+            <input type="text" id="suppDose" value="${(form.defaultDose || '').replace(/"/g, '&quot;')}" placeholder="Например: 1 капсула 2 раза в день во время еды" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Целевой орган / Эффект (выберите 1 или несколько)</label>
+            <div class="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto p-2 bg-slate-950 rounded-xl border border-slate-800">
+              ${SUPPLEMENT_ORGANS.map(organ => {
+                const checked = (form.targetOrgans || []).includes(organ);
+                return `
+                  <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer p-1 hover:bg-slate-900 rounded">
+                    <input type="checkbox" class="supp-organ-cb rounded border-slate-700 text-teal-500 focus:ring-0" value="${organ}" ${checked ? 'checked' : ''}>
+                    <span>${organ}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          ${isEdit ? `
+            <button type="button" id="btnDeleteSupp" class="sport-btn btn-ghost py-2 px-3 text-xs text-red-400 border-red-500/30">Удалить</button>
+          ` : ''}
+          <button type="button" id="btnSaveSupp" class="sport-btn btn-primary flex-1 py-2 text-xs bg-gradient-to-r from-teal-500 to-emerald-600">Сохранить</button>
+        </div>
+      </div>
+    </div>
+    `;
+
+    if (isEdit) {
+      document.getElementById('btnDeleteSupp').onclick = () => {
+        if (confirm("Удалить этот элемент из вашего списка БАДов?")) {
+          state.data.customSupplements = (state.data.customSupplements || []).filter(s => s.id !== form.id);
+          save();
+          modal.innerHTML = '';
+          openSupplementListModal();
+          render();
+        }
+      };
+    }
+
+    document.getElementById('btnSaveSupp').onclick = () => {
+      const name = document.getElementById('suppName').value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите название!");
+        return;
+      }
+
+      form.name = name;
+      form.type = document.getElementById('suppType').value;
+      form.desc = document.getElementById('suppDesc').value.trim();
+      form.defaultDose = document.getElementById('suppDose').value.trim();
+
+      const selectedOrgans = [];
+      document.querySelectorAll('.supp-organ-cb:checked').forEach(cb => {
+        selectedOrgans.push(cb.value);
+      });
+      form.targetOrgans = selectedOrgans;
+
+      if (!state.data.customSupplements) state.data.customSupplements = [];
+      const idx = state.data.customSupplements.findIndex(s => s.id === form.id);
+      if (idx >= 0) {
+        state.data.customSupplements[idx] = form;
+      } else {
+        state.data.customSupplements.push(form);
+      }
+
+      save();
+      SoundEffects.playSuccess();
+      modal.innerHTML = '';
+      openSupplementListModal();
+      render();
+    };
+  };
+
+  renderModal();
+}
+
+
+/* ============ УПРАВЛЕНИЕ КУРСАМИ БАДОВ И ВИТАМИНОВ ============ */
+function getCourseDaysInfo(course) {
+  if (!course.startDate) return { passed: 0, remaining: course.durationDays || 30, total: course.durationDays || 30, pct: 0, status: 'Не начат' };
+
+  const start = new Date(course.startDate);
+  const now = new Date(state.selectedDateKey || todayKey());
+  const diffTime = now - start;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+  const total = parseInt(course.durationDays) || 30;
+  const passed = Math.max(0, diffDays);
+  const remaining = Math.max(0, total - passed);
+  const pct = Math.min(100, Math.max(0, Math.round((passed / total) * 100)));
+
+  let status = 'В процессе';
+  if (diffDays <= 0) status = 'Скоро старт';
+  else if (passed >= total) status = 'Курс завершён 🎯';
+
+  return { passed, remaining, total, pct, status };
+}
+
+
+
+/* ============ УПРАВЛЕНИЕ КУРСАМИ БАДОВ И ВИТАМИНОВ ============ */
+function openSupplementCourseModal(courseToEdit = null) {
+  const modal = document.getElementById('modalRoot');
+  const isEdit = !!courseToEdit;
+  const form = courseToEdit ? { ...courseToEdit } : {
+    id: 'course_' + Date.now() + '_' + Math.random().toString(36).substr(2,4),
+    name: '',
+    desc: '',
+    durationDays: 30,
+    startDate: todayKey(),
+    targetOrgans: [],
+    isActive: true
+  };
+
+  const renderModal = () => {
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="sport-card bg-slate-900 w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-5 space-y-4 border border-teal-500/40">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-slate-100 text-base flex items-center gap-2">
+            <span>💊</span> ${isEdit ? 'Редактировать курс БАДа / Витамина' : 'Создать курс БАДа / Витамина'}
+          </h3>
+          <button onclick="document.getElementById('modalRoot').innerHTML=''" class="text-slate-400 hover:text-white p-1">✕</button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Название БАДа или Витамина *</label>
+            <input type="text" id="courseName" value="${form.name.replace(/"/g, '&quot;')}" placeholder="Например: Омега-3, Магний В6, Коэнзим Q10" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Описание курса / Дозировка</label>
+            <input type="text" id="courseDesc" value="${(form.desc || '').replace(/"/g, '&quot;')}" placeholder="Например: 1000мг по 1 капсуле утром и вечером" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Длительность (дней) *</label>
+              <input type="number" id="courseDuration" value="${form.durationDays || 30}" min="1" max="365" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Дата старта *</label>
+              <input type="date" id="courseStartDate" value="${form.startDate || todayKey()}" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+            <input type="checkbox" id="courseIsActive" class="rounded border-slate-700 text-teal-500 focus:ring-0" ${form.isActive !== false ? 'checked' : ''}>
+            <label for="courseIsActive" class="text-xs text-slate-200 font-semibold cursor-pointer">
+              Курс активен (отображать в ежедневном плане приёма)
+            </label>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Целевой орган / Эффект (выберите 1 или несколько)</label>
+            <div class="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto p-2 bg-slate-950 rounded-xl border border-slate-800">
+              ${SUPPLEMENT_ORGANS.map(organ => {
+                const checked = (form.targetOrgans || []).includes(organ);
+                return `
+                  <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer p-1 hover:bg-slate-900 rounded">
+                    <input type="checkbox" class="organ-cb rounded border-slate-700 text-teal-500 focus:ring-0" value="${organ}" ${checked ? 'checked' : ''}>
+                    <span>${organ}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          ${isEdit ? `
+            <button type="button" id="btnDeleteCourse" class="sport-btn btn-ghost py-2 px-3 text-xs text-red-400 border-red-500/30">Удалить курс</button>
+          ` : ''}
+          <button type="button" id="btnSaveCourse" class="sport-btn btn-primary flex-1 py-2 text-xs bg-gradient-to-r from-teal-500 to-emerald-600">Сохранить курс</button>
+        </div>
+      </div>
+    </div>
+    `;
+
+    if (isEdit) {
+      document.getElementById('btnDeleteCourse').onclick = () => {
+        if (confirm("Удалить этот курс БАДа?")) {
+          state.data.supplementCourses = (state.data.supplementCourses || []).filter(c => c.id !== form.id);
+          save();
+          modal.innerHTML = '';
+          render();
+        }
+      };
+    }
+
+    document.getElementById('btnSaveCourse').onclick = () => {
+      const name = document.getElementById('courseName').value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите название БАДа или Витамина!");
+        return;
+      }
+
+      form.name = name;
+      form.desc = document.getElementById('courseDesc').value.trim();
+      form.durationDays = parseInt(document.getElementById('courseDuration').value) || 30;
+      form.startDate = document.getElementById('courseStartDate').value || todayKey();
+      form.isActive = document.getElementById('courseIsActive').checked;
+
+      const selectedOrgans = [];
+      document.querySelectorAll('.organ-cb:checked').forEach(cb => {
+        selectedOrgans.push(cb.value);
+      });
+      form.targetOrgans = selectedOrgans;
+
+      if (!state.data.supplementCourses) state.data.supplementCourses = [];
+      const idx = state.data.supplementCourses.findIndex(c => c.id === form.id);
+      if (idx >= 0) {
+        state.data.supplementCourses[idx] = form;
+      } else {
+        state.data.supplementCourses.push(form);
+      }
+
+      state.data.xp = (state.data.xp || 0) + 15;
+      save();
+      SoundEffects.playSuccess();
+      modal.innerHTML = '';
+      render();
+    };
+  };
+
+  renderModal();
+}
+
+/* ============ РЕГИСТРАЦИЯ И ОТОБРАЖЕНИЕ ПРИЁМА БАДОВ ============ */
+function quickLogSupplementFromCourse(courseId) {
+  const courses = state.data.supplementCourses || [];
+  const course = courses.find(c => c.id === courseId);
+  if (!course) return;
+
+  const d = getDayData(state.selectedDateKey || todayKey());
+  if (!d.supplements) d.supplements = [];
+
+  d.supplements.push({
+    id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2,4),
+    courseId: course.id,
+    name: course.name,
+    organs: course.targetOrgans || [],
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    type: 'course'
+  });
+
+  state.data.xp = (state.data.xp || 0) + 10;
+  save();
+  SoundEffects.playSuccess();
+  render();
+}
+
+function quickLogSingleSupplement(suppId) {
+  const list = state.data.customSupplements || [];
+  const item = list.find(s => s.id === suppId);
+  if (!item) return;
+
+  const d = getDayData(state.selectedDateKey || todayKey());
+  if (!d.supplements) d.supplements = [];
+
+  d.supplements.push({
+    id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2,4),
+    customSuppId: item.id,
+    name: item.name,
+    organs: item.targetOrgans || [],
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    type: 'single'
+  });
+
+  state.data.xp = (state.data.xp || 0) + 10;
+  save();
+  SoundEffects.playSuccess();
+  render();
+}
+
+function quickLogCustomSupplementName(name, organs = []) {
+  if (!name) return;
+  const d = getDayData(state.selectedDateKey || todayKey());
+  if (!d.supplements) d.supplements = [];
+
+  d.supplements.push({
+    id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2,4),
+    name: name,
+    organs: organs,
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    type: 'single'
+  });
+
+  state.data.xp = (state.data.xp || 0) + 10;
+  save();
+  SoundEffects.playSuccess();
+  render();
+}
+
+function deleteSupplementLog(idx) {
+  const d = getDayData(state.selectedDateKey || todayKey());
+  if (d.supplements && d.supplements[idx]) {
+    d.supplements.splice(idx, 1);
+    save();
+    render();
+  }
+}
+
+function openAddSupplementLogModal() {
+  const modal = document.getElementById('modalRoot');
+  const activeCourses = (state.data.supplementCourses || []).filter(c => c.isActive !== false);
+  const customSupps = state.data.customSupplements || [];
+
+  modal.innerHTML = `
+  <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="sport-card bg-slate-900 w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-5 space-y-4 border border-teal-500/40">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-slate-100 text-base flex items-center gap-2">
+          <span>➕</span> Отметить приём БАДа или Витамина
+        </h3>
+        <button onclick="document.getElementById('modalRoot').innerHTML=''" class="text-slate-400 hover:text-white p-1">✕</button>
+      </div>
+
+      <!-- Вариант 1: Из выбранных активных курсов -->
+      <div class="space-y-2">
+        <h4 class="font-bold text-xs text-teal-300 uppercase tracking-wider">🎯 Из активных курсов:</h4>
+        ${activeCourses.length === 0 ? `
+          <div class="text-[11px] text-slate-500 bg-slate-950 p-2.5 rounded-xl border border-slate-800">Нет активных курсов.</div>
+        ` : `
+          <div class="space-y-1.5">
+            ${activeCourses.map(course => `
+              <div class="flex justify-between items-center bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                <div>
+                  <div class="font-bold text-xs text-slate-200">💊 ${course.name}</div>
+                  <div class="text-[10px] text-teal-400">🎯 ${course.targetOrgans ? course.targetOrgans.join(', ') : 'Общий тонус'}</div>
+                </div>
+                <button onclick="quickLogSupplementFromCourse('${course.id}'); document.getElementById('modalRoot').innerHTML='';" class="sport-btn btn-primary py-1 px-3 text-xs bg-teal-600">
+                  Принял
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+
+      <!-- Вариант 2: Из собственного списка выборки БАДов -->
+      <div class="space-y-2 pt-2 border-t border-slate-800">
+        <div class="flex justify-between items-center">
+          <h4 class="font-bold text-xs text-amber-300 uppercase tracking-wider">📋 Из вашего списка выборки:</h4>
+          <button onclick="openSupplementListModal();" class="text-[10px] text-teal-400 hover:underline">+ Новая позиция</button>
+        </div>
+        ${customSupps.length === 0 ? `
+          <div class="text-[11px] text-slate-500 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+            Список пуст. Вы можете добавить регулярные витамины в мастер-список.
+          </div>
+        ` : `
+          <div class="space-y-1.5 max-h-40 overflow-y-auto">
+            ${customSupps.map(item => `
+              <div class="flex justify-between items-center bg-slate-950 p-2 rounded-xl border border-slate-800">
+                <div>
+                  <div class="font-bold text-xs text-slate-200">${item.type === 'Витамин' ? '💊' : '🌿'} ${item.name}</div>
+                  <div class="text-[10px] text-slate-400">${item.targetOrgans ? item.targetOrgans.join(', ') : ''} ${item.defaultDose ? '• ' + item.defaultDose : ''}</div>
+                </div>
+                <button onclick="quickLogSingleSupplement('${item.id}'); document.getElementById('modalRoot').innerHTML='';" class="sport-btn btn-ghost py-1 px-2.5 text-xs text-amber-300 border-amber-500/30">
+                  Выпить
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+
+      <!-- Вариант 3: Единоразовый/произвольный приём -->
+      <div class="space-y-2 pt-2 border-t border-slate-800">
+        <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">⚡ Произвольный приём (одиночный БАД):</h4>
+        <div class="flex gap-2">
+          <input type="text" id="manualSuppName" placeholder="Название (например, Витамин C 500мг)" class="sport-input flex-1 p-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs">
+          <button type="button" id="btnManualSupp" class="sport-btn btn-primary py-2 px-3 text-xs bg-slate-700">
+            Записать
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+
+  document.getElementById('btnManualSupp').onclick = () => {
+    const name = document.getElementById('manualSuppName').value.trim();
+    if (name) {
+      quickLogCustomSupplementName(name);
+      modal.innerHTML = '';
+    }
+  };
+}
+
+function renderSupplementsTrackerCard(day) {
+  const allCourses = state.data.supplementCourses || [];
+  const activeCourses = allCourses.filter(c => c.isActive !== false);
+  const takenToday = day.supplements || [];
+
+  // Вычисляем статус выполнения для каждого активного курса за сегодня
+  const activeCourseStats = activeCourses.map(course => {
+    const info = getCourseDaysInfo(course);
+    const takenCount = takenToday.filter(t => t.courseId === course.id || t.name === course.name).length;
+    return {
+      course,
+      info,
+      takenCount,
+      isTakenToday: takenCount > 0
+    };
+  });
+
+  const totalActive = activeCourses.length;
+  const totalCompletedToday = activeCourseStats.filter(s => s.isTakenToday).length;
+  const overallTodayPct = totalActive > 0 ? Math.round((totalCompletedToday / totalActive) * 100) : 0;
+
+  return `
+  <div class="sport-card bg-gradient-to-br from-teal-950/40 via-slate-900 to-slate-900 border-teal-500/30 p-4 space-y-4">
+    <!-- Шапка карточки -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">💊</span>
+        <div>
+          <h3 class="font-bold text-xs text-teal-300 uppercase tracking-wider">Курсы БАДов и Витаминов</h3>
+          <p class="text-[10px] text-slate-400">План приёма, прогресс курсов и цели по органам</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button onclick="openSupplementListModal()" class="sport-btn btn-ghost py-1 px-2 text-[11px] text-amber-300 border-amber-500/30 font-semibold" title="Мастер-список БАДов">
+          📋 Список
+        </button>
+        <button onclick="openSupplementCourseModal()" class="sport-btn btn-ghost py-1 px-2.5 text-xs text-teal-300 border-teal-500/30 font-bold">
+          + Новый курс
+        </button>
+      </div>
+    </div>
+
+    <!-- Общая шкала выполнения запланированных витаминов на сегодня -->
+    <div class="bg-slate-950/80 p-3 rounded-xl border border-teal-500/20 space-y-2">
+      <div class="flex justify-between items-center text-xs font-bold">
+        <span class="text-slate-200">План приёма за сегодня (${state.selectedDateKey || todayKey()}):</span>
+        <span class="${totalCompletedToday === totalActive && totalActive > 0 ? 'text-emerald-400' : 'text-teal-300'}">
+          ${totalCompletedToday} из ${totalActive} выпито (${overallTodayPct}%)
+        </span>
+      </div>
+      <div class="h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+        <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-400 transition-all duration-500" style="width: ${overallTodayPct}%"></div>
+      </div>
+    </div>
+
+    <!-- Быстрая кнопка отметки приёма -->
+    <button onclick="openAddSupplementLogModal()" class="sport-btn btn-primary w-full py-2.5 text-xs bg-gradient-to-r from-teal-500 via-emerald-600 to-teal-600 font-bold shadow-lg flex items-center justify-center gap-2">
+      <span>💊</span> Отметить принятый БАД / Витамин
+    </button>
+
+    <!-- Активные запланированные курсы -->
+    <div class="space-y-2.5">
+      <div class="text-xs font-bold text-slate-300 flex justify-between items-center">
+        <span>Запланированные активные курсы (${activeCourses.length}):</span>
+      </div>
+
+      ${activeCourses.length === 0 ? `
+        <div class="text-[11px] text-slate-500 text-center py-3 bg-slate-950/50 rounded-xl border border-slate-800">
+          У вас пока нет активных курсов. Нажмите "<b>+ Новый курс</b>", чтобы запланировать курс Омега-3, Магния или других витаминов!
+        </div>
+      ` : `
+        <div class="space-y-2">
+          ${activeCourseStats.map(stat => {
+            const course = stat.course;
+            const info = stat.info;
+
+            return `
+              <div class="bg-slate-900/90 p-3 rounded-xl border ${stat.isTakenToday ? 'border-teal-500/40 bg-teal-950/20' : 'border-slate-800'} space-y-2">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <div class="font-bold text-xs text-slate-100 flex items-center gap-1.5 flex-wrap">
+                      <span>💊 ${course.name}</span>
+                      <span class="text-[9px] px-2 py-0.2 rounded-full ${info.remaining > 0 ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30' : 'bg-amber-500/20 text-amber-300'} font-semibold">
+                        ${info.status}
+                      </span>
+                      ${stat.isTakenToday ? `
+                        <span class="text-[9px] px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                          ✓ Принято сегодня
+                        </span>
+                      ` : `
+                        <span class="text-[9px] px-2 py-0.2 rounded-full bg-slate-800 text-slate-400 font-semibold">
+                          Осталось принять сегодня
+                        </span>
+                      `}
+                    </div>
+                    ${course.desc ? `<p class="text-[10px] text-slate-400 mt-0.5">${course.desc}</p>` : ''}
+                    <div class="text-[10px] text-teal-400 font-medium mt-1">
+                      🎯 Органы: <b>${(course.targetOrgans && course.targetOrgans.length > 0) ? course.targetOrgans.join(', ') : 'Общая профилактика'}</b>
+                    </div>
+                  </div>
+                  <button onclick='openSupplementCourseModal(${JSON.stringify(course).replace(/'/g, "&#39;")})' class="text-slate-500 hover:text-teal-300 text-xs p-1">
+                    ✏️
+                  </button>
+                </div>
+
+                <!-- Прогресс курса (дней) -->
+                <div class="space-y-1">
+                  <div class="flex justify-between text-[10px] text-slate-400 font-semibold">
+                    <span>Старт: ${course.startDate} (прошло ${info.passed} дн.)</span>
+                    <span class="text-teal-300 font-bold">Осталось: ${info.remaining} дн. из ${info.total}</span>
+                  </div>
+                  <div class="h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                    <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-400 transition-all duration-500" style="width: ${info.pct}%"></div>
+                  </div>
+                </div>
+
+                <!-- Быстрая кнопка отметки из списка курса -->
+                <div class="pt-1 flex justify-between items-center">
+                  <button onclick="quickLogSupplementFromCourse('${course.id}')" class="sport-btn ${stat.isTakenToday ? 'btn-ghost text-teal-300 border-teal-500/30' : 'btn-primary bg-teal-600'} py-1 px-3 text-[11px]">
+                    ${stat.isTakenToday ? '✓ Принять ещё раз' : '💊 Принять сегодня'}
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `}
+    </div>
+
+    <!-- Зафиксированный журнал приёмов за день -->
+    <div class="bg-slate-950/90 p-3 rounded-xl border border-slate-800 space-y-2">
+      <div class="flex justify-between items-center text-xs font-bold text-slate-200">
+        <span>Журнал принятых витаминов (${takenToday.length}):</span>
+        <span class="text-teal-400 text-[11px]">${state.selectedDateKey || todayKey()}</span>
+      </div>
+
+      ${takenToday.length === 0 ? `
+        <div class="text-[11px] text-slate-500 text-center py-2">За этот день витамины пока не отмечались.</div>
+      ` : `
+        <div class="divide-y divide-slate-800/80">
+          ${takenToday.map((s, idx) => `
+            <div class="py-1.5 flex justify-between items-center text-xs">
+              <div>
+                <span class="font-bold text-teal-300">💊 ${s.name}</span>
+                ${s.organs && s.organs.length > 0 ? `<span class="text-[10px] text-slate-400 block">🎯 Органы: ${s.organs.join(', ')}</span>` : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded">${s.time || ''}</span>
+                <button onclick="deleteSupplementLog(${idx})" class="text-slate-500 hover:text-red-400 text-xs px-1" title="Удалить приём">✕</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `}
+    </div>
+  </div>`;
+}
+
+
 /* ============ МОДАЛЬНОЕ ОКНО НАСТРОЕК ПРОФИЛЯ ============ */
 function openProfileSettingsModal() {
   const modal = document.getElementById('modalRoot');
@@ -2008,6 +2881,9 @@ function renderTodayTab(target, effectiveTarget, totals, remaining, progress, da
 
   <!-- ГЛИКЕМИЧЕСКАЯ НАГРУЗКА -->
   ${renderAtomicCard('card_gl', renderGlycemicLoadCard(totals))}
+
+  <!-- ТРЕКЕР БАДОВ И ВИТАМИНОВ -->
+  ${renderAtomicCard('card_supplements', renderSupplementsTrackerCard(day))}
 
   <!-- ТРЕКЕР ВОДЫ -->
   ${renderAtomicCard('card_water', renderWaterTrackerCard(day, state.profile.weight))}
@@ -2410,6 +3286,67 @@ function renderStatsTab() {
     <!-- 1. График калорий за 7 дней -->
     ${renderAtomicCard('card_chart_calories', renderCardCaloriesChart(last7, target))}
 
+
+    <!-- ОТЧЁТ ПО КУРСАМ БАДОВ И ВИТАМИНАМ -->
+    <div class="sport-card bg-slate-900 border border-teal-500/30 p-4 rounded-2xl space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">💊</span>
+          <div>
+            <h3 class="font-bold text-sm text-teal-300 uppercase tracking-wider">Отчёт по курсам БАДов и Витаминам</h3>
+            <p class="text-[10px] text-slate-400">Статистика активности, оставшиеся дни курсов и динамика приёма</p>
+          </div>
+        </div>
+        <button onclick="openSupplementCourseModal()" class="sport-btn btn-ghost py-1 px-2.5 text-xs text-teal-300 border-teal-500/30">
+          + Настроить курсы
+        </button>
+      </div>
+
+      ${(state.data.supplementCourses || []).length === 0 ? `
+        <div class="text-[11px] text-slate-500 text-center py-4 bg-slate-950/60 rounded-xl border border-slate-800">
+          Курсы не настроены. Создайте курс в трекере, чтобы отслеживать прогресс.
+        </div>
+      ` : `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          ${(state.data.supplementCourses || []).map(course => {
+            const info = getCourseDaysInfo(course);
+            return `
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <div class="font-bold text-xs text-slate-100 flex items-center gap-1.5">
+                      <span>💊 ${course.name}</span>
+                      <span class="text-[9px] px-2 py-0.2 rounded-full ${course.isActive !== false ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30' : 'bg-slate-800 text-slate-400'} font-semibold">
+                        ${course.isActive !== false ? 'Активен' : 'Пауза'}
+                      </span>
+                    </div>
+                    <div class="text-[10px] text-teal-400 font-medium mt-0.5">
+                      🎯 Органы: ${(course.targetOrgans && course.targetOrgans.length > 0) ? course.targetOrgans.join(', ') : 'Общий тонус'}
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-xs font-black text-teal-300">${info.remaining} дн.</span>
+                    <span class="text-[9px] text-slate-500 block">осталось</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <div class="flex justify-between text-[10px] text-slate-400">
+                    <span>Пройдено: ${info.passed} из ${info.total} дн.</span>
+                    <span>${info.pct}%</span>
+                  </div>
+                  <div class="h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                    <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-400" style="width: ${info.pct}%"></div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `}
+    </div>
+
+
     <!-- 2. График Воды -->
     ${renderAtomicCard('card_chart_water', renderWaterChart(last7))}
 
@@ -2433,7 +3370,8 @@ function renderStatsTab() {
 
     <!-- Файловое хранилище -->
     ${renderAtomicCard('card_storage', renderCardStorage())}
-  </div>`;
+
+    </div>`;
 }
 
 
@@ -2495,31 +3433,117 @@ function renderTheoryTab() {
   const target = calcTarget(p);
 
   return `
-  <div class="space-y-4">
-    <div class="sport-card space-y-4">
-      <h3 class="font-black text-base gradient-text">📚 Научные основы дефицита калорий</h3>
+  <div class="space-y-5 max-w-4xl mx-auto">
+    <!-- Расчёт норм калорий -->
+    <div class="sport-card bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span class="text-2xl">📊</span>
+        <div>
+          <h3 class="font-bold text-sm text-slate-100 uppercase tracking-wider">База знаний и метаболизм</h3>
+          <p class="text-[11px] text-slate-400">Формула Миффлина-Сан Жеора и расчёт нормы</p>
+        </div>
+      </div>
 
-      <div class="space-y-3 text-xs text-slate-300">
-        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-          <h4 class="font-bold text-slate-100 text-sm">1. Формула Миффлина-Сан Жеора</h4>
-          <p class="text-slate-400">Золотой стандарт клинической диетологии для расчёта базового метаболизма (BMR):</p>
-          <div class="font-mono text-[11px] bg-slate-950 p-2 rounded text-brand-400 mt-1">
-            BMR = 10×вес(кг) + 6.25×рост(см) − 5×возраст + ${p.gender==='m'?'+ 5':'- 161'}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
+          <span class="text-slate-400 block text-[11px]">Базовый метаболизм (BMR):</span>
+          <div class="text-lg font-black text-slate-100">${bmr} ккал</div>
+          <p class="text-[10px] text-slate-500">Минимум для дыхания и работы органов в покое.</p>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
+          <span class="text-slate-400 block text-[11px]">Норма с нагрузкой (TDEE):</span>
+          <div class="text-lg font-black text-teal-400">${norm} ккал</div>
+          <p class="text-[10px] text-slate-500">Поддержание текущего веса с учётом тренировок.</p>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
+          <span class="text-slate-400 block text-[11px]">Твоя цель калорий:</span>
+          <div class="text-lg font-black text-emerald-400">${target} ккал</div>
+          <p class="text-[10px] text-slate-500">Установленный суточный лимит с учётом цели.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- РАЗДЕЛ: РЕКОМЕНДАЦИИ И СПРАВОЧНИК ПО БАДАМ И ВИТАМИНАМ ПО ОРГАНАМ -->
+    <div class="sport-card bg-slate-900 border border-teal-500/40 p-4 sm:p-5 rounded-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">💊</span>
+          <div>
+            <h3 class="font-black text-sm text-teal-300 uppercase tracking-wider">Справочник БАДов и Витаминов по Органам</h3>
+            <p class="text-[11px] text-slate-400">Рекомендуемые комплексы, описание действия и курсы приёма в разрезе систем организма</p>
           </div>
-          <div class="text-[11px] font-bold text-slate-200 mt-1">Твой BMR: ${bmr} ккал/сутки</div>
         </div>
+        <button onclick="openSupplementCourseModal()" class="sport-btn btn-ghost py-1.5 px-3 text-xs text-teal-300 border-teal-500/30 font-bold">
+          + Добавить в свои курсы
+        </button>
+      </div>
 
-        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-          <h4 class="font-bold text-slate-100 text-sm">2. Учёт коэффициента активности (TDEE)</h4>
-          <p class="text-slate-400">Полный суточный расход энергии с учётом вашей физической активности:</p>
-          <div class="text-[11px] font-bold text-brand-400 mt-1">Суточная норма (TDEE): ${norm} ккал</div>
-        </div>
+      <!-- Аккуратная сетка карточек органов -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        ${SUPPLEMENT_RECOMMENDATIONS.map(rec => `
+          <div class="bg-slate-950/90 rounded-xl p-4 border border-slate-800 hover:border-teal-500/30 transition-all space-y-3 flex flex-col justify-between">
+            <div class="space-y-2">
+              <!-- Заголовок органа -->
+              <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <div class="font-bold text-xs text-slate-100 flex items-center gap-2">
+                  <span class="text-lg">${rec.icon}</span>
+                  <span class="text-teal-300 uppercase tracking-wide">${rec.organ}</span>
+                </div>
+              </div>
 
-        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-          <h4 class="font-bold text-slate-100 text-sm">3. Целевой дефицит калорий (${p.deficitPercent}%)</h4>
-          <p class="text-slate-400">Безопасная скорость сжигания жира без потери мышечной массы (0.5–1.0 кг в неделю):</p>
-          <div class="text-base font-black text-brand-400 mt-1">Твоя цель: ${target} ккал/день 🎯</div>
-        </div>
+              <p class="text-[11px] text-slate-400 leading-relaxed">${rec.desc}</p>
+
+              <!-- Список БАДов -->
+              <div class="space-y-1.5 pt-1">
+                <div class="text-[10px] font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1">
+                  <span>🌿</span> Рекомендуемые БАДы:
+                </div>
+                <div class="space-y-1">
+                  ${rec.supplements.map(s => `
+                    <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800/80 text-xs space-y-0.5">
+                      <div class="flex justify-between items-start gap-1">
+                        <span class="font-bold text-slate-200 text-[11px]">${s.name}</span>
+                        <span class="text-[9px] text-amber-400/90 font-semibold bg-amber-950/50 px-1.5 py-0.5 rounded border border-amber-500/20 shrink-0">
+                          ⏱️ ${s.course}
+                        </span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 leading-snug">${s.desc}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Список Витаминов -->
+              <div class="space-y-1.5 pt-1">
+                <div class="text-[10px] font-bold text-sky-300 uppercase tracking-wider flex items-center gap-1">
+                  <span>💊</span> Рекомендуемые Витамины и Минералы:
+                </div>
+                <div class="space-y-1">
+                  ${rec.vitamins.map(v => `
+                    <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800/80 text-xs space-y-0.5">
+                      <div class="flex justify-between items-start gap-1">
+                        <span class="font-bold text-slate-200 text-[11px]">${v.name}</span>
+                        <span class="text-[9px] text-sky-400/90 font-semibold bg-sky-950/50 px-1.5 py-0.5 rounded border border-sky-500/20 shrink-0">
+                          ⏱️ ${v.course}
+                        </span>
+                      </div>
+                      <p class="text-[10px] text-slate-400 leading-snug">${v.desc}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Быстрое добавление в курс -->
+            <div class="pt-2 border-t border-slate-800/80">
+              <button onclick='openSupplementCourseModal({name: "${rec.supplements[0] ? rec.supplements[0].name.replace(/"/g, "") : rec.organ}", targetOrgans: ["${rec.organ}"], durationDays: 30, startDate: todayKey(), isActive: true})' class="sport-btn btn-ghost w-full py-1.5 text-[11px] text-teal-300 border-teal-500/30">
+                + Начать курс для категории "${rec.organ}"
+              </button>
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
   </div>`;
@@ -3145,7 +4169,11 @@ function loadFromFile(file) {
     try {
       const parsed = JSON.parse(e.target.result);
       if (parsed.profile) state.profile = parsed.profile;
-      if (parsed.data) state.data = parsed.data;
+            if (parsed.data) {
+        state.data = parsed.data;
+        if (!state.data.supplementCourses) state.data.supplementCourses = [];
+        if (!state.data.customSupplements) state.data.customSupplements = [];
+      }
       if (typeof parsed.dark === 'boolean') state.dark = parsed.dark;
       if (typeof parsed.sound === 'boolean') state.sound = parsed.sound;
       save();
