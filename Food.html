@@ -1902,6 +1902,27 @@ function renderFastingChart(last7Days) {
 }
 
 
+
+function renderDentalChart(last7Days) {
+  const data = last7Days.map(d => {
+    const den = d.dayRecord.dental || {};
+    const count = [den.morning, den.evening, den.rinse1, den.rinse2].filter(Boolean).length;
+    return {
+      label: d.day,
+      val: count,
+      sub: `${count}/4`
+    };
+  });
+  return `
+  <div class="sport-card space-y-3 border-teal-500/30">
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-sm text-teal-300 flex items-center gap-1.5">🦷 График Чистки Зубов & Полосканий</h3>
+      <span class="text-[10px] text-slate-400">Норма: 4 процедуры/день</span>
+    </div>
+    ${renderUniversalChart(data, { strokeColor: '#14b8a6', barGradient: 'bg-gradient-to-t from-teal-600 to-teal-400', minMax: 4 })}
+  </div>`;
+}
+
 function renderStatsTab() {
   const target = calcTarget(state.profile);
   const last7 = [];
@@ -1962,6 +1983,9 @@ function renderStatsTab() {
 
     <!-- 5. Хроника Голодания -->
     ${renderFastingChart(last7)}
+
+    <!-- 5.5. График Чистки Зубов -->
+    ${renderDentalChart(last7)}
 
     <!-- 6. График и Редактирование Веса -->
     <div class="sport-card space-y-3">
