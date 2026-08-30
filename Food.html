@@ -809,7 +809,7 @@ function restoreCard(cardId) {
 }
 
 function renderPinButton(cardId) {
-  return `<button onclick="hideCard('${cardId}')" title="Перенести эту карточку в 'Дополнительно'" class="w-7 h-7 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-amber-300 flex items-center justify-center text-xs border border-slate-700/70 shadow-sm transition-all cursor-pointer">📌</button>`;
+  return `<button onclick="hideCard('${cardId}')" title="Перенести эту карточку в 'Дополнительно'" class="w-6 h-6 rounded-md bg-slate-800/20 hover:bg-slate-800/90 text-slate-400 hover:text-amber-300 opacity-25 hover:opacity-100 flex items-center justify-center text-[10px] border border-slate-700/30 hover:border-slate-700 shadow-sm transition-all duration-200 cursor-pointer">📌</button>`;
 }
 
 function renderAtomicCard(cardId, contentHtml) {
@@ -2128,10 +2128,14 @@ function bindDashboardEvents() {
   }
 
   document.querySelectorAll('[data-tab]').forEach(btn => {
-    btn.onclick = () => {
+    btn.onclick = (e) => {
+      e.preventDefault();
       SoundEffects.playClick();
-      state.tab = btn.dataset.tab;
-      render();
+      const selectedTab = btn.getAttribute('data-tab');
+      if (selectedTab) {
+        state.tab = selectedTab;
+        render();
+      }
     };
   });
 
@@ -2714,3 +2718,13 @@ render();
 </script>
 </body>
 </html>
+function resetLayoutToDefault() {
+  if (confirm("Восстановить первоначальное положение всех окон и карточек на главном экране?")) {
+    state.data.hiddenTabs = [];
+    state.data.hiddenCards = [];
+    save();
+    SoundEffects.playSuccess();
+    state.tab = 'today';
+    render();
+  }
+}
