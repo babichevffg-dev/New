@@ -1974,7 +1974,91 @@ function toggleFasting(active) {
 
 
 
-/* ============ БАДЫ / ВИТАМИНЫ: ПОЛЬЗОВАТЕЛЬСКИЙ СПИСОК ВЫБОРКИ ============ */
+
+/* ============ БАДЫ / ВИТАМИНЫ: ПОЛЬЗОВАТЕЛЬСКИЙ СПИСОК ВЫБОРКИ И CRUD ============ */
+function openSupplementListModal() {
+  const modal = document.getElementById('modalRoot');
+  const customSupps = state.data.customSupplements || [];
+
+  const renderModal = () => {
+    const list = state.data.customSupplements || [];
+
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="sport-card bg-slate-900 w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-5 space-y-4 border border-teal-500/40">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-slate-100 text-base flex items-center gap-2">
+            <span>📋</span> Список выборки БАДов и Витаминов (${list.length})
+          </h3>
+          <button onclick="document.getElementById('modalRoot').innerHTML=''" class="text-slate-400 hover:text-white p-1">✕</button>
+        </div>
+
+        <p class="text-xs text-slate-400">
+          Сохранённые позиции для одиночного приёма и быстрой заготовки курсов.
+        </p>
+
+        <div class="space-y-2">
+          ${list.length === 0 ? `
+            <div class="text-[11px] text-slate-500 bg-slate-950 p-4 text-center rounded-xl border border-slate-800 space-y-2">
+              <p>Ваш мастер-список витаминов пока пуст.</p>
+              <button onclick="openSupplementListModal()" class="sport-btn btn-primary py-1.5 px-3 text-xs bg-teal-600">
+                + Добавить первый БАД / Витамин
+              </button>
+            </div>
+          ` : `
+            <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
+              ${list.map((item, idx) => `
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center gap-2">
+                  <div class="space-y-0.5">
+                    <div class="font-bold text-xs text-slate-100 flex items-center gap-1.5">
+                      <span>${item.type === 'Витамин' ? '💊' : '🌿'} ${item.name}</span>
+                      <span class="text-[9px] px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-300 font-semibold">${item.type || 'БАД'}</span>
+                    </div>
+                    ${item.desc ? `<p class="text-[10px] text-slate-400">${item.desc}</p>` : ''}
+                    <div class="text-[10px] text-teal-400">
+                      🎯 ${(item.targetOrgans && item.targetOrgans.length > 0) ? item.targetOrgans.join(', ') : 'Общая профилактика'}
+                      ${item.defaultDose ? ` • ${item.defaultDose}` : ''}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button onclick='openCustomSupplementModal(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="sport-btn btn-ghost py-1 px-2 text-xs text-teal-300 border-teal-500/30">
+                      ✏️
+                    </button>
+                    <button onclick="deleteCustomSupplementItem('${item.id}')" class="sport-btn btn-ghost py-1 px-2 text-xs text-red-400 border-red-500/30 hover:bg-red-950/30">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <div class="pt-2 flex justify-between items-center border-t border-slate-800">
+          <button onclick="openSupplementListModal()" class="sport-btn btn-primary py-2 px-4 text-xs bg-gradient-to-r from-teal-500 to-emerald-600">
+            + Новый БАД / Витамин в список
+          </button>
+          <button onclick="document.getElementById('modalRoot').innerHTML=''" class="sport-btn btn-ghost py-2 px-3 text-xs text-slate-400">
+            Закрыть
+          </button>
+        </div>
+      </div>
+    </div>
+    `;
+  };
+
+  renderModal();
+}
+
+function deleteCustomSupplementItem(id) {
+  if (confirm("Удалить этот БАД / Витамин из вашего списка выборки?")) {
+    state.data.customSupplements = (state.data.customSupplements || []).filter(s => s.id !== id);
+    save();
+    openSupplementListModal();
+    render();
+  }
+}
+
 function openCustomSupplementModal(suppToEdit = null) {
   const modal = document.getElementById('modalRoot');
   const isEdit = !!suppToEdit;
@@ -2056,6 +2140,7 @@ function openCustomSupplementModal(suppToEdit = null) {
           state.data.customSupplements = (state.data.customSupplements || []).filter(s => s.id !== form.id);
           save();
           modal.innerHTML = '';
+          openSupplementListModal();
           render();
         }
       };
@@ -2090,12 +2175,14 @@ function openCustomSupplementModal(suppToEdit = null) {
       save();
       SoundEffects.playSuccess();
       modal.innerHTML = '';
+      openSupplementListModal();
       render();
     };
   };
 
   renderModal();
 }
+
 
 /* ============ УПРАВЛЕНИЕ КУРСАМИ БАДОВ И ВИТАМИНОВ ============ */
 function getCourseDaysInfo(course) {
@@ -2118,6 +2205,136 @@ function getCourseDaysInfo(course) {
   return { passed, remaining, total, pct, status };
 }
 
+
+
+/* ============ УПРАВЛЕНИЕ КУРСАМИ БАДОВ И ВИТАМИНОВ ============ */
+function openSupplementCourseModal(courseToEdit = null) {
+  const modal = document.getElementById('modalRoot');
+  const isEdit = !!courseToEdit;
+  const form = courseToEdit ? { ...courseToEdit } : {
+    id: 'course_' + Date.now() + '_' + Math.random().toString(36).substr(2,4),
+    name: '',
+    desc: '',
+    durationDays: 30,
+    startDate: todayKey(),
+    targetOrgans: [],
+    isActive: true
+  };
+
+  const renderModal = () => {
+    modal.innerHTML = `
+    <div class="fixed inset-0 modal-bg z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="sport-card bg-slate-900 w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto p-5 space-y-4 border border-teal-500/40">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-slate-100 text-base flex items-center gap-2">
+            <span>💊</span> ${isEdit ? 'Редактировать курс БАДа / Витамина' : 'Создать курс БАДа / Витамина'}
+          </h3>
+          <button onclick="document.getElementById('modalRoot').innerHTML=''" class="text-slate-400 hover:text-white p-1">✕</button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Название БАДа или Витамина *</label>
+            <input type="text" id="courseName" value="${form.name.replace(/"/g, '&quot;')}" placeholder="Например: Омега-3, Магний В6, Коэнзим Q10" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Описание курса / Дозировка</label>
+            <input type="text" id="courseDesc" value="${(form.desc || '').replace(/"/g, '&quot;')}" placeholder="Например: 1000мг по 1 капсуле утром и вечером" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Длительность (дней) *</label>
+              <input type="number" id="courseDuration" value="${form.durationDays || 30}" min="1" max="365" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Дата старта *</label>
+              <input type="date" id="courseStartDate" value="${form.startDate || todayKey()}" class="sport-input w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:border-teal-500">
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+            <input type="checkbox" id="courseIsActive" class="rounded border-slate-700 text-teal-500 focus:ring-0" ${form.isActive !== false ? 'checked' : ''}>
+            <label for="courseIsActive" class="text-xs text-slate-200 font-semibold cursor-pointer">
+              Курс активен (отображать в ежедневном плане приёма)
+            </label>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-semibold mb-1">Целевой орган / Эффект (выберите 1 или несколько)</label>
+            <div class="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto p-2 bg-slate-950 rounded-xl border border-slate-800">
+              ${SUPPLEMENT_ORGANS.map(organ => {
+                const checked = (form.targetOrgans || []).includes(organ);
+                return `
+                  <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer p-1 hover:bg-slate-900 rounded">
+                    <input type="checkbox" class="organ-cb rounded border-slate-700 text-teal-500 focus:ring-0" value="${organ}" ${checked ? 'checked' : ''}>
+                    <span>${organ}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          ${isEdit ? `
+            <button type="button" id="btnDeleteCourse" class="sport-btn btn-ghost py-2 px-3 text-xs text-red-400 border-red-500/30">Удалить курс</button>
+          ` : ''}
+          <button type="button" id="btnSaveCourse" class="sport-btn btn-primary flex-1 py-2 text-xs bg-gradient-to-r from-teal-500 to-emerald-600">Сохранить курс</button>
+        </div>
+      </div>
+    </div>
+    `;
+
+    if (isEdit) {
+      document.getElementById('btnDeleteCourse').onclick = () => {
+        if (confirm("Удалить этот курс БАДа?")) {
+          state.data.supplementCourses = (state.data.supplementCourses || []).filter(c => c.id !== form.id);
+          save();
+          modal.innerHTML = '';
+          render();
+        }
+      };
+    }
+
+    document.getElementById('btnSaveCourse').onclick = () => {
+      const name = document.getElementById('courseName').value.trim();
+      if (!name) {
+        alert("Пожалуйста, введите название БАДа или Витамина!");
+        return;
+      }
+
+      form.name = name;
+      form.desc = document.getElementById('courseDesc').value.trim();
+      form.durationDays = parseInt(document.getElementById('courseDuration').value) || 30;
+      form.startDate = document.getElementById('courseStartDate').value || todayKey();
+      form.isActive = document.getElementById('courseIsActive').checked;
+
+      const selectedOrgans = [];
+      document.querySelectorAll('.organ-cb:checked').forEach(cb => {
+        selectedOrgans.push(cb.value);
+      });
+      form.targetOrgans = selectedOrgans;
+
+      if (!state.data.supplementCourses) state.data.supplementCourses = [];
+      const idx = state.data.supplementCourses.findIndex(c => c.id === form.id);
+      if (idx >= 0) {
+        state.data.supplementCourses[idx] = form;
+      } else {
+        state.data.supplementCourses.push(form);
+      }
+
+      state.data.xp = (state.data.xp || 0) + 15;
+      save();
+      SoundEffects.playSuccess();
+      modal.innerHTML = '';
+      render();
+    };
+  };
+
+  renderModal();
+}
 
 /* ============ РЕГИСТРАЦИЯ И ОТОБРАЖЕНИЕ ПРИЁМА БАДОВ ============ */
 function quickLogSupplementFromCourse(courseId) {
@@ -2235,7 +2452,7 @@ function openAddSupplementLogModal() {
       <div class="space-y-2 pt-2 border-t border-slate-800">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-xs text-amber-300 uppercase tracking-wider">📋 Из вашего списка выборки:</h4>
-          <button onclick="openCustomSupplementModal();" class="text-[10px] text-teal-400 hover:underline">+ Новая позиция</button>
+          <button onclick="openSupplementListModal();" class="text-[10px] text-teal-400 hover:underline">+ Новая позиция</button>
         </div>
         ${customSupps.length === 0 ? `
           <div class="text-[11px] text-slate-500 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
@@ -2314,8 +2531,8 @@ function renderSupplementsTrackerCard(day) {
         </div>
       </div>
       <div class="flex items-center gap-1.5">
-        <button onclick="openCustomSupplementModal()" class="sport-btn btn-ghost py-1 px-2 text-[11px] text-amber-300 border-amber-500/30 font-semibold" title="Мастер-список БАДов">
-          📋 Спискок
+        <button onclick="openSupplementListModal()" class="sport-btn btn-ghost py-1 px-2 text-[11px] text-amber-300 border-amber-500/30 font-semibold" title="Мастер-список БАДов">
+          📋 Список
         </button>
         <button onclick="openSupplementCourseModal()" class="sport-btn btn-ghost py-1 px-2.5 text-xs text-teal-300 border-teal-500/30 font-bold">
           + Новый курс
@@ -3950,7 +4167,11 @@ function loadFromFile(file) {
     try {
       const parsed = JSON.parse(e.target.result);
       if (parsed.profile) state.profile = parsed.profile;
-      if (parsed.data) state.data = parsed.data;
+            if (parsed.data) {
+        state.data = parsed.data;
+        if (!state.data.supplementCourses) state.data.supplementCourses = [];
+        if (!state.data.customSupplements) state.data.customSupplements = [];
+      }
       if (typeof parsed.dark === 'boolean') state.dark = parsed.dark;
       if (typeof parsed.sound === 'boolean') state.sound = parsed.sound;
       save();
