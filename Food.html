@@ -809,7 +809,7 @@ function restoreCard(cardId) {
 }
 
 function renderPinButton(cardId) {
-  return `<button onclick="hideCard('${cardId}')" title="Перенести эту карточку в 'Дополнительно'" class="text-[10px] text-slate-400 hover:text-amber-300 font-semibold flex items-center gap-1 bg-slate-800/80 px-2 py-0.5 rounded-lg border border-slate-700/60 transition-all">📌 В Дополнительно</button>`;
+  return `<button onclick="hideCard('${cardId}')" title="Перенести эту карточку в 'Дополнительно'" class="w-7 h-7 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-amber-300 flex items-center justify-center text-xs border border-slate-700/70 shadow-sm transition-all cursor-pointer">📌</button>`;
 }
 
 function renderAtomicCard(cardId, contentHtml) {
@@ -951,8 +951,10 @@ function renderDashboard() {
         ['today', 'Дневник', '⚡'],
         ['stats', 'Статистика', '📊'],
         ['history', 'История', '📅'],
-        ['theory', 'Теория', '📚']
-      ].map(([k, l, i]) => `
+        ['theory', 'Теория', '📚'],
+        ['more', 'Ещё', '⚙️']
+      ].filter(([k]) => k === 'more' || !(state.data.hiddenTabs || []).includes(k))
+      .map(([k, l, i]) => `
         <button data-tab="${k}" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all ${state.tab===k ? 'btn-active-tab' : 'text-slate-400 hover:text-slate-200'}">
           ${i} ${l}
         </button>
@@ -962,7 +964,8 @@ function renderDashboard() {
     ${state.tab === 'today' ? renderTodayTab(target, effectiveTarget, totals, remaining, progress, day)
       : state.tab === 'stats' ? renderStatsTab()
       : state.tab === 'history' ? renderHistoryTab()
-      : renderTheoryTab()
+      : state.tab === 'theory' ? renderTheoryTab()
+      : renderMoreTab(target, effectiveTarget, totals, remaining, progress, day)
     }
 
     <!-- Фиксированное нижнее меню PWA -->
@@ -971,8 +974,10 @@ function renderDashboard() {
         ['today', 'Главная', '⚡'],
         ['stats', 'Прогресс', '📈'],
         ['history', 'Календарь', '📅'],
-        ['theory', 'База знаний', '📖']
-      ].map(([k, l, i]) => `
+        ['theory', 'База знаний', '📖'],
+        ['more', 'Ещё', '⚙️']
+      ].filter(([k]) => k === 'more' || !(state.data.hiddenTabs || []).includes(k))
+      .map(([k, l, i]) => `
         <button data-tab="${k}" class="flex-1 py-1.5 flex flex-col items-center gap-0.5 text-[11px] font-semibold ${state.tab===k ? 'text-brand-400' : 'text-slate-500'}">
           <span class="text-lg">${i}</span>
           <span>${l}</span>
